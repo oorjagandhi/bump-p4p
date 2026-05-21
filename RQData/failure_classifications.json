@@ -1,0 +1,2199 @@
+{
+  "timestamp": "2026-05-19T18:18:44.180691",
+  "total_analyzed": 188,
+  "classifications": {
+    "ERROR": 60,
+    "RUNTIME_EXCEPTION": 69,
+    "TEST_ASSERTION": 35,
+    "PROGRAM_ASSERTION": 14,
+    "UNKNOWN_FAILURE": 6,
+    "CHECKED_EXCEPTION": 1,
+    "RESOURCE_ERROR": 3
+  },
+  "results": [
+    {
+      "file": "0c088ff435224b168f93d2a20b829af940bb67dd.json",
+      "commit": "0c088ff435224b168f93d2a20b829af940bb67dd",
+      "project": "a",
+      "dependency": "org.graalvm.js/js-scriptengine",
+      "versionUpdate": "22.3.2 \u2192 23.0.1",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -------------------------< co.nordlander.a:a >--------------------------\n[INFO] Building a 1.6.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ a ---\n[INFO] Deleting /a/target\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ a ---\n[INFO] Copying 1 resource\n[INFO] Copying 2 resources\n[INFO] \n[INFO] --- compiler:3.11"
+    },
+    {
+      "file": "0c748afce24c983e8f330bc2435837c70b0fcde6.json",
+      "commit": "0c748afce24c983e8f330bc2435837c70b0fcde6",
+      "project": "dropwizard-pac4j",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.10.5.1 \u2192 2.14.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "072528ee5e678feabeaa1e2962725134564bdd3c.json",
+      "commit": "072528ee5e678feabeaa1e2962725134564bdd3c",
+      "project": "sign-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.2",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] --------------< org.simplify4u.plugins:sign-maven-plugin >--------------\n[INFO] Building Sign Maven Plugin 1.0.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean "
+    },
+    {
+      "file": "063cf862c045e0a9e401a539497e34ddaf8332b3.json",
+      "commit": "063cf862c045e0a9e401a539497e34ddaf8332b3",
+      "project": "wsdoc",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.4.2 \u2192 2.9.10.8",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------------------< org.versly:versly-wsdoc >-----------------------\n[INFO] Building Web Service Documentation Generator 1.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from mulesoft-repo: https://repository-master.mulesoft.org/nexus/content/repositories/public/org/raml/raml-parser/0.9-SNAPSHOT/maven-metadata.xml\n[INFO] Downloaded from mulesoft-repo: https://re"
+    },
+    {
+      "file": "04c07b066b60a2e9d4f797b98dcd439a3a42f0b9.json",
+      "commit": "04c07b066b60a2e9d4f797b98dcd439a3a42f0b9",
+      "project": "pdb",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.4",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Using jgitver configuration file: /pdb/.mvn/jgitver.config.xml\n[INFO] Using jgitver-maven-plugin [1.9.0] (sha1: 410af24b23bf392ebb2810475800189c6d881817)\n[INFO]     version '0.0.0-NOT_A_GIT_REPOSITORY' computed in 180 ms\n[INFO] \n[INFO] Scanning for projects...\n[INFO] jgitver-maven-plugin is about to change project(s) version(s)\n[INFO]     com.feedzai::pdb::0.0.0-SNAPSHOT -> 0.0.0-NOT_A_GIT_REPOSITORY\n[INFO] \n[INFO] --------------------------< com.feedzai:pdb >---------------------------\n["
+    },
+    {
+      "file": "125f1253d8331f14752a4a8d49559445301ab02d.json",
+      "commit": "125f1253d8331f14752a4a8d49559445301ab02d",
+      "project": "jspc-maven-plugin",
+      "dependency": "org.codehaus.plexus/plexus-utils",
+      "versionUpdate": "3.5.1 \u2192 4.0.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] -------------< io.leonard.maven.plugins:jspc-maven-plugin >-------------\n[INFO] Building JSPC Maven Plugin 4.1.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean "
+    },
+    {
+      "file": "0ee8b9376b967938e8efd89a0959214a30d1b3fb.json",
+      "commit": "0ee8b9376b967938e8efd89a0959214a30d1b3fb",
+      "project": "junit-quickcheck",
+      "dependency": "org.mockito/mockito-core",
+      "versionUpdate": "4.11.0 \u2192 5.1.1",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] junit-quickcheck                                                   [pom]\n[INFO] junit-quickcheck-core                                              [jar]\n[INFO] junit-quickcheck-generators                                        [jar]\n[INFO] junit-quickcheck-guava                                             [jar]\n[INFO] junit-quickcheck-examples"
+    },
+    {
+      "file": "02363207c365b3befd6426f6dda5c8eac904d760.json",
+      "commit": "02363207c365b3befd6426f6dda5c8eac904d760",
+      "project": "recheck",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.3",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] -------------------------< de.retest:recheck >--------------------------\n[INFO] Building recheck 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo."
+    },
+    {
+      "file": "097d93fbb2f9998ef1390ad10f92d1b70fda8b90.json",
+      "commit": "097d93fbb2f9998ef1390ad10f92d1b70fda8b90",
+      "classification": "ERROR",
+      "reason": "Failed to run Docker: unsupported operand type(s) for +: 'NoneType' and 'str'",
+      "docker_output": ""
+    },
+    {
+      "file": "11fa4228dbff2f7e96f71120afac3528cafa85b4.json",
+      "commit": "11fa4228dbff2f7e96f71120afac3528cafa85b4",
+      "project": "IDS-Messaging-Services",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.9.10.8 \u2192 2.13.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "1750bac074c30b06ae5cdff7a25db401a4f45de2.json",
+      "commit": "1750bac074c30b06ae5cdff7a25db401a4f45de2",
+      "project": "dropwizard-pac4j",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.10.5.1 \u2192 2.13.4",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "12684ee6cfd293b27c08495f97900bcd849b452c.json",
+      "commit": "12684ee6cfd293b27c08495f97900bcd849b452c",
+      "project": "cucumber-reporting",
+      "dependency": "commons-io/commons-io",
+      "versionUpdate": "2.7 \u2192 2.11.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------------< net.masterthought:cucumber-reporting >----------------\n[INFO] Building cucumber-reporting 5.7.6-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ cucumber-reporting ---\n[INFO] Deleting /cucumber-reporting/target\n[INFO] \n[INFO] --- enforcer:1.0:enforce (enforce-maven) @ cucumber-reporting ---\n[INFO] \n[INFO] --- jacoco:"
+    },
+    {
+      "file": "12e237710199fafa086fd2299edefd5f8f05a63c.json",
+      "commit": "12e237710199fafa086fd2299edefd5f8f05a63c",
+      "project": "geostore",
+      "dependency": "com.h2database/h2",
+      "versionUpdate": "1.3.175 \u2192 2.0.206",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] Master GeoStore POM                                                [pom]\n[INFO] GeoStore - 0 Server Root                                           [pom]\n[INFO] GeoStore - Core                                                    [pom]\n[INFO] GeoStore - Core - Model                                            [jar]\n[INFO] GeoStore - Core - Securit"
+    },
+    {
+      "file": "18e92e4eb94da9f20b9864486865295176ebd83a.json",
+      "commit": "18e92e4eb94da9f20b9864486865295176ebd83a",
+      "project": "pdb",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.6",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Using jgitver configuration file: /pdb/.mvn/jgitver.config.xml\n[INFO] Using jgitver-maven-plugin [1.9.0] (sha1: 410af24b23bf392ebb2810475800189c6d881817)\n[INFO]     version '0.0.0-NOT_A_GIT_REPOSITORY' computed in 212 ms\n[INFO] \n[INFO] Scanning for projects...\n[INFO] jgitver-maven-plugin is about to change project(s) version(s)\n[INFO]     com.feedzai::pdb::0.0.0-SNAPSHOT -> 0.0.0-NOT_A_GIT_REPOSITORY\n[INFO] \n[INFO] --------------------------< com.feedzai:pdb >---------------------------\n["
+    },
+    {
+      "file": "0671a30e3673989830ed7f4aa345b867c29547f0.json",
+      "commit": "0671a30e3673989830ed7f4aa345b867c29547f0",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.junit.platform/junit-platform-surefire-provider",
+      "versionUpdate": "1.0.3 \u2192 1.3.2",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "19e20b0d69cb6dadbc54313cb6c6e5f70670ac93.json",
+      "commit": "19e20b0d69cb6dadbc54313cb6c6e5f70670ac93",
+      "project": "logging-chainsaw",
+      "dependency": "com.thoughtworks.xstream/xstream",
+      "versionUpdate": "1.4.17 \u2192 1.4.19",
+      "classification": "UNKNOWN_FAILURE",
+      "matched_patterns": [],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< log4j:apache-chainsaw >------------------------\n[INFO] Building Apache Chainsaw 2.2.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.1.0:clean (default-clean) @ apache-chainsaw ---\n[INFO] Deleting /logging-chainsaw/target\n[INFO] \n[INFO] --- enforcer:1.4.1:enforce (enforce-maven-version) @ apache-chainsaw ---\n[INFO] \n[INFO] --- enforcer"
+    },
+    {
+      "file": "1ca02168f00f994c625eeea6b5af4ab0a06f3a27.json",
+      "commit": "1ca02168f00f994c625eeea6b5af4ab0a06f3a27",
+      "project": "sign-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] --------------< org.simplify4u.plugins:sign-maven-plugin >--------------\n[INFO] Building Sign Maven Plugin 1.0.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean "
+    },
+    {
+      "file": "19249139eb66616953c389242c22edde60c4ac2f.json",
+      "commit": "19249139eb66616953c389242c22edde60c4ac2f",
+      "project": "pgpverify-maven-plugin",
+      "dependency": "org.junit.jupiter/junit-jupiter-params",
+      "versionUpdate": "5.9.3 \u2192 5.10.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "NumberFormatException"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] -----------< org.simplify4u.plugins:pgpverify-maven-plugin >------------\n[INFO] Building Verify PGP signatures plugin 1.17.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:"
+    },
+    {
+      "file": "1266a8c84cd04cedfa316bed94b1e9b014da872f.json",
+      "commit": "1266a8c84cd04cedfa316bed94b1e9b014da872f",
+      "project": "pay-adminusers",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< uk.gov.pay:pay-adminusers >----------------------\n[INFO] Building pay-adminusers 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/maven-metadata.xml\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/maven-metadata.xml (5.8 kB at "
+    },
+    {
+      "file": "1cf2cb24c3532551856d5edd85148f978e11a63c.json",
+      "commit": "1cf2cb24c3532551856d5edd85148f978e11a63c",
+      "project": "sign-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.4",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] --------------< org.simplify4u.plugins:sign-maven-plugin >--------------\n[INFO] Building Sign Maven Plugin 1.0.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean "
+    },
+    {
+      "file": "1c3529eaf282deb4868f4b13439170ef47db3e8c.json",
+      "commit": "1c3529eaf282deb4868f4b13439170ef47db3e8c",
+      "project": "avans",
+      "dependency": "com.fasterxml.jackson.dataformat/jackson-dataformat-cbor",
+      "versionUpdate": "2.4.0 \u2192 2.13.3",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 8 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 8 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] avans :: parent                                                    [pom]\n[INFO] avans                                                              [jar]\n"
+    },
+    {
+      "file": "1eb6d9d5b2a07720a0839457cee81e066dd932f2.json",
+      "commit": "1eb6d9d5b2a07720a0839457cee81e066dd932f2",
+      "project": "webapp",
+      "dependency": "org.apache.logging.log4j/log4j-api",
+      "versionUpdate": "2.16.0 \u2192 2.18.0",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] --------------------------< ai.elimu:webapp >---------------------------\n[INFO] Building webapp 2.2.125-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ war ]---------------------------------\n[WARNING] The artifact org.hibernate:hibernate-validator:jar:6.1.7.Final has been relocated to org.hibernate.validator:hibernate-validator:jar:6.1.7.Final\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ webapp ---\n[INFO] Deleting /"
+    },
+    {
+      "file": "20b272092eaf70beed3eb1635ec8062f6b56f808.json",
+      "commit": "20b272092eaf70beed3eb1635ec8062f6b56f808",
+      "project": "webapp",
+      "dependency": "org.apache.logging.log4j/log4j-core",
+      "versionUpdate": "2.16.0 \u2192 2.19.0",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] --------------------------< ai.elimu:webapp >---------------------------\n[INFO] Building webapp 2.2.133-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ war ]---------------------------------\n[WARNING] The artifact org.hibernate:hibernate-validator:jar:6.1.7.Final has been relocated to org.hibernate.validator:hibernate-validator:jar:6.1.7.Final\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ webapp ---\n[INFO] Deleting /"
+    },
+    {
+      "file": "22eec990412b563439a1dfae84134b43d85d9815.json",
+      "commit": "22eec990412b563439a1dfae84134b43d85d9815",
+      "project": "pay-cardid",
+      "dependency": "org.dhatim/dropwizard-sentry",
+      "versionUpdate": "2.0.22 \u2192 2.0.28-8",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< uk.gov.pay:pay-cardid >------------------------\n[INFO] Building pay-cardid 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.1.0:clean (default-clean) @ pay-cardid ---\n[INFO] Deleting /pay-cardid/target\n[INFO] \n[INFO] --- resources:3.2.0:copy-resources (copy-resources) @ pay-cardid ---\n[INFO] Using 'UTF-8' encoding to copy filtered re"
+    },
+    {
+      "file": "2b60dcd83ece76e58dee05be56f00eba6deb4ac6.json",
+      "commit": "2b60dcd83ece76e58dee05be56f00eba6deb4ac6",
+      "project": "html2pop3",
+      "dependency": "ch.qos.logback/logback-classic",
+      "versionUpdate": "1.2.11 \u2192 1.4.0",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------------< it.baccan:HTML2POP3 >-------------------------\n[INFO] Building HTML2POP3 3.1.0 3.1.0\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ HTML2POP3 ---\n[INFO] Deleting /html2pop3/target\n[INFO] \n[INFO] --- resources:3.3.0:copy-resources (copy-resources) @ HTML2POP3 ---\n[INFO] Copying 1 resource\n[INFO] Copying 3 resources\n["
+    },
+    {
+      "file": "24d59062ad4e93aa8054b9d3a8f97a30e77ab785.json",
+      "commit": "24d59062ad4e93aa8054b9d3a8f97a30e77ab785",
+      "project": "webapp",
+      "dependency": "org.apache.logging.log4j/log4j-api",
+      "versionUpdate": "2.16.0 \u2192 2.19.0",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] --------------------------< ai.elimu:webapp >---------------------------\n[INFO] Building webapp 2.2.133-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ war ]---------------------------------\n[WARNING] The artifact org.hibernate:hibernate-validator:jar:6.1.7.Final has been relocated to org.hibernate.validator:hibernate-validator:jar:6.1.7.Final\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ webapp ---\n[INFO] Deleting /"
+    },
+    {
+      "file": "1cd22b76f9ea6564382ebf1160b01c0e5bcbb975.json",
+      "commit": "1cd22b76f9ea6564382ebf1160b01c0e5bcbb975",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.junit.platform/junit-platform-surefire-provider",
+      "versionUpdate": "1.0.3 \u2192 1.3.2",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "30149ce4bdde6418aad7f02c35bd9dc8101b58ac.json",
+      "commit": "30149ce4bdde6418aad7f02c35bd9dc8101b58ac",
+      "project": "pay-cardid",
+      "dependency": "org.dhatim/dropwizard-sentry",
+      "versionUpdate": "2.0.22 \u2192 2.0.28-3",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< uk.gov.pay:pay-cardid >------------------------\n[INFO] Building pay-cardid 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.1.0:clean (default-clean) @ pay-cardid ---\n[INFO] Deleting /pay-cardid/target\n[INFO] \n[INFO] --- resources:3.2.0:copy-resources (copy-resources) @ pay-cardid ---\n[INFO] Using 'UTF-8' encoding to copy filtered re"
+    },
+    {
+      "file": "28745a38581cf7de6f4bf931f59b39925fe7c4ec.json",
+      "commit": "28745a38581cf7de6f4bf931f59b39925fe7c4ec",
+      "project": "recheck",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.4",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] -------------------------< de.retest:recheck >--------------------------\n[INFO] Building recheck 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo."
+    },
+    {
+      "file": "25926ea2f0e0adaec0238bc7623d0a78e70c96bd.json",
+      "commit": "25926ea2f0e0adaec0238bc7623d0a78e70c96bd",
+      "project": "recheck",
+      "dependency": "org.eclipse.persistence/org.eclipse.persistence.moxy",
+      "versionUpdate": "3.0.2 \u2192 4.0.1",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] -------------------------< de.retest:recheck >--------------------------\n[INFO] Building recheck 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo."
+    },
+    {
+      "file": "2cc9522c8f62871d12243b174b98bd7d5b121362.json",
+      "commit": "2cc9522c8f62871d12243b174b98bd7d5b121362",
+      "project": "avans",
+      "dependency": "com.fasterxml.jackson.core/jackson-core",
+      "versionUpdate": "2.4.2 \u2192 2.13.3",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 8 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 8 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] avans :: parent                                                    [pom]\n[INFO] avans                                                              [jar]\n"
+    },
+    {
+      "file": "359f45ab2b6e53e99b26cb7c053114abff1bd74f.json",
+      "commit": "359f45ab2b6e53e99b26cb7c053114abff1bd74f",
+      "project": "pay-cardid",
+      "dependency": "org.dhatim/dropwizard-sentry",
+      "versionUpdate": "2.0.22 \u2192 2.0.26-3",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< uk.gov.pay:pay-cardid >------------------------\n[INFO] Building pay-cardid 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.1.0:clean (default-clean) @ pay-cardid ---\n[INFO] Deleting /pay-cardid/target\n[INFO] \n[INFO] --- resources:3.2.0:copy-resources (copy-resources) @ pay-cardid ---\n[INFO] Using 'UTF-8' encoding to copy filtered re"
+    },
+    {
+      "file": "30caf72b737bd40b6b4a16c6b25ba574e3048810.json",
+      "commit": "30caf72b737bd40b6b4a16c6b25ba574e3048810",
+      "classification": "ERROR",
+      "reason": "Failed to run Docker: unsupported operand type(s) for +: 'NoneType' and 'str'",
+      "docker_output": ""
+    },
+    {
+      "file": "2241358955f2c69c84b24560ca10718c1c338b97.json",
+      "commit": "2241358955f2c69c84b24560ca10718c1c338b97",
+      "project": "pay-adminusers",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.6",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< uk.gov.pay:pay-adminusers >----------------------\n[INFO] Building pay-adminusers 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/maven-metadata.xml\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/maven-metadata.xml (5.8 kB at "
+    },
+    {
+      "file": "2f9d75d4b01cd18afcb4676d134142882f9e0034.json",
+      "commit": "2f9d75d4b01cd18afcb4676d134142882f9e0034",
+      "project": "directory-scimple",
+      "dependency": "javax/javaee-api",
+      "versionUpdate": "7.0 \u2192 8.0.1",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 16 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 16 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] SCIM - Parent                                                      [pom]\n[INFO] SCIM - Specification                                               [pom"
+    },
+    {
+      "file": "34e00b73f0a3493dc126583abbaf32c04b38c4a2.json",
+      "commit": "34e00b73f0a3493dc126583abbaf32c04b38c4a2",
+      "project": "recheck",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.0",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] -------------------------< de.retest:recheck >--------------------------\n[INFO] Building recheck 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo."
+    },
+    {
+      "file": "31a177fb212d6dd4972ded3901f338b110d68cc1.json",
+      "commit": "31a177fb212d6dd4972ded3901f338b110d68cc1",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.springframework/spring-tx",
+      "versionUpdate": "5.3.24 \u2192 6.0.4",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "3b47c247b867ea50405402d650c08c8b5bbc2b8a.json",
+      "commit": "3b47c247b867ea50405402d650c08c8b5bbc2b8a",
+      "project": "a",
+      "dependency": "org.graalvm.js/js-scriptengine",
+      "versionUpdate": "22.3.2 \u2192 23.0.0",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -------------------------< co.nordlander.a:a >--------------------------\n[INFO] Building a 1.6.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ a ---\n[INFO] Deleting /a/target\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ a ---\n[INFO] Copying 1 resource\n[INFO] Copying 2 resources\n[INFO] \n[INFO] --- compiler:3.11"
+    },
+    {
+      "file": "3b7f524a09d711bc5af151086de48db940455e6a.json",
+      "commit": "3b7f524a09d711bc5af151086de48db940455e6a",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.glassfish.jersey.core/jersey-server",
+      "versionUpdate": "2.32 \u2192 2.36",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "38eb09ebe87b73681489df7f8bac6d3eadebb1a1.json",
+      "commit": "38eb09ebe87b73681489df7f8bac6d3eadebb1a1",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.springframework/spring-tx",
+      "versionUpdate": "5.3.24 \u2192 6.0.2",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "36fd224b3010a716c7ee6cab66f3897d9c3b780a.json",
+      "commit": "36fd224b3010a716c7ee6cab66f3897d9c3b780a",
+      "project": "IDS-Messaging-Services",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.9.10.8 \u2192 2.13.2.2",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "41164ec5392b2c853ae871f10a9541c055028b36.json",
+      "commit": "41164ec5392b2c853ae871f10a9541c055028b36",
+      "project": "recheck.cli",
+      "dependency": "ch.qos.logback/logback-classic",
+      "versionUpdate": "1.2.11 \u2192 1.4.3",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< de.retest:recheck.cli >------------------------\n[INFO] Building recheck.cli 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from jitpack.io: https://jitpack.io/junit/junit-dep/maven-metadata.xml\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/junit/junit-dep/maven-metadata.xml\n[INFO] Downloaded from central: https:/"
+    },
+    {
+      "file": "3b26e04706e255544d99886b643936cfff6e2aeb.json",
+      "commit": "3b26e04706e255544d99886b643936cfff6e2aeb",
+      "project": "camunda-platform-7-camel",
+      "dependency": "jakarta.xml.bind/jakarta.xml.bind-api",
+      "versionUpdate": "2.3.2 \u2192 4.0.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 4 modules...\n[INFO] Not installing Nexus Staging features:\n[INFO]  * Preexisting staging related goal bindings found in 4 modules.\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] camunda BPM - Apache Camel Integration                             [pom]\n[INFO] camunda BPM - Apache Camel Integration (Common)                    [jar]\n[INFO] camunda BPM - Ap"
+    },
+    {
+      "file": "3c0bc059c4b1f9b1c35ac35a67796eb4c7e716f5.json",
+      "commit": "3c0bc059c4b1f9b1c35ac35a67796eb4c7e716f5",
+      "project": "license-maven-plugin",
+      "dependency": "org.codehaus.plexus/plexus-utils",
+      "versionUpdate": "3.5.1 \u2192 4.0.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] license-maven-plugin-parent                                        [pom]\n[INFO] license-maven-plugin                                      [maven-plugin]\n[INFO] license-maven-plugin-git                                           [jar]\n[INFO] license-maven-plugin-svn                                           [jar]\n[INFO] license-maven-plugin-fs  "
+    },
+    {
+      "file": "448ff013455db1ebe983fa0e1c65ed09f0bc4e3a.json",
+      "commit": "448ff013455db1ebe983fa0e1c65ed09f0bc4e3a",
+      "project": "Refactoring-Bot",
+      "dependency": "org.antlr/antlr4-runtime",
+      "versionUpdate": "4.7.2 \u2192 4.10.1",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "java\\.lang\\.(Service|Verify|LinkageError|ExceptionInInitializer)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------< de.refactoringBot:RefactoringBot >------------------\n[INFO] Building Refactoring-Bot 0.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.1.0:clean (default-clean) @ RefactoringBot ---\n[INFO] Deleting /Refactoring-Bot/target\n[INFO] \n[INFO] --- antlr4:4.7.2:antlr4 (default) @ RefactoringBot ---\n[INFO] ANTLR 4: Processing source directory /Re"
+    },
+    {
+      "file": "471b0bd83c66392faf40bd52e9abc4883ef2bc7a.json",
+      "commit": "471b0bd83c66392faf40bd52e9abc4883ef2bc7a",
+      "project": "html2pop3",
+      "dependency": "ch.qos.logback/logback-classic",
+      "versionUpdate": "1.2.11 \u2192 1.4.0",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------------< it.baccan:HTML2POP3 >-------------------------\n[INFO] Building HTML2POP3 3.1.0 3.1.0\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ HTML2POP3 ---\n[INFO] Deleting /html2pop3/target\n[INFO] \n[INFO] --- resources:3.3.0:copy-resources (copy-resources) @ HTML2POP3 ---\n[INFO] Copying 1 resource\n[INFO] Copying 3 resources\n["
+    },
+    {
+      "file": "46698497759b188a97830330dfebaf718beb5573.json",
+      "commit": "46698497759b188a97830330dfebaf718beb5573",
+      "project": "plexus-archiver",
+      "dependency": "org.codehaus.plexus/plexus-io",
+      "versionUpdate": "3.2.0 \u2192 3.3.0",
+      "classification": "UNKNOWN_FAILURE",
+      "matched_patterns": [],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------------< org.codehaus.plexus:plexus-archiver >-----------------\n[INFO] Building Plexus Archiver Component 4.3.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.1.0:clean (default-clean) @ plexus-archiver ---\n[INFO] Deleting /plexus-archiver/target\n[INFO] \n[INFO] --- enforcer:3.0.0-M3:enforce (enforce-maven) @ plexus-archiver ---\n[INFO] \n[INFO] --- reso"
+    },
+    {
+      "file": "426453d4be2fa291749ffda52de1653e16ddf3c9.json",
+      "commit": "426453d4be2fa291749ffda52de1653e16ddf3c9",
+      "project": "jasmine-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.32 \u2192 2.0.6",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] ---------------< com.github.searls:jasmine-maven-plugin >---------------\n[INFO] Building jasmine-maven-plugin 3.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] Downloading from central: htt"
+    },
+    {
+      "file": "414c42fd20fe8567b86df7ae1bbbf6d8d3e9310e.json",
+      "commit": "414c42fd20fe8567b86df7ae1bbbf6d8d3e9310e",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.springframework/spring-tx",
+      "versionUpdate": "5.3.24 \u2192 6.0.5",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "4631885da3cfd6601de5d24133fa3828a590ca9e.json",
+      "commit": "4631885da3cfd6601de5d24133fa3828a590ca9e",
+      "project": "junit-quickcheck",
+      "dependency": "org.mockito/mockito-core",
+      "versionUpdate": "4.11.0 \u2192 5.4.0",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] junit-quickcheck                                                   [pom]\n[INFO] junit-quickcheck-core                                              [jar]\n[INFO] junit-quickcheck-generators                                        [jar]\n[INFO] junit-quickcheck-guava                                             [jar]\n[INFO] junit-quickcheck-examples"
+    },
+    {
+      "file": "44a15fa526c10b0c39d8d7337b833d42448fcca4.json",
+      "commit": "44a15fa526c10b0c39d8d7337b833d42448fcca4",
+      "project": "fscrawler",
+      "dependency": "org.apache.poi/poi",
+      "versionUpdate": "4.1.2 \u2192 5.2.1",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] FSCrawler                                                          [pom]\n[INFO] FSCrawler Test Framework                                           [jar]\n[INFO] FSCrawler Framework                                                [jar]\n[INFO] FSCrawler Settings                                                 [jar]\n[INFO] FSCrawler Test Documents "
+    },
+    {
+      "file": "474422dcefb61cf1460c9f218a11b7ba693725c2.json",
+      "commit": "474422dcefb61cf1460c9f218a11b7ba693725c2",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.glassfish.jersey.core/jersey-server",
+      "versionUpdate": "2.32 \u2192 2.39",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.2.1:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] Rule 0: org.apach"
+    },
+    {
+      "file": "4507371bb061f3add726d3ab7527bebb8c41960e.json",
+      "commit": "4507371bb061f3add726d3ab7527bebb8c41960e",
+      "classification": "ERROR",
+      "reason": "Failed to run Docker: unsupported operand type(s) for +: 'NoneType' and 'str'",
+      "docker_output": ""
+    },
+    {
+      "file": "4bbf6c2f38c57568196164323ded8ba8aff9953d.json",
+      "commit": "4bbf6c2f38c57568196164323ded8ba8aff9953d",
+      "project": "jasmine-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.32 \u2192 2.0.1",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] ---------------< com.github.searls:jasmine-maven-plugin >---------------\n[INFO] Building jasmine-maven-plugin 3.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] Downloading from central: htt"
+    },
+    {
+      "file": "4c7b193ce573e31766da82268ffc9ba51412faa6.json",
+      "commit": "4c7b193ce573e31766da82268ffc9ba51412faa6",
+      "classification": "ERROR",
+      "reason": "Failed to run Docker: unsupported operand type(s) for +: 'NoneType' and 'str'",
+      "docker_output": ""
+    },
+    {
+      "file": "4dd50c6cb5a3ad507f1252df7263080fbe9bc10d.json",
+      "commit": "4dd50c6cb5a3ad507f1252df7263080fbe9bc10d",
+      "project": "jasmine-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.32 \u2192 2.0.3",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] ---------------< com.github.searls:jasmine-maven-plugin >---------------\n[INFO] Building jasmine-maven-plugin 3.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] Downloading from central: htt"
+    },
+    {
+      "file": "4d4a773e3498e14932bfaf82f957c2a3f5c2cfe3.json",
+      "commit": "4d4a773e3498e14932bfaf82f957c2a3f5c2cfe3",
+      "project": "dependency-track-maven-plugin",
+      "dependency": "com.sun.xml.bind/jaxb-impl",
+      "versionUpdate": "2.3.3 \u2192 4.0.0",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------< io.github.pmckeown:dependency-track-maven-plugin >----------\n[INFO] Building Dependency Track Maven Plugin 1.1.4-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dependency-track-maven-plugin ---\n[INFO] Deleting /dependency-track-maven-plugin/target\n[INFO] \n[INFO] --- resources:3.2.0:copy-resources (copy-resources) @ depen"
+    },
+    {
+      "file": "52c069901110c60553be85f5cc0e1381da26960c.json",
+      "commit": "52c069901110c60553be85f5cc0e1381da26960c",
+      "project": "html2pop3",
+      "dependency": "ch.qos.logback/logback-classic",
+      "versionUpdate": "1.4.1 \u2192 1.4.3",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------------< it.baccan:HTML2POP3 >-------------------------\n[INFO] Building HTML2POP3 3.1.0 3.1.0\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ HTML2POP3 ---\n[INFO] Deleting /html2pop3/target\n[INFO] \n[INFO] --- resources:3.3.0:copy-resources (copy-resources) @ HTML2POP3 ---\n[INFO] Copying 1 resource\n[INFO] Copying 3 resources\n["
+    },
+    {
+      "file": "533591407112b14f7ff2d46d515c599eb4674e95.json",
+      "commit": "533591407112b14f7ff2d46d515c599eb4674e95",
+      "project": "recheck.cli",
+      "dependency": "ch.qos.logback/logback-classic",
+      "versionUpdate": "1.2.11 \u2192 1.4.6",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< de.retest:recheck.cli >------------------------\n[INFO] Building recheck.cli 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/junit/junit-dep/maven-metadata.xml\n[INFO] Downloading from jitpack.io: https://jitpack.io/junit/junit-dep/maven-metadata.xml\n[INFO] Downloaded from central: https:/"
+    },
+    {
+      "file": "4ef12d5388d4d32000a9e598c2ae29a5842e80df.json",
+      "commit": "4ef12d5388d4d32000a9e598c2ae29a5842e80df",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.junit.platform/junit-platform-surefire-provider",
+      "versionUpdate": "1.0.3 \u2192 1.3.2",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "51e103fc80aec2526ab5dd3bcc2d4d5ce4177842.json",
+      "commit": "51e103fc80aec2526ab5dd3bcc2d4d5ce4177842",
+      "project": "fscrawler",
+      "dependency": "org.apache.poi/poi-scratchpad",
+      "versionUpdate": "4.1.2 \u2192 5.2.0",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] FSCrawler                                                          [pom]\n[INFO] FSCrawler Test Framework                                           [jar]\n[INFO] FSCrawler Framework                                                [jar]\n[INFO] FSCrawler Settings                                                 [jar]\n[INFO] FSCrawler Test Documents "
+    },
+    {
+      "file": "4fa4c3a1167054cc5ee192fbbed72e58de571d95.json",
+      "commit": "4fa4c3a1167054cc5ee192fbbed72e58de571d95",
+      "project": "IDS-Messaging-Services",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.13.4.2 \u2192 2.14.0",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "55931d4c3a2e17683deff5d4e8065a929866290b.json",
+      "commit": "55931d4c3a2e17683deff5d4e8065a929866290b",
+      "project": "kafka-connect-splunk",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.10.5.1 \u2192 2.12.6.1",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "(expected|Expected).*but (was|was:)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] --------< com.github.splunk.kafka.connect:splunk-kafka-connect >--------\n[INFO] Building splunk-kafka-connect v2.0.7\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ splunk-kafka-connect ---\n[INFO] Deleting /kafka-connect-splunk/target\n[INFO] \n[INFO] --- checkstyle:2.17:check (validate) @ splunk-kafka-connect ---\n[INFO] \n[INFO] --- jacoco:0.8."
+    },
+    {
+      "file": "5b7634ef016e7e65084fb0253e96bffa5810c0df.json",
+      "commit": "5b7634ef016e7e65084fb0253e96bffa5810c0df",
+      "project": "dropwizard-pac4j",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.10.5.1 \u2192 2.14.2",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.2.1:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] Rule 0: org.apach"
+    },
+    {
+      "file": "5275fc9ef87a6d411b719d78c681b81ac914798b.json",
+      "commit": "5275fc9ef87a6d411b719d78c681b81ac914798b",
+      "project": "JsonUnit",
+      "dependency": "org.apache.maven.surefire/surefire-junit4",
+      "versionUpdate": "3.0.0-M5 \u2192 3.0.0-M6",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "(expected|Expected).*but (was|was:)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] json-unit-parent                                                   [pom]\n[INFO] json-unit-core                                                  [bundle]\n[INFO] json-unit                                                       [bundle]\n[INFO] json-unit-json-path                                             [bundle]\n[INFO] json-unit-fluent         "
+    },
+    {
+      "file": "56b1cde573f7b411a3a831bed30c624ddfdbdf3d.json",
+      "commit": "56b1cde573f7b411a3a831bed30c624ddfdbdf3d",
+      "classification": "ERROR",
+      "reason": "Failed to run Docker: unsupported operand type(s) for +: 'NoneType' and 'str'",
+      "docker_output": ""
+    },
+    {
+      "file": "52ba94ad488d562bce56eee92fb46c63fba6541b.json",
+      "commit": "52ba94ad488d562bce56eee92fb46c63fba6541b",
+      "project": "github-checks-plugin",
+      "dependency": "org.jenkins-ci.plugins/github-api",
+      "versionUpdate": "1.117 \u2192 1.303-400.v35c2d8258028",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Artifact org.jenkins-ci.tools:maven-hpi-plugin:pom:3.20 is present in the local repository, but cached from a remote repository ID that is unavailable in current build context, verifying that is downloadable from [incrementals (https://repo.jenkins-ci.org/incrementals/, default, releases), central (https://repo.maven.apache.org/maven2, default, releases)]\n[INFO] Artifact org.jenkins-ci.tools:maven-hpi-plugin:pom:3.20 is present in the local repository, but "
+    },
+    {
+      "file": "57062474434f91f25595516ae8b759a53073a40f.json",
+      "commit": "57062474434f91f25595516ae8b759a53073a40f",
+      "project": "geoserver-shell",
+      "dependency": "org.json/json",
+      "versionUpdate": "20090211 \u2192 20230227",
+      "classification": "UNKNOWN_FAILURE",
+      "matched_patterns": [],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -------------------< org.geoserver:geoserver-shell >--------------------\n[INFO] Building geoserver-shell 0.4-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from osgeo-snapshots: https://repo.osgeo.org/repository/snapshot/org/eclipse/emf/org.eclipse.emf.common/maven-metadata.xml\n[INFO] Downloading from osgeo-releases: https://repo.osgeo.org/repository/release/org/eclip"
+    },
+    {
+      "file": "5effea24fcd960f5659130912daf5e1d6319c9f4.json",
+      "commit": "5effea24fcd960f5659130912daf5e1d6319c9f4",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.eclipse.jetty/jetty-server",
+      "versionUpdate": "9.4.35.v20201120 \u2192 9.4.50.v20221201",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "5c0e38ca9f22c2bfa5db05da30917e4be49c4644.json",
+      "commit": "5c0e38ca9f22c2bfa5db05da30917e4be49c4644",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.springframework/spring-tx",
+      "versionUpdate": "5.3.24 \u2192 6.0.8",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "5e6846a50737c240be6fedb6626f0d32906d10ad.json",
+      "commit": "5e6846a50737c240be6fedb6626f0d32906d10ad",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.springframework/spring-tx",
+      "versionUpdate": "5.3.24 \u2192 6.0.3",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "60c05d7f413430e47f624cc3c7b13c97466c6bb3.json",
+      "commit": "60c05d7f413430e47f624cc3c7b13c97466c6bb3",
+      "project": "http",
+      "dependency": "org.junit.jupiter/junit-jupiter-engine",
+      "versionUpdate": "5.8.1 \u2192 5.10.0",
+      "classification": "UNKNOWN_FAILURE",
+      "matched_patterns": [],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] --------------------------< com.artipie:http >--------------------------\n[INFO] Building Artipie HTTP 2.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.1.0:clean (default-clean) @ http ---\n[INFO] Deleting /http/target\n[INFO] \n[INFO] --- enforcer:3.0.0:enforce (enforce-maven) @ http ---\n[INFO] \n[INFO] --- jacoco:0.8.7:prepare-agent (jacoco-initialize) @ http -"
+    },
+    {
+      "file": "5f8a3fa396d438157f595b07729f8d01e882c82e.json",
+      "commit": "5f8a3fa396d438157f595b07729f8d01e882c82e",
+      "project": "recheck",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.2",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] -------------------------< de.retest:recheck >--------------------------\n[INFO] Building recheck 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo."
+    },
+    {
+      "file": "65d7e266291e48fd6d2c62caaa63775c74c5d472.json",
+      "commit": "65d7e266291e48fd6d2c62caaa63775c74c5d472",
+      "project": "webapp",
+      "dependency": "org.apache.logging.log4j/log4j-api",
+      "versionUpdate": "2.16.0 \u2192 2.20.0",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] --------------------------< ai.elimu:webapp >---------------------------\n[INFO] Building webapp 2.2.133-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ war ]---------------------------------\n[WARNING] The artifact org.hibernate:hibernate-validator:jar:6.1.7.Final has been relocated to org.hibernate.validator:hibernate-validator:jar:6.1.7.Final\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ webapp ---\n[INFO] Deleting /"
+    },
+    {
+      "file": "6b2f30ebeacbc54b3b86971b2f2513c7ba9cf872.json",
+      "commit": "6b2f30ebeacbc54b3b86971b2f2513c7ba9cf872",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.hibernate.validator/hibernate-validator",
+      "versionUpdate": "6.2.4.Final \u2192 8.0.0.Final",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "5743793a5d54e43d9acf27e46fdb3a257ee0196f.json",
+      "commit": "5743793a5d54e43d9acf27e46fdb3a257ee0196f",
+      "project": "java-pubsublite",
+      "dependency": "com.google.flogger/google-extensions",
+      "versionUpdate": "0.6 \u2192 0.7.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 5 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 5 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] Google Cloud Pub/Sub Lite Parent                                   [pom]\n[INFO] proto-google-cloud-pubsublite-v1                                   [jar]\n"
+    },
+    {
+      "file": "5476e69fca14862d862805790b73574e1de58dd2.json",
+      "commit": "5476e69fca14862d862805790b73574e1de58dd2",
+      "project": "scheduler",
+      "dependency": "org.antlr/antlr4-runtime",
+      "versionUpdate": "4.9.3 \u2192 4.10",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "java\\.lang\\.(Service|Verify|LinkageError|ExceptionInInitializer)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 9 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 9 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] scheduler                                                          [pom]\n[INFO] scheduler-api                                                      [jar]\n"
+    },
+    {
+      "file": "6ee4bf66c141d1f756b6ccd793a64fb499ab46c8.json",
+      "commit": "6ee4bf66c141d1f756b6ccd793a64fb499ab46c8",
+      "project": "billy",
+      "dependency": "org.hibernate.validator/hibernate-validator",
+      "versionUpdate": "6.1.7.Final \u2192 7.0.3.Final",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "java\\.lang\\.(Service|Verify|LinkageError|ExceptionInInitializer)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] billy                                                              [pom]\n[INFO] billy core                                                         [jar]\n[INFO] billy core JPA                                                     [jar]\n[INFO] billy GIN                                                          [jar]\n[INFO] billy portugal (PT Pack) "
+    },
+    {
+      "file": "60d8c1a25e2d7fc688f1b2306be5675f089b74e9.json",
+      "commit": "60d8c1a25e2d7fc688f1b2306be5675f089b74e9",
+      "project": "jasmine-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.32 \u2192 2.0.2",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] ---------------< com.github.searls:jasmine-maven-plugin >---------------\n[INFO] Building jasmine-maven-plugin 3.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] Downloading from central: htt"
+    },
+    {
+      "file": "65b5a75419981118d5a65e295abfd2069dfce0b0.json",
+      "commit": "65b5a75419981118d5a65e295abfd2069dfce0b0",
+      "project": "fscrawler",
+      "dependency": "org.apache.poi/poi",
+      "versionUpdate": "4.1.2 \u2192 5.2.2",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] FSCrawler                                                          [pom]\n[INFO] FSCrawler Test Framework                                           [jar]\n[INFO] FSCrawler Framework                                                [jar]\n[INFO] FSCrawler Settings                                                 [jar]\n[INFO] FSCrawler Test Documents "
+    },
+    {
+      "file": "700fd2428406fdaa4aacf00feab0cbbe634d70c2.json",
+      "commit": "700fd2428406fdaa4aacf00feab0cbbe634d70c2",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.eclipse.jetty/jetty-server",
+      "versionUpdate": "9.4.35.v20201120 \u2192 9.4.47.v20220610",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "770174eb3091f7a6cf44cc533db18246d7d8e241.json",
+      "commit": "770174eb3091f7a6cf44cc533db18246d7d8e241",
+      "project": "pay-cardid",
+      "dependency": "org.dhatim/dropwizard-sentry",
+      "versionUpdate": "2.1.2-4 \u2192 4.0.1-2",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< uk.gov.pay:pay-cardid >------------------------\n[INFO] Building pay-cardid 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ pay-cardid ---\n[INFO] Deleting /pay-cardid/target\n[INFO] \n[INFO] --- resources:3.3.1:copy-resources (copy-resources) @ pay-cardid ---\n[INFO] Copying 1 resource from src/main/resources"
+    },
+    {
+      "file": "6d3f6d5a9dbce8a1fea9b955e522a010f6995fbc.json",
+      "commit": "6d3f6d5a9dbce8a1fea9b955e522a010f6995fbc",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.springframework/spring-tx",
+      "versionUpdate": "5.3.24 \u2192 6.0.1",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "875358af2da44c7f35c3ee17bf2113cd6ec43491.json",
+      "commit": "875358af2da44c7f35c3ee17bf2113cd6ec43491",
+      "project": "billy",
+      "dependency": "org.hibernate.validator/hibernate-validator",
+      "versionUpdate": "6.1.7.Final \u2192 7.0.4.Final",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "java\\.lang\\.(Service|Verify|LinkageError|ExceptionInInitializer)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] billy                                                              [pom]\n[INFO] billy core                                                         [jar]\n[INFO] billy core JPA                                                     [jar]\n[INFO] billy GIN                                                          [jar]\n[INFO] billy portugal (PT Pack) "
+    },
+    {
+      "file": "7c90c61e90e9936d8a7e355de8900214c759cb61.json",
+      "commit": "7c90c61e90e9936d8a7e355de8900214c759cb61",
+      "project": "junit-quickcheck",
+      "dependency": "org.mockito/mockito-core",
+      "versionUpdate": "4.11.0 \u2192 5.3.1",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] junit-quickcheck                                                   [pom]\n[INFO] junit-quickcheck-core                                              [jar]\n[INFO] junit-quickcheck-generators                                        [jar]\n[INFO] junit-quickcheck-guava                                             [jar]\n[INFO] junit-quickcheck-examples"
+    },
+    {
+      "file": "851e6b1628f8ecb86db912dc5431a496ddf02148.json",
+      "commit": "851e6b1628f8ecb86db912dc5431a496ddf02148",
+      "project": "semantic-metrics",
+      "dependency": "com.squareup.okhttp3/okhttp",
+      "versionUpdate": "3.3.1 \u2192 3.14.9",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "java\\.lang\\.(Service|Verify|LinkageError|ExceptionInInitializer)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] Semantic Metrics: Parent POM                                       [pom]\n[INFO] Semantic Metrics: API Package                                      [jar]\n[INFO] Semantic Metrics: Core                                             [jar]\n[INFO] Semantic Metrics: FFWD Reporter                                    [jar]\n[INFO] Semantic Metrics: Example"
+    },
+    {
+      "file": "78445745997d3ebe5d1e35d9762d95af875c85ec.json",
+      "commit": "78445745997d3ebe5d1e35d9762d95af875c85ec",
+      "project": "missinglink",
+      "dependency": "org.codehaus.plexus/plexus-utils",
+      "versionUpdate": "3.5.0 \u2192 4.0.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] missinglink                                                        [pom]\n[INFO] missinglink-core                                                   [jar]\n[INFO] missinglink-benchmarks                                             [jar]\n[INFO] missinglink-maven-plugin                                  [maven-plugin]\n[INFO] \n[INFO] -----------------"
+    },
+    {
+      "file": "72bb17e6e5f31139e268355362afabdb36c9714f.json",
+      "commit": "72bb17e6e5f31139e268355362afabdb36c9714f",
+      "project": "dependency-track-maven-plugin",
+      "dependency": "com.sun.xml.bind/jaxb-impl",
+      "versionUpdate": "2.3.3 \u2192 4.0.1",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------< io.github.pmckeown:dependency-track-maven-plugin >----------\n[INFO] Building Dependency Track Maven Plugin 1.4.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dependency-track-maven-plugin ---\n[INFO] Deleting /dependency-track-maven-plugin/target\n[INFO] \n[INFO] --- resources:3.3.0:copy-resources (copy-resources) @ depen"
+    },
+    {
+      "file": "746846c51abe7965b025db5f7cd5b4a16fa6e535.json",
+      "commit": "746846c51abe7965b025db5f7cd5b4a16fa6e535",
+      "project": "java-datastore",
+      "dependency": "org.apache.maven.surefire/surefire-junit47",
+      "versionUpdate": "3.0.0-M5 \u2192 3.0.0-M6",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 5 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 5 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] Google Cloud Datastore Parent                                      [pom]\n[INFO] proto-google-cloud-datastore-v1                                    [jar]\n"
+    },
+    {
+      "file": "80a534da02670221e857647dda3ce3546c76b75e.json",
+      "commit": "80a534da02670221e857647dda3ce3546c76b75e",
+      "project": "recheck",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.5",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] -------------------------< de.retest:recheck >--------------------------\n[INFO] Building recheck 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from jitpack.io: https://ji"
+    },
+    {
+      "file": "85d468890c33b37e74e972caa71b3938a4a98223.json",
+      "commit": "85d468890c33b37e74e972caa71b3938a4a98223",
+      "project": "webapp",
+      "dependency": "org.apache.logging.log4j/log4j-core",
+      "versionUpdate": "2.16.0 \u2192 2.20.0",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] --------------------------< ai.elimu:webapp >---------------------------\n[INFO] Building webapp 2.2.133-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ war ]---------------------------------\n[WARNING] The artifact org.hibernate:hibernate-validator:jar:6.1.7.Final has been relocated to org.hibernate.validator:hibernate-validator:jar:6.1.7.Final\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ webapp ---\n[INFO] Deleting /"
+    },
+    {
+      "file": "89c60030429466a6cca77c2549a53a17c085033d.json",
+      "commit": "89c60030429466a6cca77c2549a53a17c085033d",
+      "project": "recheck.cli",
+      "dependency": "ch.qos.logback/logback-classic",
+      "versionUpdate": "1.2.11 \u2192 1.4.1",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< de.retest:recheck.cli >------------------------\n[INFO] Building recheck.cli 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/junit/junit-dep/maven-metadata.xml\n[INFO] Downloading from jitpack.io: https://jitpack.io/junit/junit-dep/maven-metadata.xml\n[INFO] Downloaded from central: https:/"
+    },
+    {
+      "file": "87fbea62fa6867b8288295b80718c51981ae340a.json",
+      "commit": "87fbea62fa6867b8288295b80718c51981ae340a",
+      "project": "dropwizard-pac4j",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.10.5.1 \u2192 2.13.4.2",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "8776fe7cd60bd309daf843bc70608ebf963c6761.json",
+      "commit": "8776fe7cd60bd309daf843bc70608ebf963c6761",
+      "project": "wsdoc",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.4.2 \u2192 2.12.6.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------------------< org.versly:versly-wsdoc >-----------------------\n[INFO] Building Web Service Documentation Generator 1.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from mulesoft-repo: https://repository-master.mulesoft.org/nexus/content/repositories/public/org/raml/raml-parser/0.9-SNAPSHOT/maven-metadata.xml\n[INFO] Downloaded from mulesoft-repo: https://re"
+    },
+    {
+      "file": "8e1f764e628fbcd6813c9dc0329854ac46375c83.json",
+      "commit": "8e1f764e628fbcd6813c9dc0329854ac46375c83",
+      "project": "jadler",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 6 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 6 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] jadler-pom                                                         [pom]\n[INFO] jadler-core                                                        [jar]\n"
+    },
+    {
+      "file": "8929dc34435f6b4e54bc889c83a5cb27b2931e51.json",
+      "commit": "8929dc34435f6b4e54bc889c83a5cb27b2931e51",
+      "project": "dropwizard-pac4j",
+      "dependency": "jakarta.xml.bind/jakarta.xml.bind-api",
+      "versionUpdate": "2.3.3 \u2192 4.0.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.0.0-M3:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- en"
+    },
+    {
+      "file": "8b372dfe79625ff585c5b0392913b6b152cc7c22.json",
+      "commit": "8b372dfe79625ff585c5b0392913b6b152cc7c22",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.eclipse.jetty/jetty-server",
+      "versionUpdate": "9.4.35.v20201120 \u2192 9.4.48.v20220622",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "8b057977647445aade80627a06bd65867f64b948.json",
+      "commit": "8b057977647445aade80627a06bd65867f64b948",
+      "project": "junit-quickcheck",
+      "dependency": "org.mockito/mockito-core",
+      "versionUpdate": "4.11.0 \u2192 5.2.0",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] junit-quickcheck                                                   [pom]\n[INFO] junit-quickcheck-core                                              [jar]\n[INFO] junit-quickcheck-generators                                        [jar]\n[INFO] junit-quickcheck-guava                                             [jar]\n[INFO] junit-quickcheck-examples"
+    },
+    {
+      "file": "8fe55d8be21f549ba55bcccc2d21e81386bfc8b2.json",
+      "commit": "8fe55d8be21f549ba55bcccc2d21e81386bfc8b2",
+      "project": "open-pdf-sign",
+      "dependency": "eu.europa.ec.joinup.sd-dss/dss-pades-pdfbox",
+      "versionUpdate": "5.9 \u2192 5.10.2",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] --------------------< org.openpdfsign:openpdfsign >---------------------\n[INFO] Building openpdfsign 0.1.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ openpdfsign ---\n[INFO] Deleting /open-pdf-sign/target\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ openpdfsign ---\n[WARNING] Using platform encoding (UTF-8 ac"
+    },
+    {
+      "file": "8ecc7850c97f4616ec4e67f7568adf34293cc4f1.json",
+      "commit": "8ecc7850c97f4616ec4e67f7568adf34293cc4f1",
+      "project": "dddsample-core",
+      "dependency": "jakarta.xml.bind/jakarta.xml.bind-api",
+      "versionUpdate": "2.3.3 \u2192 4.0.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------------< se.citerus:dddsample >------------------------\n[INFO] Building DDDSample 2.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.0.0:clean (default-clean) @ dddsample ---\n[INFO] Deleting /dddsample-core/target\n[INFO] \n[INFO] --- resources:3.0.2:resources (default-resources) @ dddsample ---\n[INFO] Using 'UTF-8' encoding to copy filtered res"
+    },
+    {
+      "file": "93ac5faf37905e0fb4b44f5401271f2d3d76f57a.json",
+      "commit": "93ac5faf37905e0fb4b44f5401271f2d3d76f57a",
+      "project": "jcabi-ssh",
+      "dependency": "org.apache.sshd/sshd-common",
+      "versionUpdate": "2.9.2 \u2192 2.10.0",
+      "classification": "CHECKED_EXCEPTION",
+      "matched_patterns": [
+        "java\\.io\\.IOException"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------------< com.jcabi:jcabi-ssh >-------------------------\n[INFO] Building jcabi-ssh 2.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[WARNING] The artifact org.slf4j:slf4j-log4j12:jar:2.0.7 has been relocated to org.slf4j:slf4j-reload4j:jar:2.0.7\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ jcabi-ssh ---\n[INFO] Deleting /jcabi-ssh/target\n[INFO] \n[INFO] --- enf"
+    },
+    {
+      "file": "8f16da085185a09deb5f3d810cc66f6e73348a22.json",
+      "commit": "8f16da085185a09deb5f3d810cc66f6e73348a22",
+      "classification": "ERROR",
+      "reason": "Failed to run Docker: unsupported operand type(s) for +: 'NoneType' and 'str'",
+      "docker_output": ""
+    },
+    {
+      "file": "923528a3dd1bcdba21490f7583c80a67d01285b2.json",
+      "commit": "923528a3dd1bcdba21490f7583c80a67d01285b2",
+      "project": "pgpverify-maven-plugin",
+      "dependency": "org.junit.jupiter/junit-jupiter-params",
+      "versionUpdate": "5.9.1 \u2192 5.9.2",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "NumberFormatException"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] -----------< org.simplify4u.plugins:pgpverify-maven-plugin >------------\n[INFO] Building Verify PGP signatures plugin 1.17.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:"
+    },
+    {
+      "file": "8ef89758401d5511783c909f8d45b5431afb361c.json",
+      "commit": "8ef89758401d5511783c909f8d45b5431afb361c",
+      "project": "dependency-track-maven-plugin",
+      "dependency": "com.sun.xml.bind/jaxb-impl",
+      "versionUpdate": "2.3.3 \u2192 4.0.2",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------< io.github.pmckeown:dependency-track-maven-plugin >----------\n[INFO] Building Dependency Track Maven Plugin 1.4.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dependency-track-maven-plugin ---\n[INFO] Deleting /dependency-track-maven-plugin/target\n[INFO] \n[INFO] --- resources:3.3.0:copy-resources (copy-resources) @ depen"
+    },
+    {
+      "file": "90df9018630b8f8248f332e747d88254d99da1c9.json",
+      "commit": "90df9018630b8f8248f332e747d88254d99da1c9",
+      "classification": "ERROR",
+      "reason": "Failed to run Docker: unsupported operand type(s) for +: 'NoneType' and 'str'",
+      "docker_output": ""
+    },
+    {
+      "file": "94380c9eb5be989b7e60e0353a03b03ff4687674.json",
+      "commit": "94380c9eb5be989b7e60e0353a03b03ff4687674",
+      "project": "dependency-track-maven-plugin",
+      "dependency": "com.google.inject/guice",
+      "versionUpdate": "5.1.0 \u2192 7.0.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------< io.github.pmckeown:dependency-track-maven-plugin >----------\n[INFO] Building Dependency Track Maven Plugin 1.6.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dependency-track-maven-plugin ---\n[INFO] Deleting /dependency-track-maven-plugin/target\n[INFO] \n[INFO] --- resources:3.3.0:copy-resources (copy-resources) @ depen"
+    },
+    {
+      "file": "a047d2d3f9385a25ced0d2ad3c49f9401ea9c624.json",
+      "commit": "a047d2d3f9385a25ced0d2ad3c49f9401ea9c624",
+      "project": "incrementals-tools",
+      "dependency": "org.codehaus.mojo/versions-maven-plugin",
+      "versionUpdate": "2.15.0 \u2192 2.16.0",
+      "classification": "UNKNOWN_FAILURE",
+      "matched_patterns": [],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 5 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 5 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] Incrementals Tools POM                                             [pom]\n[INFO] lib                                                                [jar]\n"
+    },
+    {
+      "file": "99ec071a0ce40e1bf683e66a6717df2f57c7d817.json",
+      "commit": "99ec071a0ce40e1bf683e66a6717df2f57c7d817",
+      "project": "Refactoring-Bot",
+      "dependency": "org.antlr/antlr4-runtime",
+      "versionUpdate": "4.7.2 \u2192 4.12.0",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "java\\.lang\\.(Service|Verify|LinkageError|ExceptionInInitializer)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------< de.refactoringBot:RefactoringBot >------------------\n[INFO] Building Refactoring-Bot 0.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.1.0:clean (default-clean) @ RefactoringBot ---\n[INFO] Deleting /Refactoring-Bot/target\n[INFO] \n[INFO] --- antlr4:4.7.2:antlr4 (default) @ RefactoringBot ---\n[INFO] ANTLR 4: Processing source directory /Re"
+    },
+    {
+      "file": "99d4dfc8ca5b2db281f154ca9db3ad953b792b4d.json",
+      "commit": "99d4dfc8ca5b2db281f154ca9db3ad953b792b4d",
+      "classification": "ERROR",
+      "reason": "Failed to run Docker: unsupported operand type(s) for +: 'NoneType' and 'str'",
+      "docker_output": ""
+    },
+    {
+      "file": "98ac85f955abc4b64ec714a011375aa5338d95c2.json",
+      "commit": "98ac85f955abc4b64ec714a011375aa5338d95c2",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.springframework/spring-tx",
+      "versionUpdate": "5.3.24 \u2192 6.0.0",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "9c0f1348f89dffae4ad0d4f7e1906fc8c8ba8dca.json",
+      "commit": "9c0f1348f89dffae4ad0d4f7e1906fc8c8ba8dca",
+      "project": "geostore",
+      "dependency": "com.h2database/h2",
+      "versionUpdate": "1.3.175 \u2192 2.1.210",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] Master GeoStore POM                                                [pom]\n[INFO] GeoStore - 0 Server Root                                           [pom]\n[INFO] GeoStore - Core                                                    [pom]\n[INFO] GeoStore - Core - Model                                            [jar]\n[INFO] GeoStore - Core - Securit"
+    },
+    {
+      "file": "a18e08bb3fe120b33a5864ee94305a72290ef831.json",
+      "commit": "a18e08bb3fe120b33a5864ee94305a72290ef831",
+      "project": "html2pop3",
+      "dependency": "ch.qos.logback/logback-classic",
+      "versionUpdate": "1.4.5 \u2192 1.4.6",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------------< it.baccan:HTML2POP3 >-------------------------\n[INFO] Building HTML2POP3 3.1.0 3.1.0\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ HTML2POP3 ---\n[INFO] Deleting /html2pop3/target\n[INFO] \n[INFO] --- resources:3.3.0:copy-resources (copy-resources) @ HTML2POP3 ---\n[INFO] Copying 1 resource\n[INFO] Copying 3 resources\n["
+    },
+    {
+      "file": "a0855ad505640bff0825e1cde2ab7cacdfb5c2af.json",
+      "commit": "a0855ad505640bff0825e1cde2ab7cacdfb5c2af",
+      "project": "pay-cardid",
+      "dependency": "org.dhatim/dropwizard-sentry",
+      "versionUpdate": "2.1.2-4 \u2192 4.0.1-3",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< uk.gov.pay:pay-cardid >------------------------\n[INFO] Building pay-cardid 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ pay-cardid ---\n[INFO] Deleting /pay-cardid/target\n[INFO] \n[INFO] --- resources:3.3.1:copy-resources (copy-resources) @ pay-cardid ---\n[INFO] Copying 1 resource from src/main/resources"
+    },
+    {
+      "file": "9d450e88e8744638ba37037d6f41e65d9067aa3b.json",
+      "commit": "9d450e88e8744638ba37037d6f41e65d9067aa3b",
+      "project": "fscrawler",
+      "dependency": "org.apache.poi/poi-ooxml",
+      "versionUpdate": "4.1.2 \u2192 5.2.2",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] FSCrawler                                                          [pom]\n[INFO] FSCrawler Test Framework                                           [jar]\n[INFO] FSCrawler Framework                                                [jar]\n[INFO] FSCrawler Settings                                                 [jar]\n[INFO] FSCrawler Test Documents "
+    },
+    {
+      "file": "14e2c8d47384137d1fff33d9a1441af3d1ef29a3.json",
+      "commit": "14e2c8d47384137d1fff33d9a1441af3d1ef29a3",
+      "classification": "RESOURCE_ERROR",
+      "reason": "Docker command timed out",
+      "docker_output": ""
+    },
+    {
+      "file": "a3f4738330d23b9136044ae86c2093fba2c292e4.json",
+      "commit": "a3f4738330d23b9136044ae86c2093fba2c292e4",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.junit.platform/junit-platform-surefire-provider",
+      "versionUpdate": "1.0.3 \u2192 1.3.2",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "a1b247aa03bcc0131d0646b2adaf434de18dcf80.json",
+      "commit": "a1b247aa03bcc0131d0646b2adaf434de18dcf80",
+      "project": "ApkToolBoxGUI",
+      "dependency": "org.apache.logging.log4j/log4j-core",
+      "versionUpdate": "2.17.2 \u2192 2.19.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------< edu.jiangxin.apktoolbox:ApkToolBoxGUI >----------------\n[INFO] Building ApkToolBoxGUI 1.0.1\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ ApkToolBoxGUI ---\n[INFO] Deleting /ApkToolBoxGUI/target\n[INFO] \n[INFO] --- jacoco:0.8.8:prepare-agent (default-prepare-agent) @ ApkToolBoxGUI ---\n[INFO] argLine set to -javaagent:/root/.m"
+    },
+    {
+      "file": "9b63e53888ebdd9c84f4eec3cb661299dea41344.json",
+      "commit": "9b63e53888ebdd9c84f4eec3cb661299dea41344",
+      "project": "gax-java",
+      "dependency": "org.mockito/mockito-core",
+      "versionUpdate": "4.11.0 \u2192 5.1.0",
+      "classification": "UNKNOWN_FAILURE",
+      "matched_patterns": [],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 5 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 5 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] GAX (Google Api eXtensions) for Java (Parent)                      [pom]\n[INFO] GAX (Google Api eXtensions) for Java (Core)                        [jar]\n"
+    },
+    {
+      "file": "a05bfd52ed33fb68c5edb2b53d9424d82ac60fa8.json",
+      "commit": "a05bfd52ed33fb68c5edb2b53d9424d82ac60fa8",
+      "project": "jasmine-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.32 \u2192 2.0.0",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] ---------------< com.github.searls:jasmine-maven-plugin >---------------\n[INFO] Building jasmine-maven-plugin 3.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] Downloading from central: htt"
+    },
+    {
+      "file": "9069046236a07524578ff81b32ff92f34c59553d.json",
+      "commit": "9069046236a07524578ff81b32ff92f34c59553d",
+      "project": "quickperf",
+      "dependency": "org.apache.logging.log4j/log4j-core",
+      "versionUpdate": "2.11.1 \u2192 2.16.0",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] quick-perf                                                         [pom]\n[INFO] quick-perf-core                                                    [jar]\n[INFO] quick-perf-jvm-parent                                              [pom]\n[INFO] quick-perf-jvm-core                                                [jar]\n[INFO] quick-perf-jvm-annotation"
+    },
+    {
+      "file": "a950450686c4c136567f3ba7333da8ffaaa84326.json",
+      "commit": "a950450686c4c136567f3ba7333da8ffaaa84326",
+      "classification": "ERROR",
+      "reason": "Failed to run Docker: unsupported operand type(s) for +: 'NoneType' and 'str'",
+      "docker_output": ""
+    },
+    {
+      "file": "aac5842369f198d9442cacc2949a09fe00a55367.json",
+      "commit": "aac5842369f198d9442cacc2949a09fe00a55367",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.eclipse.jetty/jetty-server",
+      "versionUpdate": "9.4.35.v20201120 \u2192 10.0.14",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.3.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] Rule 0: org.apach"
+    },
+    {
+      "file": "aaffc2677a7aedeb61ece217a32f3aae237e6776.json",
+      "commit": "aaffc2677a7aedeb61ece217a32f3aae237e6776",
+      "project": "Refactoring-Bot",
+      "dependency": "org.antlr/antlr4-runtime",
+      "versionUpdate": "4.7.2 \u2192 4.11.1",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "java\\.lang\\.(Service|Verify|LinkageError|ExceptionInInitializer)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------< de.refactoringBot:RefactoringBot >------------------\n[INFO] Building Refactoring-Bot 0.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.1.0:clean (default-clean) @ RefactoringBot ---\n[INFO] Deleting /Refactoring-Bot/target\n[INFO] \n[INFO] --- antlr4:4.7.2:antlr4 (default) @ RefactoringBot ---\n[INFO] ANTLR 4: Processing source directory /Re"
+    },
+    {
+      "file": "a9c9228182e2e46c98643332f65b0fe372f0a9e4.json",
+      "commit": "a9c9228182e2e46c98643332f65b0fe372f0a9e4",
+      "project": "camunda-platform-7-camel",
+      "dependency": "jakarta.xml.bind/jakarta.xml.bind-api",
+      "versionUpdate": "2.3.2 \u2192 3.0.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 4 modules...\n[INFO] Not installing Nexus Staging features:\n[INFO]  * Preexisting staging related goal bindings found in 4 modules.\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] camunda BPM - Apache Camel Integration                             [pom]\n[INFO] camunda BPM - Apache Camel Integration (Common)                    [jar]\n[INFO] camunda BPM - Ap"
+    },
+    {
+      "file": "ac14d8362de4bfcf636e1468d68faa10d8b42669.json",
+      "commit": "ac14d8362de4bfcf636e1468d68faa10d8b42669",
+      "project": "oripa",
+      "dependency": "org.apache.logging.log4j/log4j-core",
+      "versionUpdate": "2.12.1 \u2192 2.15.0",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------------------------< oripa:oripa >-----------------------------\n[INFO] Building oripa 1.54\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ oripa ---\n[INFO] Deleting /oripa/target\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ oripa ---\n[INFO] Copying 24 resources\n[INFO] \n[INFO] --- compiler:3.8.1:compile (default-"
+    },
+    {
+      "file": "ae0c985ae9bd343310b66c5d9895aa068b5ef505.json",
+      "commit": "ae0c985ae9bd343310b66c5d9895aa068b5ef505",
+      "project": "pay-cardid",
+      "dependency": "org.dhatim/dropwizard-sentry",
+      "versionUpdate": "2.1.2-4 \u2192 4.0.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< uk.gov.pay:pay-cardid >------------------------\n[INFO] Building pay-cardid 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ pay-cardid ---\n[INFO] Deleting /pay-cardid/target\n[INFO] \n[INFO] --- resources:3.3.1:copy-resources (copy-resources) @ pay-cardid ---\n[INFO] Copying 1 resource from src/main/resources"
+    },
+    {
+      "file": "a978da4ecd0a5dc2d9341b2ee3943cb0aa53d438.json",
+      "commit": "a978da4ecd0a5dc2d9341b2ee3943cb0aa53d438",
+      "project": "IDS-Messaging-Services",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.9.10.8 \u2192 2.13.3",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "aaee63ae584043fe8c048b14741d9967cc371741.json",
+      "commit": "aaee63ae584043fe8c048b14741d9967cc371741",
+      "project": "tamtam-bot-api",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.9.10.3 \u2192 2.12.6.1",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "(expected|Expected).*but (was|was:)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< chat.tamtam:tamtam-bot-api >---------------------\n[INFO] Building TamTam Bot API Java Client 0.5.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.0.0:clean (default-clean) @ tamtam-bot-api ---\n[INFO] Deleting /tamtam-bot-api/target\n[INFO] \n[INFO] --- jacoco:0.8.3:prepare-agent (prepare-agent) @ tamtam-bot-api ---\n[INFO] argLine set to -j"
+    },
+    {
+      "file": "b5eb721e10cb05e68c0283d8a76c46cc257a0331.json",
+      "commit": "b5eb721e10cb05e68c0283d8a76c46cc257a0331",
+      "project": "pdb",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.5",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Using jgitver configuration file: /pdb/.mvn/jgitver.config.xml\n[INFO] Using jgitver-maven-plugin [1.9.0] (sha1: 410af24b23bf392ebb2810475800189c6d881817)\n[INFO]     version '0.0.0-NOT_A_GIT_REPOSITORY' computed in 128 ms\n[INFO] \n[INFO] Scanning for projects...\n[INFO] jgitver-maven-plugin is about to change project(s) version(s)\n[INFO]     com.feedzai::pdb::0.0.0-SNAPSHOT -> 0.0.0-NOT_A_GIT_REPOSITORY\n[INFO] \n[INFO] --------------------------< com.feedzai:pdb >---------------------------\n["
+    },
+    {
+      "file": "b736ca80eab43feae1b3224f8402e0d2420fd035.json",
+      "commit": "b736ca80eab43feae1b3224f8402e0d2420fd035",
+      "project": "sign-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.6",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] --------------< org.simplify4u.plugins:sign-maven-plugin >--------------\n[INFO] Building Sign Maven Plugin 1.0.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean "
+    },
+    {
+      "file": "bab3a3c5b1aa9ee57dcbff7f146576f2c0c7251d.json",
+      "commit": "bab3a3c5b1aa9ee57dcbff7f146576f2c0c7251d",
+      "project": "recheck.cli",
+      "dependency": "ch.qos.logback/logback-classic",
+      "versionUpdate": "1.2.11 \u2192 1.4.4",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< de.retest:recheck.cli >------------------------\n[INFO] Building recheck.cli 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from jitpack.io: https://jitpack.io/junit/junit-dep/maven-metadata.xml\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/junit/junit-dep/maven-metadata.xml\n[INFO] Downloaded from central: https:/"
+    },
+    {
+      "file": "ab81c2b264ca72de752228690ab5838ea9173d1f.json",
+      "commit": "ab81c2b264ca72de752228690ab5838ea9173d1f",
+      "project": "IDS-Messaging-Services",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.9.10.8 \u2192 2.13.2.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "b6c9b74915e6fb8a972e243f23af2631fce44eb4.json",
+      "commit": "b6c9b74915e6fb8a972e243f23af2631fce44eb4",
+      "project": "neqsim",
+      "dependency": "org.apache.logging.log4j/log4j-core",
+      "versionUpdate": "2.17.2 \u2192 2.18.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -------------------------< com.equinor:neqsim >-------------------------\n[INFO] Building neqsim 2.3.3\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ neqsim ---\n[INFO] Deleting /neqsim/target\n[INFO] \n[INFO] --- flatten:1.2.7:clean (flatten.clean) @ neqsim ---\n[INFO] Deleting /neqsim/.flattened-pom.xml\n[INFO] \n[INFO] --- enforcer:3.0.0:enforce"
+    },
+    {
+      "file": "b9f3ed467fa1dddb9e315325f5411349378d467c.json",
+      "commit": "b9f3ed467fa1dddb9e315325f5411349378d467c",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.glassfish.jersey.core/jersey-server",
+      "versionUpdate": "2.32 \u2192 2.39.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.2.1:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] Rule 0: org.apach"
+    },
+    {
+      "file": "bbb6f746d11a6f048afe61592d1c5fe7e4560c84.json",
+      "commit": "bbb6f746d11a6f048afe61592d1c5fe7e4560c84",
+      "project": "wsdoc",
+      "dependency": "org.yaml/snakeyaml",
+      "versionUpdate": "1.13 \u2192 1.32",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------------------< org.versly:versly-wsdoc >-----------------------\n[INFO] Building Web Service Documentation Generator 1.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from mulesoft-repo: https://repository-master.mulesoft.org/nexus/content/repositories/public/org/raml/raml-parser/0.9-SNAPSHOT/maven-metadata.xml\n[INFO] Downloaded from mulesoft-repo: https://re"
+    },
+    {
+      "file": "b209fe48162aad0f97eec1ddbb10fae165af4791.json",
+      "commit": "b209fe48162aad0f97eec1ddbb10fae165af4791",
+      "project": "fscrawler",
+      "dependency": "org.apache.poi/poi",
+      "versionUpdate": "4.1.2 \u2192 5.0.0",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for fr.pilato.elasticsearch.crawler:fscrawler-it-v7:jar:2.8-SNAPSHOT\n[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: fr.pilato.elasticsearch.crawler:fscrawler-it-common:jar -> version (?) vs 2.8-SNAPSHOT @ line 31, column 21\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your bui"
+    },
+    {
+      "file": "b7e4be7e46c5360726104023156ae726da6c972e.json",
+      "commit": "b7e4be7e46c5360726104023156ae726da6c972e",
+      "project": "IDS-Messaging-Services",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.9.10.8 \u2192 2.13.3",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "bbd396d040324e103e29fcfe0b51389bfade4d93.json",
+      "commit": "bbd396d040324e103e29fcfe0b51389bfade4d93",
+      "project": "wsdoc",
+      "dependency": "org.yaml/snakeyaml",
+      "versionUpdate": "1.13 \u2192 1.31",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------------------< org.versly:versly-wsdoc >-----------------------\n[INFO] Building Web Service Documentation Generator 1.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from mulesoft-repo: https://repository-master.mulesoft.org/nexus/content/repositories/public/org/raml/raml-parser/0.9-SNAPSHOT/maven-metadata.xml\n[INFO] Downloaded from mulesoft-repo: https://re"
+    },
+    {
+      "file": "c007e01d4bad22201d0ce3dcf3a4dc04bc282647.json",
+      "commit": "c007e01d4bad22201d0ce3dcf3a4dc04bc282647",
+      "project": "recheck.cli",
+      "dependency": "ch.qos.logback/logback-classic",
+      "versionUpdate": "1.2.11 \u2192 1.4.0",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< de.retest:recheck.cli >------------------------\n[INFO] Building recheck.cli 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/junit/junit-dep/maven-metadata.xml\n[INFO] Downloading from jitpack.io: https://jitpack.io/junit/junit-dep/maven-metadata.xml\n[INFO] Downloaded from central: https:/"
+    },
+    {
+      "file": "bd93ad3b61139e8bf91a1a0ff5351bc9d3d8bbbc.json",
+      "commit": "bd93ad3b61139e8bf91a1a0ff5351bc9d3d8bbbc",
+      "project": "sign-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] --------------< org.simplify4u.plugins:sign-maven-plugin >--------------\n[INFO] Building Sign Maven Plugin 1.0.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean "
+    },
+    {
+      "file": "bd46a7fe95a386f4def45dcc8c6c18ba2d9a5920.json",
+      "commit": "bd46a7fe95a386f4def45dcc8c6c18ba2d9a5920",
+      "project": "jcabi-http",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.14.1 \u2192 2.15.2",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "(expected|Expected).*but (was|was:)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------------< com.jcabi:jcabi-http >------------------------\n[INFO] Building jcabi-http 2.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ jcabi-http ---\n[INFO] Deleting /jcabi-http/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ jcabi-http ---\n[INFO] \n[INFO] --- buildnumber:3.0.0:create (jcabi-build-n"
+    },
+    {
+      "file": "bc73c14c4b588fd53f1f8e5f88be79f827ac6c6e.json",
+      "commit": "bc73c14c4b588fd53f1f8e5f88be79f827ac6c6e",
+      "project": "jasmine-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.32 \u2192 2.0.4",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] ---------------< com.github.searls:jasmine-maven-plugin >---------------\n[INFO] Building jasmine-maven-plugin 3.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] Downloading from central: htt"
+    },
+    {
+      "file": "c3d0aba8fabeb8026b73bdc1b891f64271cd06e7.json",
+      "commit": "c3d0aba8fabeb8026b73bdc1b891f64271cd06e7",
+      "project": "sign-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.7",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] --------------< org.simplify4u.plugins:sign-maven-plugin >--------------\n[INFO] Building Sign Maven Plugin 1.0.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean "
+    },
+    {
+      "file": "c4071651dc726b94d118e67b4d76e1979661ffda.json",
+      "commit": "c4071651dc726b94d118e67b4d76e1979661ffda",
+      "project": "jadler",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.2",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 6 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 6 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] jadler-pom                                                         [pom]\n[INFO] jadler-core                                                        [jar]\n"
+    },
+    {
+      "file": "bc2dad1e82eb2a8a5105465ca2a8426813760606.json",
+      "commit": "bc2dad1e82eb2a8a5105465ca2a8426813760606",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.springframework/spring-tx",
+      "versionUpdate": "5.3.24 \u2192 6.0.6",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "bdbdd72d9988aa736bde515d46d3990527c92fee.json",
+      "commit": "bdbdd72d9988aa736bde515d46d3990527c92fee",
+      "project": "recheck",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.6",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] -------------------------< de.retest:recheck >--------------------------\n[INFO] Building recheck 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo."
+    },
+    {
+      "file": "c46623986f77fdd0a206e3be2fae7e283b157be3.json",
+      "commit": "c46623986f77fdd0a206e3be2fae7e283b157be3",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.eclipse.jetty/jetty-server",
+      "versionUpdate": "9.4.35.v20201120 \u2192 9.4.49.v20220914",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "cd1b75ae5b6d703c29d9e2bd5a0ed230a129711a.json",
+      "commit": "cd1b75ae5b6d703c29d9e2bd5a0ed230a129711a",
+      "project": "dropwizard-pac4j",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.10.5.1 \u2192 2.12.7.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "c9cc7d936dda55c66b41411ba608549061914806.json",
+      "commit": "c9cc7d936dda55c66b41411ba608549061914806",
+      "project": "sign-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.3",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] --------------< org.simplify4u.plugins:sign-maven-plugin >--------------\n[INFO] Building Sign Maven Plugin 1.0.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean "
+    },
+    {
+      "file": "c923de11176e4fee34fa01bdb1cb1c90861fd0cf.json",
+      "commit": "c923de11176e4fee34fa01bdb1cb1c90861fd0cf",
+      "project": "neqsim",
+      "dependency": "org.apache.logging.log4j/log4j-api",
+      "versionUpdate": "2.17.2 \u2192 2.18.0",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -------------------------< com.equinor:neqsim >-------------------------\n[INFO] Building neqsim 2.3.3\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ neqsim ---\n[INFO] Deleting /neqsim/target\n[INFO] \n[INFO] --- flatten:1.2.7:clean (flatten.clean) @ neqsim ---\n[INFO] Deleting /neqsim/.flattened-pom.xml\n[INFO] \n[INFO] --- enforcer:3.0.0:enforce"
+    },
+    {
+      "file": "d154a6b3665305fda43a95a66c8df415d1d4c041.json",
+      "commit": "d154a6b3665305fda43a95a66c8df415d1d4c041",
+      "project": "sign-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.5",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] --------------< org.simplify4u.plugins:sign-maven-plugin >--------------\n[INFO] Building Sign Maven Plugin 1.0.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean "
+    },
+    {
+      "file": "d3c95ff17d26fa7a708166828672ed5de280f029.json",
+      "commit": "d3c95ff17d26fa7a708166828672ed5de280f029",
+      "project": "avans",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.3.3 \u2192 2.13.3",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 8 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 8 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] avans :: parent                                                    [pom]\n[INFO] avans                                                              [jar]\n"
+    },
+    {
+      "file": "c8a572a7d8e67eef75d9ab1a80d6acb952be6d7e.json",
+      "commit": "c8a572a7d8e67eef75d9ab1a80d6acb952be6d7e",
+      "project": "recheck",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.1",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] -------------------------< de.retest:recheck >--------------------------\n[INFO] Building recheck 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo."
+    },
+    {
+      "file": "d4aade950ffc07b63a0140e43ecf930a2c8aec43.json",
+      "commit": "d4aade950ffc07b63a0140e43ecf930a2c8aec43",
+      "project": "sardine",
+      "dependency": "org.apache.httpcomponents/httpclient",
+      "versionUpdate": "4.5.1 \u2192 4.5.13",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "(expected|Expected).*but (was|was:)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] --------------------< com.github.lookfirst:sardine >--------------------\n[INFO] Building Sardine WebDAV client 5.11-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ sardine ---\n[INFO] Deleting /sardine/target\n[INFO] \n[INFO] --- enforcer:1.2:enforce (enforce-maven) @ sardine ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-res"
+    },
+    {
+      "file": "d2fb00d2a9b8268caf773f70985f39be6eae8ea7.json",
+      "commit": "d2fb00d2a9b8268caf773f70985f39be6eae8ea7",
+      "project": "jasmine-maven-plugin",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.32 \u2192 2.0.5",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 1 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] \n[INFO] ---------------< com.github.searls:jasmine-maven-plugin >---------------\n[INFO] Building jasmine-maven-plugin 3.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] ----------------------------[ maven-plugin ]----------------------------\n[INFO] Downloading from central: htt"
+    },
+    {
+      "file": "d9e80390c47f51b6f8b3cdc1d6a1305eafde811f.json",
+      "commit": "d9e80390c47f51b6f8b3cdc1d6a1305eafde811f",
+      "project": "pay-cardid",
+      "dependency": "org.dhatim/dropwizard-sentry",
+      "versionUpdate": "2.0.22 \u2192 2.0.28-4",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< uk.gov.pay:pay-cardid >------------------------\n[INFO] Building pay-cardid 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.1.0:clean (default-clean) @ pay-cardid ---\n[INFO] Deleting /pay-cardid/target\n[INFO] \n[INFO] --- resources:3.2.0:copy-resources (copy-resources) @ pay-cardid ---\n[INFO] Using 'UTF-8' encoding to copy filtered re"
+    },
+    {
+      "file": "d8e0311e6203d6b15c187e8536ea910b1bbc362f.json",
+      "commit": "d8e0311e6203d6b15c187e8536ea910b1bbc362f",
+      "project": "neqsim",
+      "dependency": "org.apache.derby/derby",
+      "versionUpdate": "10.15.2.0 \u2192 10.16.1.1",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -------------------------< com.equinor:neqsim >-------------------------\n[INFO] Building neqsim 2.3.3\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ neqsim ---\n[INFO] Deleting /neqsim/target\n[INFO] \n[INFO] --- flatten:1.2.7:clean (flatten.clean) @ neqsim ---\n[INFO] Deleting /neqsim/.flattened-pom.xml\n[INFO] \n[INFO] --- enforcer:3.0.0:enforce"
+    },
+    {
+      "file": "c5db2b610e30061ea559e10cbccffb055d345d5e.json",
+      "commit": "c5db2b610e30061ea559e10cbccffb055d345d5e",
+      "project": "pay-adminusers",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.3",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< uk.gov.pay:pay-adminusers >----------------------\n[INFO] Building pay-adminusers 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/maven-metadata.xml\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/maven-metadata.xml (5.8 kB at "
+    },
+    {
+      "file": "bc209e43001af17218a6f401d0ea884d814790d1.json",
+      "commit": "bc209e43001af17218a6f401d0ea884d814790d1",
+      "project": "scheduler",
+      "dependency": "org.antlr/antlr4-runtime",
+      "versionUpdate": "4.9.3 \u2192 4.10.1",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "java\\.lang\\.(Service|Verify|LinkageError|ExceptionInInitializer)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 9 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 9 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] scheduler                                                          [pom]\n[INFO] scheduler-api                                                      [jar]\n"
+    },
+    {
+      "file": "dbb2ae9a870a786e725eb095d86196a2d9081ec9.json",
+      "commit": "dbb2ae9a870a786e725eb095d86196a2d9081ec9",
+      "project": "jcabi-simpledb",
+      "dependency": "org.hibernate.validator/hibernate-validator",
+      "versionUpdate": "6.2.5.Final \u2192 8.0.1.Final",
+      "classification": "RESOURCE_ERROR",
+      "matched_patterns": [
+        "(timeout|Timeout|TIMEOUT)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------------------< com.jcabi:jcabi-simpledb >----------------------\n[INFO] Building jcabi-simpledb 1.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[WARNING] The artifact org.slf4j:slf4j-log4j12:jar:2.0.7 has been relocated to org.slf4j:slf4j-reload4j:jar:2.0.7\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ jcabi-simpledb ---\n[INFO] Deleting /jcabi-simpledb/target\n[INFO] "
+    },
+    {
+      "file": "dc7825479563597d41c2b2fef1540a29d8b8ab36.json",
+      "commit": "dc7825479563597d41c2b2fef1540a29d8b8ab36",
+      "project": "dropwizard-pac4j",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.10.5.1 \u2192 2.13.4.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "dd75e8070babe8916e4907885fce513d9cb26b80.json",
+      "commit": "dd75e8070babe8916e4907885fce513d9cb26b80",
+      "project": "pay-cardid",
+      "dependency": "org.dhatim/dropwizard-sentry",
+      "versionUpdate": "2.0.22 \u2192 2.0.25-2",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< uk.gov.pay:pay-cardid >------------------------\n[INFO] Building pay-cardid 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.1.0:clean (default-clean) @ pay-cardid ---\n[INFO] Deleting /pay-cardid/target\n[INFO] \n[INFO] --- resources:3.2.0:copy-resources (copy-resources) @ pay-cardid ---\n[INFO] Using 'UTF-8' encoding to copy filtered re"
+    },
+    {
+      "file": "dec73a7c634142d631306f8cf201e228fe3ebcc6.json",
+      "commit": "dec73a7c634142d631306f8cf201e228fe3ebcc6",
+      "project": "html2pop3",
+      "dependency": "ch.qos.logback/logback-classic",
+      "versionUpdate": "1.4.1 \u2192 1.4.3",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------------< it.baccan:HTML2POP3 >-------------------------\n[INFO] Building HTML2POP3 3.1.0 3.1.0\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ HTML2POP3 ---\n[INFO] Deleting /html2pop3/target\n[INFO] \n[INFO] --- resources:3.3.0:copy-resources (copy-resources) @ HTML2POP3 ---\n[INFO] Copying 1 resource\n[INFO] Copying 3 resources\n["
+    },
+    {
+      "file": "e35a97cf177d8cd7d022c4adca7da24f1a17a2eb.json",
+      "commit": "e35a97cf177d8cd7d022c4adca7da24f1a17a2eb",
+      "project": "recheck.cli",
+      "dependency": "ch.qos.logback/logback-classic",
+      "versionUpdate": "1.2.11 \u2192 1.4.5",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------------< de.retest:recheck.cli >------------------------\n[INFO] Building recheck.cli 1.14.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from jitpack.io: https://jitpack.io/junit/junit-dep/maven-metadata.xml\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/junit/junit-dep/maven-metadata.xml\n[INFO] Downloaded from central: https:/"
+    },
+    {
+      "file": "d4b00540f924069034a93ef4c14e4cc950dd5368.json",
+      "commit": "d4b00540f924069034a93ef4c14e4cc950dd5368",
+      "project": "pay-adminusers",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.4",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< uk.gov.pay:pay-adminusers >----------------------\n[INFO] Building pay-adminusers 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/maven-metadata.xml\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/maven-metadata.xml (5.8 kB at "
+    },
+    {
+      "file": "e3b288f3a1507baf36451c4844d6f360b472e3d1.json",
+      "commit": "e3b288f3a1507baf36451c4844d6f360b472e3d1",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.eclipse.jetty/jetty-server",
+      "versionUpdate": "9.4.35.v20201120 \u2192 10.0.10",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "dde0743630a540bff1ba3033b7016fcfc345122f.json",
+      "commit": "dde0743630a540bff1ba3033b7016fcfc345122f",
+      "classification": "ERROR",
+      "reason": "Failed to run Docker: unsupported operand type(s) for +: 'NoneType' and 'str'",
+      "docker_output": ""
+    },
+    {
+      "file": "e032e05b9b84d3e8eca72624e54822216dfa39c8.json",
+      "commit": "e032e05b9b84d3e8eca72624e54822216dfa39c8",
+      "project": "IDS-Messaging-Services",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.9.10.8 \u2192 2.13.2",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "e4661d89a64fad5e140c2ad78df2580afdec4d52.json",
+      "commit": "e4661d89a64fad5e140c2ad78df2580afdec4d52",
+      "project": "webapp",
+      "dependency": "org.apache.logging.log4j/log4j-core",
+      "versionUpdate": "2.16.0 \u2192 2.18.0",
+      "classification": "PROGRAM_ASSERTION",
+      "matched_patterns": [
+        "assert\\s+"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] --------------------------< ai.elimu:webapp >---------------------------\n[INFO] Building webapp 2.2.125-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ war ]---------------------------------\n[WARNING] The artifact org.hibernate:hibernate-validator:jar:6.1.7.Final has been relocated to org.hibernate.validator:hibernate-validator:jar:6.1.7.Final\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ webapp ---\n[INFO] Deleting /"
+    },
+    {
+      "file": "e59bf2313ed8a7a196c271ba1c9ea0e5a4b66f24.json",
+      "commit": "e59bf2313ed8a7a196c271ba1c9ea0e5a4b66f24",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.glassfish.jersey.core/jersey-server",
+      "versionUpdate": "2.32 \u2192 2.37",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "f61b113c1493d02611bc5cdc9a80e8af0abf2035.json",
+      "commit": "f61b113c1493d02611bc5cdc9a80e8af0abf2035",
+      "project": "lti-launch",
+      "dependency": "org.springframework/spring-webmvc",
+      "versionUpdate": "4.1.6.RELEASE \u2192 5.3.18",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for edu.ksu.ome.lti:lti-launch:jar:1.5.0-SNAPSHOT\n[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apache.logging.log4j:log4j-core:jar -> duplicate declaration of version (?) @ line 316, column 17\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.\n[WARNING] \n[WARNING] "
+    },
+    {
+      "file": "f1dfdcd3774cc7ad8900e232607d1519085e48d7.json",
+      "commit": "f1dfdcd3774cc7ad8900e232607d1519085e48d7",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.glassfish.jersey.core/jersey-server",
+      "versionUpdate": "2.32 \u2192 2.38",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "f890f275db902558236cef2feb3d1d2f1aab11fd.json",
+      "commit": "f890f275db902558236cef2feb3d1d2f1aab11fd",
+      "project": "jcabi-ssh",
+      "dependency": "org.apache.sshd/sshd-core",
+      "versionUpdate": "2.9.2 \u2192 2.10.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------------< com.jcabi:jcabi-ssh >-------------------------\n[INFO] Building jcabi-ssh 2.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[WARNING] The artifact org.slf4j:slf4j-log4j12:jar:2.0.7 has been relocated to org.slf4j:slf4j-reload4j:jar:2.0.7\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ jcabi-ssh ---\n[INFO] Deleting /jcabi-ssh/target\n[INFO] \n[INFO] --- enf"
+    },
+    {
+      "file": "f951ead97d14eb29e625d14c2ed5258949728ee4.json",
+      "commit": "f951ead97d14eb29e625d14c2ed5258949728ee4",
+      "project": "billy",
+      "dependency": "org.hibernate.validator/hibernate-validator",
+      "versionUpdate": "6.1.7.Final \u2192 7.0.2.Final",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "java\\.lang\\.(Service|Verify|LinkageError|ExceptionInInitializer)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] billy                                                              [pom]\n[INFO] billy core                                                         [jar]\n[INFO] billy core JPA                                                     [jar]\n[INFO] billy GIN                                                          [jar]\n[INFO] billy portugal (PT Pack) "
+    },
+    {
+      "file": "f557d31b4faf102b5d2f67d86a1a4f67c09b5837.json",
+      "commit": "f557d31b4faf102b5d2f67d86a1a4f67c09b5837",
+      "project": "IDS-Messaging-Services",
+      "dependency": "org.junit.platform/junit-platform-surefire-provider",
+      "versionUpdate": "1.0.3 \u2192 1.3.2",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "Error:"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] messaging-services                                                 [pom]\n[INFO] core                                                               [jar]\n[INFO] messaging                                                          [jar]\n[INFO] clearinghouse                                                      [jar]\n[INFO] broker                   "
+    },
+    {
+      "file": "fc7d1a841bfe8a840b362fa09bae13e5231bc148.json",
+      "commit": "fc7d1a841bfe8a840b362fa09bae13e5231bc148",
+      "project": "jadler",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 6 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 6 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] jadler-pom                                                         [pom]\n[INFO] jadler-core                                                        [jar]\n"
+    },
+    {
+      "file": "fafb59e8f1b9ddba4bbabe64818f361e7def7d04.json",
+      "commit": "fafb59e8f1b9ddba4bbabe64818f361e7def7d04",
+      "project": "tamtam-bot-api",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.9.10.3 \u2192 2.13.4.1",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "(expected|Expected).*but (was|was:)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< chat.tamtam:tamtam-bot-api >---------------------\n[INFO] Building TamTam Bot API Java Client 0.5.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.0.0:clean (default-clean) @ tamtam-bot-api ---\n[INFO] Deleting /tamtam-bot-api/target\n[INFO] \n[INFO] --- jacoco:0.8.3:prepare-agent (prepare-agent) @ tamtam-bot-api ---\n[INFO] argLine set to -j"
+    },
+    {
+      "file": "e0f2562e849012538cd30e2730c82991983f4eba.json",
+      "commit": "e0f2562e849012538cd30e2730c82991983f4eba",
+      "project": "dropwizard-pac4j",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.30 \u2192 2.0.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< org.pac4j:dropwizard-pac4j >---------------------\n[INFO] Building Dropwizard pac4j Support 5.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ dropwizard-pac4j ---\n[INFO] Deleting /dropwizard-pac4j/target\n[INFO] \n[INFO] --- enforcer:3.1.0:enforce (enforce-maven) @ dropwizard-pac4j ---\n[INFO] \n[INFO] --- enfor"
+    },
+    {
+      "file": "fa6503da9fd5431abca41561a34d54e07fbbf7d0.json",
+      "commit": "fa6503da9fd5431abca41561a34d54e07fbbf7d0",
+      "project": "sparql.anything",
+      "dependency": "org.jsoup/jsoup",
+      "versionUpdate": "1.14.2 \u2192 1.15.3",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "AssertionError"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] sparql.anything                                                    [pom]\n[INFO] sparql-anything-model                                              [jar]\n[INFO] sparql-anything-metadata                                           [jar]\n[INFO] sparql-anything-parser                                             [jar]\n[INFO] sparql-anything-csv      "
+    },
+    {
+      "file": "ff854f4235725ac7ea3e370b69026d405688ba2e.json",
+      "commit": "ff854f4235725ac7ea3e370b69026d405688ba2e",
+      "project": "wsdoc",
+      "dependency": "com.fasterxml.jackson.core/jackson-databind",
+      "versionUpdate": "2.4.2 \u2192 2.12.7.1",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ----------------------< org.versly:versly-wsdoc >-----------------------\n[INFO] Building Web Service Documentation Generator 1.2-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from mulesoft-repo: https://repository-master.mulesoft.org/nexus/content/repositories/public/org/raml/raml-parser/0.9-SNAPSHOT/maven-metadata.xml\n[INFO] Downloaded from mulesoft-repo: https://re"
+    },
+    {
+      "file": "ff98f9e99811cd3186d3819d19b5b7f8143a0632.json",
+      "commit": "ff98f9e99811cd3186d3819d19b5b7f8143a0632",
+      "project": "Refactoring-Bot",
+      "dependency": "org.antlr/antlr4-runtime",
+      "versionUpdate": "4.7.2 \u2192 4.10",
+      "classification": "ERROR",
+      "matched_patterns": [
+        "java\\.lang\\.(Service|Verify|LinkageError|ExceptionInInitializer)"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ------------------< de.refactoringBot:RefactoringBot >------------------\n[INFO] Building Refactoring-Bot 0.0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.1.0:clean (default-clean) @ RefactoringBot ---\n[INFO] Deleting /Refactoring-Bot/target\n[INFO] \n[INFO] --- antlr4:4.7.2:antlr4 (default) @ RefactoringBot ---\n[INFO] ANTLR 4: Processing source directory /Re"
+    },
+    {
+      "file": "fcac4926cf5adb0de62abda8c386056bcc516f70.json",
+      "commit": "fcac4926cf5adb0de62abda8c386056bcc516f70",
+      "project": "pay-adminusers",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< uk.gov.pay:pay-adminusers >----------------------\n[INFO] Building pay-adminusers 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/maven-metadata.xml\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/maven-metadata.xml (5.8 kB at "
+    },
+    {
+      "file": "fb40f5e5fc20ca31cf9fdadd5ace53f7de5ea093.json",
+      "commit": "fb40f5e5fc20ca31cf9fdadd5ace53f7de5ea093",
+      "project": "quarkus-micrometer-registry",
+      "dependency": "io.quarkiverse.googlecloudservices/quarkus-google-cloud-common-grpc",
+      "versionUpdate": "1.4.0 \u2192 2.2.0",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] Quarkus Micrometer Registry - Parent                               [pom]\n[INFO] Quarkus Micrometer Registry - Azure Monitor - Parent               [pom]\n[INFO] Quarkus Micrometer Registry - Azure Monitor - Runtime              [jar]\n[INFO] Quarkus Micrometer Registry - Azure Monitor - Deployment           [jar]\n[INFO] Quarkus Micrometer Regist"
+    },
+    {
+      "file": "ff77ec9ef379e9fee5f45f4fd88230e9bbbe4b89.json",
+      "commit": "ff77ec9ef379e9fee5f45f4fd88230e9bbbe4b89",
+      "project": "pay-adminusers",
+      "dependency": "org.slf4j/slf4j-api",
+      "versionUpdate": "1.7.36 \u2192 2.0.2",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] \n[INFO] ---------------------< uk.gov.pay:pay-adminusers >----------------------\n[INFO] Building pay-adminusers 0.1-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/maven-metadata.xml\n[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/google/guava/guava/maven-metadata.xml (5.8 kB at "
+    },
+    {
+      "file": "db4b37b7cf6b0fe74565f15a03518ba68d4ce1ff.json",
+      "commit": "db4b37b7cf6b0fe74565f15a03518ba68d4ce1ff",
+      "project": "scheduler",
+      "dependency": "net.minidev/json-smart",
+      "versionUpdate": "2.4.8 \u2192 2.4.9",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 9 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 9 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] scheduler                                                          [pom]\n[INFO] scheduler-api                                                      [jar]\n"
+    },
+    {
+      "file": "de20387b7a373cf20daa590247a1b65876ebca38.json",
+      "commit": "de20387b7a373cf20daa590247a1b65876ebca38",
+      "project": "scheduler",
+      "dependency": "net.minidev/json-smart",
+      "versionUpdate": "2.4.8 \u2192 2.4.9",
+      "classification": "RUNTIME_EXCEPTION",
+      "matched_patterns": [
+        "java\\.lang\\.(Null|Illegal|Index|Arithmetic|Class|ArrayIndexOutOfBounds).*Exception"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] Inspecting build with total of 9 modules...\n[INFO] Installing Nexus Staging features:\n[INFO]   ... total of 9 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] scheduler                                                          [pom]\n[INFO] scheduler-api                                                      [jar]\n"
+    },
+    {
+      "file": "d9a0df6feee60bb6d7d301f251cab386168eecd1.json",
+      "commit": "d9a0df6feee60bb6d7d301f251cab386168eecd1",
+      "project": "polyglot-maven",
+      "dependency": "org.jetbrains.kotlin/kotlin-stdlib",
+      "versionUpdate": "1.3.31 \u2192 1.6.0",
+      "classification": "TEST_ASSERTION",
+      "matched_patterns": [
+        "org\\.junit\\.ComparisonFailure"
+      ],
+      "docker_output_snippet": "[INFO] Scanning for projects...\n[INFO] ------------------------------------------------------------------------\n[INFO] Reactor Build Order:\n[INFO] \n[INFO] Polyglot :: Aggregator                                             [pom]\n[INFO] Polyglot :: Common                                          [takari-jar]\n[INFO] Polyglot :: Atom                                            [takari-jar]\n[INFO] Polyglot :: Maven Plugin                           [takari-maven-plugin]\n[INFO] Polyglot :: Ruby         "
+    },
+    {
+      "file": "18102f7a87e7ab8308a86208d47696c060110d0c.json",
+      "commit": "18102f7a87e7ab8308a86208d47696c060110d0c",
+      "classification": "RESOURCE_ERROR",
+      "reason": "Docker command timed out",
+      "docker_output": ""
+    }
+  ]
+}
