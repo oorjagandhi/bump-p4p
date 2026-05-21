@@ -26,7 +26,6 @@
   "javaVersionUsedForReproduction" : "11",
   "failureCategory" : "TEST_FAILURE",
   "licenseInfo" : "Apache-2.0",
-
   "testFailure": {
     "failingModule": "broker",
     "failingTestClass": "de.fraunhofer.ids.messaging.broker.BrokerServiceTest",

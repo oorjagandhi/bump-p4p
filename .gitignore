@@ -46,3 +46,7 @@ github_packages_credentials.json
 
 
 .env/
+
+github_token.txt
+*.token
+.env

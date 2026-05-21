@@ -25,5 +25,19 @@
   "breakingUpdateReproductionCommand" : "docker run ghcr.io/chains-project/breaking-updates:b7e4be7e46c5360726104023156ae726da6c972e-breaking",
   "javaVersionUsedForReproduction" : "11",
   "failureCategory" : "TEST_FAILURE",
-  "licenseInfo" : "Apache-2.0"
+  "licenseInfo" : "Apache-2.0",
+  "testFailure": {
+    "status": "EXCLUDED",
+    "note": "Binary incompatibility or infrastructure noise: NoClassDefFoundError",
+    "failingModule": "messaging",
+    "failingTestClass": "de.fraunhofer.ids.messaging.core.daps.DapsValidatorTest",
+    "failingTestMethod": "testInfrastructureService",
+    "failureType": "TEST_FAILURE",
+    "errorCategory": "TEST_ASSERTION",
+    "errorType": "NoClassDefFoundError",
+    "errorClass": "java.lang.NoClassDefFoundError",
+    "errorMessage": "com/fasterxml/jackson/annotation/JsonKey",
+    "rootCause": "Class missing after update: binary incompatibility in com.fasterxml.jackson.core/jackson-databind 2.9.10.8 \u2192 2.13.3",
+    "matchedPattern": "AssertionFailedError"
+  }
 }

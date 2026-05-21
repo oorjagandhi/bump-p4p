@@ -25,5 +25,19 @@
   "breakingUpdateReproductionCommand" : "docker run ghcr.io/chains-project/breaking-updates:4fa4c3a1167054cc5ee192fbbed72e58de571d95-breaking",
   "javaVersionUsedForReproduction" : "11",
   "failureCategory" : "TEST_FAILURE",
-  "licenseInfo" : "Apache-2.0"
+  "licenseInfo" : "Apache-2.0",
+  "testFailure": {
+    "status": "EXCLUDED",
+    "note": "Binary incompatibility or infrastructure noise: NoSuchMethodError",
+    "failingModule": "messaging",
+    "failingTestClass": "ids.messaging.core.daps.DapsValidatorTest",
+    "failingTestMethod": "testInfrastructureService",
+    "failureType": "TEST_FAILURE",
+    "errorCategory": "TEST_ASSERTION",
+    "errorType": "NoSuchMethodError",
+    "errorClass": "java.lang.NoSuchMethodError",
+    "errorMessage": "'boolean com.fasterxml.jackson.annotation.JsonSubTypes.failOnRepeatedNames()'",
+    "rootCause": "API version incompatibility: method removed or changed between com.fasterxml.jackson.core/jackson-databind 2.13.4.2 \u2192 2.14.0",
+    "matchedPattern": "AssertionFailedError"
+  }
 }

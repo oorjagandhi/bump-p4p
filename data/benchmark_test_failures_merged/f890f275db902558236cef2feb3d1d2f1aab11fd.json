@@ -25,5 +25,19 @@
   "breakingUpdateReproductionCommand" : "docker run ghcr.io/chains-project/breaking-updates:f890f275db902558236cef2feb3d1d2f1aab11fd-breaking",
   "javaVersionUsedForReproduction" : "11",
   "failureCategory" : "TEST_FAILURE",
-  "licenseInfo" : "NOASSERTION"
+  "licenseInfo" : "NOASSERTION",
+  "testFailure": {
+    "status": "EXCLUDED",
+    "note": "Binary incompatibility or infrastructure noise: NoClassDefFoundError",
+    "failingModule": "jcabi-ssh",
+    "failingTestClass": "com.jcabi.ssh.ExecutionTest",
+    "failingTestMethod": "com.jcabi.ssh.SshTest.executeCommandOnServerWithPrivateKey",
+    "failureType": "TEST_ERROR",
+    "errorCategory": "CHECKED_EXCEPTION",
+    "errorType": "IOException",
+    "errorClass": "java.io.IOException",
+    "errorMessage": "End of IO Stream Read",
+    "rootCause": "New checked exception thrown after updating org.apache.sshd/sshd-core 2.9.2 \u2192 2.10.0",
+    "matchedPattern": "java\\.io\\.IOException"
+  }
 }

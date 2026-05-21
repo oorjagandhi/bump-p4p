@@ -25,5 +25,19 @@
   "breakingUpdateReproductionCommand" : "docker run ghcr.io/chains-project/breaking-updates:a3f4738330d23b9136044ae86c2093fba2c292e4-breaking",
   "javaVersionUsedForReproduction" : "11",
   "failureCategory" : "TEST_FAILURE",
-  "licenseInfo" : "Apache-2.0"
+  "licenseInfo" : "Apache-2.0",
+  "testFailure": {
+    "status": "EXCLUDED",
+    "note": "Binary incompatibility or infrastructure noise: NoSuchMethodError",
+    "failingModule": "core",
+    "failingTestClass": null,
+    "failingTestMethod": null,
+    "failureType": "UNKNOWN",
+    "errorCategory": "UNKNOWN",
+    "errorType": "NoSuchMethodError",
+    "errorClass": "java.lang.NoSuchMethodError",
+    "errorMessage": "'java.lang.Object org.apache.maven.surefire.util.internal.StringUtils.requireNonNull(java.lang.Object)'",
+    "rootCause": "API version incompatibility: method removed or changed between org.junit.platform/junit-platform-surefire-provider 1.0.3 \u2192 1.3.2",
+    "matchedPattern": ""
+  }
 }

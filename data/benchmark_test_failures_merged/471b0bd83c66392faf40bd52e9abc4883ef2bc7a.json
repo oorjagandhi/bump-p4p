@@ -25,5 +25,19 @@
   "breakingUpdateReproductionCommand" : "docker run ghcr.io/chains-project/breaking-updates:471b0bd83c66392faf40bd52e9abc4883ef2bc7a-breaking",
   "javaVersionUsedForReproduction" : "11",
   "failureCategory" : "TEST_FAILURE",
-  "licenseInfo" : "GPL-3.0"
+  "licenseInfo" : "GPL-3.0",
+  "testFailure": {
+    "status": "EXCLUDED",
+    "note": "Binary incompatibility or infrastructure noise: NoSuchMethodError",
+    "failingModule": "HTML2POP3",
+    "failingTestClass": "it.baccan.html2pop3.utils.FilterTest",
+    "failingTestMethod": "it.baccan.html2pop3.utils.FilterTest.testAdd",
+    "failureType": "UNKNOWN",
+    "errorCategory": "UNKNOWN",
+    "errorType": "NoSuchMethodError",
+    "errorClass": "java.lang.NoSuchMethodError",
+    "errorMessage": "'java.lang.String ch.qos.logback.core.util.EnvUtil.logbackVersion()'",
+    "rootCause": "API version incompatibility: method removed or changed between ch.qos.logback/logback-classic 1.2.11 \u2192 1.4.0",
+    "matchedPattern": ""
+  }
 }
