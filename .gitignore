@@ -41,6 +41,17 @@ jar/
 *token*
 github_packages_credentials.json
 
+### Python ###
+__pycache__/
+*.pyc
+*.pyo
+
+### Scripts / local output ###
+scripts/nadia_scripts/__pycache__/
+scripts/nadia_scripts/bbc-work/
+scripts/nadia_scripts/output/
+scripts/output/
+
 ### Override ignore for worflow logs ###
 !workflowLogs/**
 
