@@ -71,25 +71,34 @@ def search_repos(session, query: str, max_repos: int):
         time.sleep(0.5)
 
 
-def repo_has_tests(session, full_name: str) -> bool:
-    """Cheap check: does src/test/ exist in the repo tree?"""
-    data = gh(session, f"/repos/{full_name}/contents/src/test")
-    return isinstance(data, list)  # list → directory exists
-
-
-def find_pom_paths(session, full_name: str, branch: str) -> list:
+def scan_repo_tree(session, full_name: str, branch: str):
     """
-    All pom.xml paths in the repo, via one recursive tree call — used to
-    filter the commit list server-side instead of crawling every commit.
+    Single recursive tree call that returns BOTH the repo's pom.xml paths
+    and whether it has any src/test/ directory. Folding the test check in
+    here (instead of a separate root-only /contents/src/test call) is more
+    correct for multi-module Maven projects — whose tests live in
+    <module>/src/test/, not a root src/test/ — and saves one API call per
+    repo. The tree is also what lets us filter the commit list server-side
+    instead of crawling every commit.
+
+    Returns (pom_paths, has_tests).
     """
     data = gh(session, f"/repos/{full_name}/git/trees/{branch}", {"recursive": "1"})
     if not data or "tree" not in data:
-        return []
+        return [], False
     if data.get("truncated"):
-        print(f"  [warn] tree truncated for {full_name}, pom list may be incomplete",
+        print(f"  [warn] tree truncated for {full_name}, pom/test list may be incomplete",
               file=sys.stderr)
-    return [item["path"] for item in data["tree"]
-            if item.get("type") == "blob" and item["path"].endswith("pom.xml")]
+
+    pom_paths = []
+    has_tests = False
+    for item in data["tree"]:
+        path = item["path"]
+        if item.get("type") == "blob" and path.endswith("pom.xml"):
+            pom_paths.append(path)
+        if "src/test/" in path or path.endswith("src/test"):
+            has_tests = True
+    return pom_paths, has_tests
 
 
 def get_commits(session, full_name: str, max_commits: int, path: str = None):
@@ -144,11 +153,11 @@ def main():
             full_name = repo["full_name"]
             print(f"[repo] {full_name}  ★{repo['stargazers_count']}")
 
-            if not repo_has_tests(session, full_name):
+            pom_paths, has_tests = scan_repo_tree(
+                session, full_name, repo.get("default_branch", "main"))
+            if not has_tests:
                 print(f"  → skip (no src/test/)")
                 continue
-
-            pom_paths = find_pom_paths(session, full_name, repo.get("default_branch", "main"))
             if not pom_paths:
                 print(f"  → skip (no pom.xml found)")
                 continue
