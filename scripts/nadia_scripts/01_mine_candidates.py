@@ -136,8 +136,15 @@ def main():
                     help="GitHub repo search query")
     ap.add_argument("--max-repos", type=int, default=100,
                     help="Max repos to scan")
-    ap.add_argument("--max-commits-per-repo", type=int, default=300,
+    ap.add_argument("--max-commits-per-repo", type=int, default=80,
                     help="Max commits to inspect per pom.xml path per repo")
+    ap.add_argument("--max-commits-per-repo-total", type=int, default=150,
+                    help="Hard cap on commit-detail fetches per repo, across "
+                         "all its poms — stops one mega-repo hogging the run")
+    ap.add_argument("--max-poms-per-repo", type=int, default=5,
+                    help="Max pom.xml paths to crawl per repo (shallowest "
+                         "first — multi-module projects keep dependency "
+                         "versions in the root/parent pom, not leaf modules)")
     ap.add_argument("--out",       default="../output/candidates.jsonl")
     args = ap.parse_args()
 
@@ -162,12 +169,33 @@ def main():
                 print(f"  → skip (no pom.xml found)")
                 continue
 
+            # Dependency versions in multi-module Maven live in the root/
+            # parent pom, so crawl shallowest poms first and cap the count —
+            # otherwise a 40-module repo triggers 40 full commit crawls.
+            pom_paths.sort(key=lambda p: (p.count("/"), len(p)))
+            if len(pom_paths) > args.max_poms_per_repo:
+                print(f"  [info] {len(pom_paths)} poms, crawling shallowest "
+                      f"{args.max_poms_per_repo}")
+                pom_paths = pom_paths[:args.max_poms_per_repo]
+
             seen_shas = set()
+            scanned = 0
+            budget_hit = False
             for pom_path in pom_paths:
+                if budget_hit:
+                    break
                 for sha in get_commits(session, full_name, args.max_commits_per_repo, path=pom_path):
                     if sha in seen_shas:
                         continue
                     seen_shas.add(sha)
+
+                    # Cap total commit-detail fetches per repo so one very
+                    # active mega-repo can't consume the whole run / rate limit.
+                    if scanned >= args.max_commits_per_repo_total:
+                        print(f"  [info] hit per-repo budget "
+                              f"({args.max_commits_per_repo_total} commits), moving on")
+                        budget_hit = True
+                        break
 
                     try:
                         detail = get_commit_detail(session, full_name, sha)
@@ -175,6 +203,10 @@ def main():
                     except Exception as e:
                         print(f"  [warn] {sha[:8]}: {e}", file=sys.stderr)
                         continue
+
+                    scanned += 1
+                    if scanned % 25 == 0:
+                        print(f"  … scanned {scanned} commits, {found} candidates so far")
 
                     if rec:
                         print(f"  ✓ CANDIDATE {sha[:8]}  "

@@ -49,8 +49,8 @@ __pycache__/
 ### Scripts / local output ###
 scripts/nadia_scripts/__pycache__/
 scripts/nadia_scripts/bbc-work/
-scripts/nadia_scripts/output/
-scripts/output/
+scripts/nadia_scripts/output/.m2-cache/
+
 
 ### Override ignore for worflow logs ###
 !workflowLogs/**
