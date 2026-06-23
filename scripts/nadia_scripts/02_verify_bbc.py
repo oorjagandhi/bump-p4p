@@ -7,6 +7,15 @@ Only writes CONFIRMED BBCs to the output file.
 All other outcomes (syntactic BC, no BC, infrastructure errors) are logged
 to a separate all_results.jsonl for auditing but kept out of verified_bbcs.jsonl.
 
+Candidate model: each record is a (bump_sha, adapt_sha) pair. Verification takes
+the baseline at bump_sha~1, applies the pom diff from bump_sha alone (must break
+tests = behavioural break), then checks out adapt_sha (must be green = the
+adaptation resolves it → confirmed_bbc). For same-commit candidates
+adapt_sha == bump_sha, identical to the original behaviour; for two-commit
+candidates (e.g. dependabot bump + maintainer fix) adapt_sha is the PR's merge
+commit, which contains both the bump and the fix. Records that predate this
+model (only "sha") fall back to bump_sha = adapt_sha = sha.
+
 Fixes vs previous version:
   - Windows-safe directory deletion (handles locked .git files)
   - Automatic Java version detection from pom.xml, now also falling back
@@ -184,7 +193,7 @@ def git(cmd, cwd, timeout=120):
     return rc, out, err
 
 
-def clone_repo(repo_url: str, dest: Path, sha: str) -> bool:
+def clone_repo(repo_url: str, dest: Path, shas) -> bool:
     rc, _, err = run(
         f"git clone --filter=blob:none --no-checkout {repo_url} {dest}",
         timeout=300
@@ -192,7 +201,11 @@ def clone_repo(repo_url: str, dest: Path, sha: str) -> bool:
     if rc != 0:
         print(f"  [clone fail] {err[:200]}", file=sys.stderr)
         return False
-    git(f"fetch --depth=50 origin {sha}", cwd=dest)
+    # Fetch every sha we need (bump commit + its adaptation commit, which may be
+    # a separate PR merge commit). --depth=50 also brings each one's ancestors
+    # so bump_sha~1 (the baseline) is available.
+    for sha in dict.fromkeys(s for s in shas if s):   # dedup, drop falsy
+        git(f"fetch --depth=50 origin {sha}", cwd=dest)
     return True
 
 
@@ -285,6 +298,37 @@ def classify_bc_effect(output: str) -> str:
     return "Unknown"
 
 
+# A "behavioural break" means: client code that compiles and runs against the
+# new version, but now behaves differently (assertion failures, changed runtime
+# exceptions from working code). The patterns below are the OPPOSITE of that —
+# they mean the bumped dependency set is broken/unresolvable/internally
+# inconsistent, so the library's own classes never even load. That is an
+# incomplete-bump artefact, not a BBC, and must not be confirmed.
+#
+# Telltales:
+#   - Maven can't resolve the new artifact (version not on Central yet, etc.)
+#   - The library's OWN class fails its static initializer / can't be found,
+#     usually because two co-versioned modules (e.g. jackson-databind vs
+#     jackson-annotations) are mismatched.
+#
+# Deliberately NOT included: NoSuchMethodError / NoSuchFieldError /
+# AbstractMethodError / IncompatibleClassChangeError — those ARE genuine
+# binary-incompatibility BBC signals (a member the client uses was removed or
+# changed in the new version) and should still reach the confirm step.
+DEPENDENCY_FAILURE_PATTERNS = [
+    r"Could not resolve dependencies",
+    r"Could not find artifact",
+    r"Failure to find .* in ",
+    r"Could not transfer artifact",
+    r"Non-resolvable .* POM",
+    r"ExceptionInInitializerError",
+    r"Could not initialize class",
+]
+
+def is_dependency_failure(output: str) -> bool:
+    return any(re.search(p, output, re.IGNORECASE) for p in DEPENDENCY_FAILURE_PATTERNS)
+
+
 # ── per-candidate verification ────────────────────────────────────────────────
 
 def verify_candidate(rec: dict, work_dir: Path, java_homes: dict, timeout: int, m2_repo: str = None) -> dict:
@@ -292,8 +336,14 @@ def verify_candidate(rec: dict, work_dir: Path, java_homes: dict, timeout: int, 
     v = result["verification"]
 
     repo_url = f"https://github.com/{rec['repo']}.git"
-    sha      = rec["sha"]
-    pom_file = rec["pom_file"]
+    # Unified model: the version bump and the adaptation may be the same commit
+    # (adapt_sha == bump_sha) or two commits (e.g. dependabot bump + maintainer
+    # fix, with adapt_sha = the PR's merge commit). Old records only have "sha".
+    bump_sha  = rec.get("bump_sha", rec["sha"])
+    adapt_sha = rec.get("adapt_sha", rec["sha"])
+    pom_file  = rec["pom_file"]
+    v["bump_sha"]  = bump_sha
+    v["adapt_sha"] = adapt_sha
 
     repo_dir = work_dir / rec["repo"].replace("/", "__")
 
@@ -306,12 +356,12 @@ def verify_candidate(rec: dict, work_dir: Path, java_homes: dict, timeout: int, 
     try:
         # ── Step 1: clone ─────────────────────────────────────────────────────
         print(f"  [clone] {repo_url}")
-        if not clone_repo(repo_url, repo_dir, sha):
+        if not clone_repo(repo_url, repo_dir, [bump_sha, adapt_sha]):
             v["status"] = "clone_failed"
             return result
 
         # ── Step 2: baseline ──────────────────────────────────────────────────
-        sha_before = sha + "~1"
+        sha_before = bump_sha + "~1"
         checkout(sha_before, repo_dir)
 
         # Detect Java version needed and pick best JDK
@@ -336,7 +386,7 @@ def verify_candidate(rec: dict, work_dir: Path, java_homes: dict, timeout: int, 
         print(f"  [pom-only] applying dep bump without java adaptations")
         checkout(sha_before, repo_dir)
 
-        if not apply_pom_only(pom_file, sha, repo_dir):
+        if not apply_pom_only(pom_file, bump_sha, repo_dir):
             v["status"] = "pom_patch_failed"
             return result
 
@@ -356,9 +406,24 @@ def verify_candidate(rec: dict, work_dir: Path, java_homes: dict, timeout: int, 
             v["status"] = "no_bc"
             return result
 
+        # The pom-only build "failed", but not every failure is a behavioural
+        # break. If the bumped dependency set can't be resolved, or the
+        # library's own classes can't initialize (co-versioned modules
+        # mismatched — e.g. jackson-databind vs jackson-annotations), then the
+        # bump itself is broken/incomplete and the "fix" is just making the
+        # dependency set consistent again. That is NOT a BBC, so stop here
+        # instead of letting an adapted-green state confirm a false positive.
+        if is_dependency_failure(out):
+            v["status"] = "dependency_resolution_error"
+            return result
+
         # ── Step 4: adapted state — should be green ───────────────────────────
-        print(f"  [adapted] {sha[:12]}")
-        checkout(sha, repo_dir)
+        # adapt_sha == bump_sha for same-commit candidates (identical to the
+        # original behaviour); for two-commit candidates it's the PR merge
+        # commit, which contains both the bump and the fix.
+        print(f"  [adapted] {adapt_sha[:12]}"
+              + ("" if adapt_sha == bump_sha else f"  (PR merge; bump={bump_sha[:8]})"))
+        checkout(adapt_sha, repo_dir)
         rc, out = mvn("test -fae", repo_dir, timeout=timeout, java_home=java_home, m2_repo=m2_repo)
         v["adapted_classify"] = classify_mvn_output(out)
         v["adapted_tests"]    = extract_test_summary(out)

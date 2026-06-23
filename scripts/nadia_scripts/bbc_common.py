@@ -47,6 +47,24 @@ KNOWN_BBC_GROUP_PREFIXES = (
     "org.hibernate",               # Hibernate (query API, session handling)
     "ch.qos.logback",              # Logback (appender handling)
     "org.mockserver",              # MockServer
+    # ── widened families (toward a hundreds/1000-sample dataset) ──────────────
+    "org.slf4j",                   # SLF4J API (1.x -> 2.x is breaking)
+    "org.apache.poi",              # Apache POI (4.x -> 5.x removed/renamed API)
+    "org.jsoup",                   # jsoup (parser/selector API changes)
+    "org.assertj",                 # AssertJ (assertion API churn)
+    "org.hamcrest",                # Hamcrest (matcher packaging changes)
+    "org.testng",                  # TestNG
+    "com.google.code.gson",        # Gson
+    "org.yaml",                    # SnakeYAML (1.x -> 2.x notable BBCs)
+    "io.netty",                    # Netty (frequent API breaks across minors)
+    "joda-time",                   # Joda-Time
+    "org.json",                    # org.json
+    "com.squareup.retrofit2",      # Retrofit
+    "com.squareup.okhttp",         # OkHttp 2.x/3.x groupId variants
+    "org.apache.kafka",            # Kafka clients
+    "org.eclipse.jetty",           # Jetty (servlet/handler API changes)
+    "org.elasticsearch",           # Elasticsearch client
+    "org.apache.lucene",           # Lucene (analyzer/codec API breaks)
 )
 
 
