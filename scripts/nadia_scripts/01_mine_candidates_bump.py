@@ -280,12 +280,52 @@ for _t in GENERIC_BBC_TARGETS:
         _t["name"], _GENERIC_PACKAGES.get(_t["group_id"], (_t["group_id"],)))
 
 
-def active_targets(target_set: str):
-    """Return the list of target dicts to use, precise (bump) tier first."""
+def load_tf_targets(path):
+    """
+    Load BUMP-derived targets (the 43 libraries with confirmed behavioural
+    breaks) from the JSON produced by derive_bump_targets.py, turning each
+    library's version-boundary thresholds into a `matches(o, n)` predicate in
+    the same shape as the hand-coded BUMP_TARGETS. Also registers each target's
+    Java package(s) for the library-reference signal.
+
+    A mined bump (o, n) matches when o < V <= n for some confirmed-breaking
+    boundary V — i.e. it started below a known-breaking version and reached or
+    passed it (see derive_bump_targets.py for how V is derived).
+    """
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    targets = []
+    for d in data:
+        thresholds = [tuple(v) for v in d["match_thresholds"]]
+        artifact = d["artifact_id"].strip().lower()
+
+        def make_matches(ths):
+            return lambda o, n: any(o < V <= n for V in ths)
+
+        targets.append({
+            "name": d["name"],
+            "group_id": d["group_id"].strip().lower(),
+            "artifact_ok": (lambda a, _art=artifact: a == _art),
+            "matches": make_matches(thresholds),
+            "tier": "bump-tf",
+            "keyword": d.get("keyword", ""),
+            "bump_prs": "; ".join(d.get("example_prs", [])),
+            "client": "",
+            "search_range": d.get("search_range", ""),
+        })
+        TARGET_LIBRARY_PACKAGES.setdefault(
+            d["name"], tuple(d.get("packages", [d["group_id"]])))
+    return targets
+
+
+def active_targets(target_set: str, tf_targets=None):
+    """Return the list of target dicts to use, precise tier first."""
     ts = []
     if target_set in ("bump", "both"):
         ts += BUMP_TARGETS
-    if target_set in ("known-bbc", "both"):
+    if target_set in ("bump-tf", "all"):
+        ts += (tf_targets or [])
+    if target_set in ("known-bbc", "both", "all"):
         ts += GENERIC_BBC_TARGETS
     return ts
 
@@ -377,6 +417,8 @@ _GENERIC_KEYWORDS = {
 
 
 def _target_keyword(t):
+    if t.get("keyword"):                      # bump-tf targets carry their own
+        return t["keyword"]
     if t["name"] in _PROP_KEYWORDS:
         return _PROP_KEYWORDS[t["name"]]
     return _GENERIC_KEYWORDS.get(t["group_id"], t["group_id"].split(".")[-1])
@@ -917,14 +959,23 @@ def main():
                          "code search over pom.xml for each target's groupId "
                          "(high yield, default); 'repo' = generic repo search "
                          "with --query (low yield)")
-    ap.add_argument("--target-set", choices=("bump", "known-bbc", "both"),
+    ap.add_argument("--target-set",
+                    choices=("bump", "bump-tf", "known-bbc", "both", "all"),
                     default="bump",
-                    help="Which libraries to mine: 'bump' = the 7 precise BUMP "
-                         "targets with exact version ranges (default); "
+                    help="Which libraries to mine: 'bump' = the 7 hand-coded "
+                         "precise BUMP targets (default); 'bump-tf' = the ~43 "
+                         "libraries auto-derived from BUMP's CONFIRMED behavioural "
+                         "breaks (data/benchmark_test_failures, via "
+                         "derive_bump_targets.py) — the recommended set for a "
+                         "hundreds-scale dataset grounded in confirmed BBCs; "
                          "'known-bbc' = the broad bbc_common library families "
-                         "(major-or-minor bumps only); 'both' = both tiers, for "
-                         "scaling the dataset toward hundreds/1000 samples. "
-                         "Each record is tagged with its tier.")
+                         "(major-or-minor bumps only); 'both' = bump+known-bbc; "
+                         "'all' = bump-tf+known-bbc (widest). Each record is "
+                         "tagged with its tier.")
+    ap.add_argument("--tf-targets", default="output/bump_targets_from_test_failures.json",
+                    help="Path to the BUMP-derived target list used by "
+                         "--target-set bump-tf/all (produced by "
+                         "derive_bump_targets.py).")
     ap.add_argument("--target-candidates", type=int, default=50,
                     help="Stop once this many candidates have been found "
                          "(0 = no limit, scan everything)")
@@ -976,14 +1027,42 @@ def main():
     session = requests.Session()
     session.headers.update({**HEADERS_BASE, "Authorization": f"Bearer {args.token}"})
 
-    # Resolve the active target list once (precise BUMP tier first) and stash it
-    # for iter_repos' code-search discovery and the per-commit screening.
-    args._active_targets = active_targets(args.target_set)
+    # Resolve the active target list once (precise tier first) and stash it for
+    # iter_repos' code-search discovery and the per-commit screening. Load the
+    # BUMP-derived (test-failure) targets only when the chosen set needs them.
+    tf_targets = None
+    if args.target_set in ("bump-tf", "all"):
+        if not Path(args.tf_targets).exists():
+            sys.exit(f"--target-set {args.target_set} needs {args.tf_targets}; "
+                     f"run: python derive_bump_targets.py")
+        tf_targets = load_tf_targets(args.tf_targets)
+    args._active_targets = active_targets(args.target_set, tf_targets)
     print(f"[config] target-set={args.target_set} "
           f"({len(args._active_targets)} target families)", file=sys.stderr)
 
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Resume/dedup: with --append, load the candidate keys already in the output
+    # so a restart after a crash ACCUMULATES new candidates instead of writing
+    # duplicates of the ones it re-discovers on the next from-scratch scan.
+    # Key = (repo, bump_sha, adapt_sha).
+    emitted_keys = set()
+    if args.append and out_path.exists():
+        with out_path.open(encoding="utf-8") as f_existing:
+            for line in f_existing:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    r = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                emitted_keys.add((r.get("repo"),
+                                  r.get("bump_sha", r.get("sha")),
+                                  r.get("adapt_sha", r.get("sha"))))
+        print(f"[resume] loaded {len(emitted_keys)} existing candidate keys from "
+              f"{out_path}; duplicates will be skipped", file=sys.stderr)
 
     target_n = args.target_candidates
     found = 0
@@ -1057,15 +1136,20 @@ def main():
                               f"details fetched, {found} candidates so far")
 
                     if rec:
-                        where = (f"PR #{rec['pr_number']}" if rec['adaptation_scope'] == "pr"
-                                 else "same commit")
-                        print(f"  ✓ CANDIDATE {sha[:8]}  [{rec['bump_target']}]  "
-                              f"{rec['group_id']}:{rec['artifact_id']}  "
-                              f"{rec['old_version']} → {rec['new_version']}  "
-                              f"(adaptation in {where})")
-                        fout.write(json.dumps(rec) + "\n")
-                        fout.flush()
-                        found += 1
+                        key = (rec["repo"], rec["bump_sha"], rec["adapt_sha"])
+                        if key not in emitted_keys:
+                            emitted_keys.add(key)
+                            where = (f"PR #{rec['pr_number']}" if rec['adaptation_scope'] == "pr"
+                                     else "same commit")
+                            print(f"  ✓ CANDIDATE {sha[:8]}  [{rec['bump_target']}]  "
+                                  f"{rec['group_id']}:{rec['artifact_id']}  "
+                                  f"{rec['old_version']} → {rec['new_version']}  "
+                                  f"(adaptation in {where})")
+                            fout.write(json.dumps(rec) + "\n")
+                            fout.flush()
+                            found += 1
+                        else:
+                            print(f"  [dup] {sha[:8]} already in output, skipping")
 
                     time.sleep(0.15)   # stay well within secondary rate limits
 

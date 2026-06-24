@@ -20,6 +20,8 @@ import re
 import sys
 import time
 
+import requests
+
 GH_API = "https://api.github.com"
 HEADERS_BASE = {
     "Accept": "application/vnd.github+json",
@@ -77,10 +79,22 @@ def is_known_bbc_dep(group_id, artifact_id=None) -> bool:
 
 
 def gh(session, path, params=None, raw=False):
-    """GET from GitHub API with automatic rate-limit back-off."""
+    """GET from GitHub API with automatic rate-limit AND network-error back-off."""
     url = path if path.startswith("http") else GH_API + path
-    for attempt in range(6):
-        r = session.get(url, params=params, timeout=30)
+    last_exc = None
+    for attempt in range(10):
+        try:
+            r = session.get(url, params=params, timeout=30)
+        except requests.exceptions.RequestException as e:
+            # Transient network failure — DNS hiccup, dropped WiFi, laptop
+            # sleep/wake, connection reset. The old code let any of these crash
+            # a multi-hour run on a single blip; instead back off and retry.
+            last_exc = e
+            wait = min(10 * (attempt + 1), 90)
+            print(f"  [network] {type(e).__name__}: {e}; retry {attempt+1}/10 in {wait}s …",
+                  file=sys.stderr)
+            time.sleep(wait)
+            continue
         if r.status_code == 200:
             return r if raw else r.json()
         if r.status_code in (403, 429):
@@ -92,8 +106,18 @@ def gh(session, path, params=None, raw=False):
         if r.status_code in (404, 422):
             # 404: path/resource doesn't exist; 422: GitHub search cap reached
             return None
+        if r.status_code in (401, 500, 502, 503, 504):
+            # Transient server/auth blips. GitHub occasionally returns a spurious
+            # 401 (auth-service hiccup) or 5xx under load even when the token is
+            # perfectly valid. The old code fataled the entire multi-hour run on
+            # these via raise_for_status(); back off and retry instead.
+            wait = min(10 * (attempt + 1), 90)
+            print(f"  [transient {r.status_code}] retry {attempt+1}/10 in {wait}s …",
+                  file=sys.stderr)
+            time.sleep(wait)
+            continue
         r.raise_for_status()
-    raise RuntimeError(f"Failed after retries: {url}")
+    raise RuntimeError(f"Failed after retries: {url} (last error: {last_exc})")
 
 
 def split_diff_by_file(diff: str):

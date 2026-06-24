@@ -129,8 +129,14 @@ def pick_java_home(required_version: int | None, java_homes: dict) -> str | None
     if not java_homes:
         return None
     if required_version is None:
-        # Default to Java 11 if available, else whatever is provided
-        return java_homes.get(11) or java_homes.get(8) or next(iter(java_homes.values()))
+        # Default to Java 8 when the pom declares no compiler version. These
+        # older-library-bump projects typically predate the JDK's JAXB removal
+        # (javax.xml.bind, gone in Java 11), so building them on 11 fails to
+        # COMPILE at baseline (e.g. "cannot find symbol: class XmlTransient").
+        # Java 8 still ships JAXB and compiles old source levels; projects that
+        # genuinely need 11+ almost always declare maven.compiler.* and are
+        # matched above, so they're unaffected by this fallback.
+        return java_homes.get(8) or java_homes.get(11) or next(iter(java_homes.values()))
 
     # Exact match first
     if required_version in java_homes:
@@ -329,6 +335,67 @@ def is_dependency_failure(output: str) -> bool:
     return any(re.search(p, output, re.IGNORECASE) for p in DEPENDENCY_FAILURE_PATTERNS)
 
 
+# ── per-test result collection (differential methodology) ──────────────────────
+# Rather than demanding a fully green baseline, we diff per-test outcomes across
+# stages: a BBC is a test that PASSES at baseline, FAILS under the bump, and is
+# GREEN again after the adaptation. Pre-existing failures (flaky/environment
+# tests) are therefore tolerated — they never entered the baseline-pass set, so
+# they can't masquerade as a break. Per-test outcomes come from Surefire/Failsafe
+# JUnit XML reports under each module's target/.
+
+def _report_dirs(repo_dir: Path):
+    return (list(repo_dir.glob("**/target/surefire-reports"))
+            + list(repo_dir.glob("**/target/failsafe-reports")))
+
+
+def clear_test_reports(repo_dir: Path):
+    """Delete all surefire/failsafe report dirs so the next run's collected
+    results reflect ONLY that run. Without this, a module that fails to recompile
+    under the bump would keep its stale baseline reports and be misread as green."""
+    for d in _report_dirs(repo_dir):
+        try:
+            force_rmtree(d)
+        except Exception:
+            pass  # best effort
+
+
+_STATUS_RANK = {"pass": 0, "skip": 0, "fail": 1, "error": 1}
+
+
+def collect_test_results(repo_dir: Path) -> dict:
+    """Parse every TEST-*.xml report into {(classname, name): status} where
+    status is 'pass' | 'fail' | 'error' | 'skip'. A <testcase> is fail/error if
+    it has a <failure>/<error> child, skip if <skipped>, else pass. If the same
+    test appears more than once, the worse outcome wins."""
+    results = {}
+    for d in _report_dirs(repo_dir):
+        for xml in d.glob("TEST-*.xml"):
+            try:
+                root = ElementTree.parse(xml).getroot()
+            except Exception:
+                continue
+            for tc in root.iter("testcase"):
+                key = (tc.get("classname", ""), tc.get("name", ""))
+                status = "pass"
+                for child in tc:
+                    tag = child.tag.lower()
+                    if tag in ("failure", "error", "skipped"):
+                        status = "skip" if tag == "skipped" else tag
+                        break
+                prev = results.get(key)
+                if prev is None or _STATUS_RANK[status] > _STATUS_RANK[prev]:
+                    results[key] = status
+    return results
+
+
+def passing_set(results: dict) -> set:
+    return {k for k, s in results.items() if s == "pass"}
+
+
+def failing_set(results: dict) -> set:
+    return {k for k, s in results.items() if s in ("fail", "error")}
+
+
 # ── per-candidate verification ────────────────────────────────────────────────
 
 def verify_candidate(rec: dict, work_dir: Path, java_homes: dict, timeout: int, m2_repo: str = None) -> dict:
@@ -372,13 +439,33 @@ def verify_candidate(rec: dict, work_dir: Path, java_homes: dict, timeout: int, 
         print(f"  [java] detected={required_java}  using={java_home}")
 
         print(f"  [baseline] {sha_before[:12]}")
+        clear_test_reports(repo_dir)
         rc, out = mvn("test -fae", repo_dir, timeout=timeout, java_home=java_home, m2_repo=m2_repo)
         v["baseline_classify"] = classify_mvn_output(out)
         v["baseline_tests"]    = extract_test_summary(out)
         v["baseline_rc"]       = rc
 
-        if v["baseline_classify"] != "green":
-            v["status"] = "baseline_not_green"
+        # Differential methodology: we NO LONGER require a fully green baseline.
+        # Pre-existing failures (flaky/environment tests) are tolerated — we only
+        # track tests that pass HERE and later break under the bump. But the
+        # baseline must still (a) compile and (b) actually run some tests, or
+        # there is no per-test signal to diff against.
+        if v["baseline_classify"] == "syntactic_bc":
+            v["status"] = "baseline_compile_error"
+            v["baseline_snippet"] = out[-2000:]
+            return result
+        if is_dependency_failure(out):
+            v["status"] = "baseline_dependency_error"
+            v["baseline_snippet"] = out[-2000:]
+            return result
+
+        baseline_results = collect_test_results(repo_dir)
+        baseline_pass = passing_set(baseline_results)
+        v["baseline_passed_count"] = len(baseline_pass)
+        v["baseline_failed_count"] = len(failing_set(baseline_results))
+        if not baseline_pass:
+            # No green tests to diff against (no tests ran, or all pre-failing).
+            v["status"] = "baseline_no_passing_tests"
             v["baseline_snippet"] = out[-2000:]
             return result
 
@@ -390,6 +477,7 @@ def verify_candidate(rec: dict, work_dir: Path, java_homes: dict, timeout: int, 
             v["status"] = "pom_patch_failed"
             return result
 
+        clear_test_reports(repo_dir)
         rc, out = mvn("test -fae", repo_dir, timeout=timeout, java_home=java_home, m2_repo=m2_repo)
         v["pom_only_classify"]   = classify_mvn_output(out)
         v["pom_only_tests"]      = extract_test_summary(out)
@@ -398,38 +486,54 @@ def verify_candidate(rec: dict, work_dir: Path, java_homes: dict, timeout: int, 
         v["exception_types"]     = extract_exception_types(out)
         v["bc_effect_category"]  = classify_bc_effect(out)
 
+        # A compile failure under the new version is a syntactic breaking change:
+        # the client source no longer compiles against the bumped API.
         if v["pom_only_classify"] == "syntactic_bc":
             v["status"] = "syntactic_bc"
             return result
 
-        if v["pom_only_classify"] == "green":
-            v["status"] = "no_bc"
-            return result
-
-        # The pom-only build "failed", but not every failure is a behavioural
-        # break. If the bumped dependency set can't be resolved, or the
-        # library's own classes can't initialize (co-versioned modules
-        # mismatched — e.g. jackson-databind vs jackson-annotations), then the
-        # bump itself is broken/incomplete and the "fix" is just making the
-        # dependency set consistent again. That is NOT a BBC, so stop here
-        # instead of letting an adapted-green state confirm a false positive.
+        # If the bumped dependency set can't be resolved, or the library's own
+        # classes can't initialize (co-versioned modules mismatched — e.g.
+        # jackson-databind vs jackson-annotations), the bump itself is
+        # broken/incomplete. That is NOT a BBC.
         if is_dependency_failure(out):
             v["status"] = "dependency_resolution_error"
             return result
 
-        # ── Step 4: adapted state — should be green ───────────────────────────
+        # Differential core: which tests that PASSED at baseline now fail/error
+        # under the bump? Those are the behavioural breaks the bump introduced.
+        pom_results = collect_test_results(repo_dir)
+        broken_by_bump = sorted(baseline_pass & failing_set(pom_results))
+        v["broken_by_bump_count"] = len(broken_by_bump)
+        v["broken_by_bump"] = [f"{c}#{n}" for c, n in broken_by_bump[:50]]
+
+        if not broken_by_bump:
+            # The bump broke no previously-passing test → not a behavioural break.
+            v["status"] = "no_bc"
+            return result
+
+        # ── Step 4: adapted state — the bump-broken tests should recover ──────
         # adapt_sha == bump_sha for same-commit candidates (identical to the
         # original behaviour); for two-commit candidates it's the PR merge
         # commit, which contains both the bump and the fix.
         print(f"  [adapted] {adapt_sha[:12]}"
               + ("" if adapt_sha == bump_sha else f"  (PR merge; bump={bump_sha[:8]})"))
         checkout(adapt_sha, repo_dir)
+        clear_test_reports(repo_dir)
         rc, out = mvn("test -fae", repo_dir, timeout=timeout, java_home=java_home, m2_repo=m2_repo)
         v["adapted_classify"] = classify_mvn_output(out)
         v["adapted_tests"]    = extract_test_summary(out)
         v["adapted_rc"]       = rc
 
-        if v["adapted_classify"] == "green":
+        adapted_pass = passing_set(collect_test_results(repo_dir))
+        broken_set = set(broken_by_bump)
+        still_broken = sorted(broken_set - adapted_pass)
+        v["recovered_count"] = len(broken_set & adapted_pass)
+        v["still_broken"] = [f"{c}#{n}" for c, n in still_broken[:50]]
+
+        # Confirmed only when EVERY test the bump broke is green again after the
+        # adaptation — that's the adaptation resolving the behavioural break.
+        if not still_broken:
             v["status"] = "confirmed_bbc"
         else:
             v["status"] = "bbc_adaptation_incomplete"
