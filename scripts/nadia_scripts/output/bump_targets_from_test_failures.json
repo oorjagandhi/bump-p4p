@@ -1,0 +1,1196 @@
+[
+  {
+    "name": "org.slf4j:slf4j-api",
+    "group_id": "org.slf4j",
+    "artifact_id": "slf4j-api",
+    "packages": [
+      "org.slf4j"
+    ],
+    "keyword": "slf4j",
+    "match_thresholds": [
+      [
+        2,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 36,
+    "search_range": "1.7.30\u21922.0.0; 1.7.32\u21922.0.0; 1.7.32\u21922.0.1; 1.7.32\u21922.0.2; 1.7.32\u21922.0.3",
+    "example_prs": [
+      "https://github.com/retest/recheck/pull/1041",
+      "https://github.com/feedzai/pdb/pull/364",
+      "https://github.com/s4u/sign-maven-plugin/pull/135"
+    ]
+  },
+  {
+    "name": "com.fasterxml.jackson.core:jackson-databind",
+    "group_id": "com.fasterxml.jackson.core",
+    "artifact_id": "jackson-databind",
+    "packages": [
+      "com.fasterxml.jackson.core"
+    ],
+    "keyword": "jackson",
+    "match_thresholds": [
+      [
+        2,
+        9,
+        10
+      ],
+      [
+        2,
+        12,
+        6
+      ],
+      [
+        2,
+        12,
+        7
+      ],
+      [
+        2,
+        13,
+        0
+      ],
+      [
+        2,
+        13,
+        1
+      ],
+      [
+        2,
+        13,
+        2
+      ],
+      [
+        2,
+        13,
+        3
+      ],
+      [
+        2,
+        13,
+        4
+      ],
+      [
+        2,
+        14,
+        0
+      ],
+      [
+        2,
+        14,
+        1
+      ],
+      [
+        2,
+        14,
+        2
+      ],
+      [
+        2,
+        15,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 23,
+    "search_range": "2.10.0\u21922.12.6.1; 2.10.5.1\u21922.12.6.1; 2.10.5.1\u21922.12.7.1; 2.10.5.1\u21922.13.4; 2.10.5.1\u21922.13.4.1",
+    "example_prs": [
+      "https://github.com/versly/wsdoc/pull/75",
+      "https://github.com/pac4j/dropwizard-pac4j/pull/344",
+      "https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/424"
+    ]
+  },
+  {
+    "name": "ch.qos.logback:logback-classic",
+    "group_id": "ch.qos.logback",
+    "artifact_id": "logback-classic",
+    "packages": [
+      "ch.qos.logback"
+    ],
+    "keyword": "logback",
+    "match_thresholds": [
+      [
+        1,
+        4,
+        0
+      ],
+      [
+        1,
+        4,
+        3
+      ],
+      [
+        1,
+        4,
+        6
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 11,
+    "search_range": "1.2.11\u21921.4.0; 1.2.11\u21921.4.1; 1.2.11\u21921.4.3; 1.2.11\u21921.4.4; 1.2.11\u21921.4.5",
+    "example_prs": [
+      "https://github.com/matteobaccan/html2pop3/pull/291",
+      "https://github.com/retest/recheck.cli/pull/349",
+      "https://github.com/matteobaccan/html2pop3/pull/288"
+    ]
+  },
+  {
+    "name": "org.dhatim:dropwizard-sentry",
+    "group_id": "org.dhatim",
+    "artifact_id": "dropwizard-sentry",
+    "packages": [
+      "org.dhatim"
+    ],
+    "keyword": "dropwizard",
+    "match_thresholds": [
+      [
+        2,
+        0,
+        25
+      ],
+      [
+        2,
+        0,
+        26
+      ],
+      [
+        2,
+        0,
+        28
+      ],
+      [
+        4,
+        0,
+        0
+      ],
+      [
+        4,
+        0,
+        1
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 8,
+    "search_range": "2.0.22\u21922.0.25-2; 2.0.22\u21922.0.26-3; 2.0.22\u21922.0.28-3; 2.0.22\u21922.0.28-4; 2.0.22\u21922.0.28-8",
+    "example_prs": [
+      "https://github.com/alphagov/pay-cardid/pull/725",
+      "https://github.com/alphagov/pay-cardid/pull/712",
+      "https://github.com/alphagov/pay-cardid/pull/689"
+    ]
+  },
+  {
+    "name": "org.springframework:spring-tx",
+    "group_id": "org.springframework",
+    "artifact_id": "spring-tx",
+    "packages": [
+      "org.springframework"
+    ],
+    "keyword": "spring",
+    "match_thresholds": [
+      [
+        6,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 8,
+    "search_range": "5.3.24\u21926.0.0; 5.3.24\u21926.0.1; 5.3.24\u21926.0.2; 5.3.24\u21926.0.3; 5.3.24\u21926.0.4",
+    "example_prs": [
+      "https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/689",
+      "https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/666",
+      "https://github.com/International-Data-Spaces-Association/IDS-Messaging-Services/pull/703"
+    ]
+  },
+  {
+    "name": "org.apache.logging.log4j:log4j-core",
+    "group_id": "org.apache.logging.log4j",
+    "artifact_id": "log4j-core",
+    "packages": [
+      "org.apache.logging.log4j"
+    ],
+    "keyword": "log4j",
+    "match_thresholds": [
+      [
+        2,
+        15,
+        0
+      ],
+      [
+        2,
+        16,
+        0
+      ],
+      [
+        2,
+        18,
+        0
+      ],
+      [
+        2,
+        19,
+        0
+      ],
+      [
+        2,
+        20,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 7,
+    "search_range": "2.11.1\u21922.16.0; 2.12.1\u21922.15.0; 2.16.0\u21922.18.0; 2.16.0\u21922.19.0; 2.16.0\u21922.20.0",
+    "example_prs": [
+      "https://github.com/elimu-ai/webapp/pull/1613",
+      "https://github.com/elimu-ai/webapp/pull/1619",
+      "https://github.com/quick-perf/quickperf/pull/168"
+    ]
+  },
+  {
+    "name": "org.antlr:antlr4-runtime",
+    "group_id": "org.antlr",
+    "artifact_id": "antlr4-runtime",
+    "packages": [
+      "org.antlr"
+    ],
+    "keyword": "antlr4",
+    "match_thresholds": [
+      [
+        4,
+        10,
+        0
+      ],
+      [
+        4,
+        11,
+        0
+      ],
+      [
+        4,
+        12,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 6,
+    "search_range": "4.7.2\u21924.10; 4.7.2\u21924.10.1; 4.7.2\u21924.11.1; 4.7.2\u21924.12.0; 4.9.3\u21924.10",
+    "example_prs": [
+      "https://github.com/Refactoring-Bot/Refactoring-Bot/pull/110",
+      "https://github.com/btrplace/scheduler/pull/379",
+      "https://github.com/Refactoring-Bot/Refactoring-Bot/pull/112"
+    ]
+  },
+  {
+    "name": "org.eclipse.jetty:jetty-server",
+    "group_id": "org.eclipse.jetty",
+    "artifact_id": "jetty-server",
+    "packages": [
+      "org.eclipse.jetty"
+    ],
+    "keyword": "jetty",
+    "match_thresholds": [
+      [
+        9,
+        4,
+        47
+      ],
+      [
+        9,
+        4,
+        48
+      ],
+      [
+        9,
+        4,
+        49
+      ],
+      [
+        9,
+        4,
+        50
+      ],
+      [
+        10,
+        0,
+        10
+      ],
+      [
+        10,
+        0,
+        14
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 6,
+    "search_range": "9.4.35.v20201120\u219210.0.10; 9.4.35.v20201120\u219210.0.14; 9.4.35.v20201120\u21929.4.47.v20220610; 9.4.35.v20201120\u21929.4.48.v20220622; 9.4.35.v20201120\u21929.4.49.v20220914",
+    "example_prs": [
+      "https://github.com/pac4j/dropwizard-pac4j/pull/349",
+      "https://github.com/pac4j/dropwizard-pac4j/pull/298",
+      "https://github.com/pac4j/dropwizard-pac4j/pull/299"
+    ]
+  },
+  {
+    "name": "org.mockito:mockito-core",
+    "group_id": "org.mockito",
+    "artifact_id": "mockito-core",
+    "packages": [
+      "org.mockito"
+    ],
+    "keyword": "mockito",
+    "match_thresholds": [
+      [
+        5,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 5,
+    "search_range": "4.11.0\u21925.1.0; 4.11.0\u21925.1.1; 4.11.0\u21925.2.0; 4.11.0\u21925.3.1; 4.11.0\u21925.4.0",
+    "example_prs": [
+      "https://github.com/pholser/junit-quickcheck/pull/483",
+      "https://github.com/pholser/junit-quickcheck/pull/510",
+      "https://github.com/pholser/junit-quickcheck/pull/499"
+    ]
+  },
+  {
+    "name": "org.apache.poi:poi-scratchpad",
+    "group_id": "org.apache.poi",
+    "artifact_id": "poi-scratchpad",
+    "packages": [
+      "org.apache.poi"
+    ],
+    "keyword": "poi",
+    "match_thresholds": [
+      [
+        5,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 5,
+    "search_range": "4.1.2\u21925.0.0; 4.1.2\u21925.1.0; 4.1.2\u21925.2.0; 4.1.2\u21925.2.1; 4.1.2\u21925.2.2",
+    "example_prs": [
+      "https://github.com/dadoonet/fscrawler/pull/1406",
+      "https://github.com/dadoonet/fscrawler/pull/1294",
+      "https://github.com/dadoonet/fscrawler/pull/1361"
+    ]
+  },
+  {
+    "name": "org.glassfish.jersey.core:jersey-server",
+    "group_id": "org.glassfish.jersey.core",
+    "artifact_id": "jersey-server",
+    "packages": [
+      "org.glassfish.jersey.core"
+    ],
+    "keyword": "jersey",
+    "match_thresholds": [
+      [
+        2,
+        36,
+        0
+      ],
+      [
+        2,
+        37,
+        0
+      ],
+      [
+        2,
+        38,
+        0
+      ],
+      [
+        2,
+        39,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 5,
+    "search_range": "2.32\u21922.36; 2.32\u21922.37; 2.32\u21922.38; 2.32\u21922.39; 2.32\u21922.39.1",
+    "example_prs": [
+      "https://github.com/pac4j/dropwizard-pac4j/pull/295",
+      "https://github.com/pac4j/dropwizard-pac4j/pull/366",
+      "https://github.com/pac4j/dropwizard-pac4j/pull/377"
+    ]
+  },
+  {
+    "name": "org.hibernate.validator:hibernate-validator",
+    "group_id": "org.hibernate.validator",
+    "artifact_id": "hibernate-validator",
+    "packages": [
+      "org.hibernate.validator",
+      "javax.validation"
+    ],
+    "keyword": "hibernate",
+    "match_thresholds": [
+      [
+        7,
+        0,
+        2
+      ],
+      [
+        7,
+        0,
+        3
+      ],
+      [
+        7,
+        0,
+        4
+      ],
+      [
+        8,
+        0,
+        0
+      ],
+      [
+        8,
+        0,
+        1
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 5,
+    "search_range": "6.1.7.Final\u21927.0.2.Final; 6.1.7.Final\u21927.0.3.Final; 6.1.7.Final\u21927.0.4.Final; 6.2.4.Final\u21928.0.0.Final; 6.2.5.Final\u21928.0.1.Final",
+    "example_prs": [
+      "https://github.com/pac4j/dropwizard-pac4j/pull/326",
+      "https://github.com/premium-minds/billy/pull/267",
+      "https://github.com/premium-minds/billy/pull/269"
+    ]
+  },
+  {
+    "name": "org.apache.poi:poi-ooxml",
+    "group_id": "org.apache.poi",
+    "artifact_id": "poi-ooxml",
+    "packages": [
+      "org.apache.poi"
+    ],
+    "keyword": "poi",
+    "match_thresholds": [
+      [
+        5,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 4,
+    "search_range": "4.1.2\u21925.1.0; 4.1.2\u21925.2.0; 4.1.2\u21925.2.1; 4.1.2\u21925.2.2",
+    "example_prs": [
+      "https://github.com/dadoonet/fscrawler/pull/1296",
+      "https://github.com/dadoonet/fscrawler/pull/1397",
+      "https://github.com/dadoonet/fscrawler/pull/1359"
+    ]
+  },
+  {
+    "name": "org.apache.logging.log4j:log4j-api",
+    "group_id": "org.apache.logging.log4j",
+    "artifact_id": "log4j-api",
+    "packages": [
+      "org.apache.logging.log4j"
+    ],
+    "keyword": "log4j",
+    "match_thresholds": [
+      [
+        2,
+        18,
+        0
+      ],
+      [
+        2,
+        19,
+        0
+      ],
+      [
+        2,
+        20,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 4,
+    "search_range": "2.16.0\u21922.18.0; 2.16.0\u21922.19.0; 2.16.0\u21922.20.0; 2.17.2\u21922.18.0",
+    "example_prs": [
+      "https://github.com/elimu-ai/webapp/pull/1574",
+      "https://github.com/elimu-ai/webapp/pull/1612",
+      "https://github.com/elimu-ai/webapp/pull/1618"
+    ]
+  },
+  {
+    "name": "jakarta.xml.bind:jakarta.xml.bind-api",
+    "group_id": "jakarta.xml.bind",
+    "artifact_id": "jakarta.xml.bind-api",
+    "packages": [
+      "jakarta.xml.bind"
+    ],
+    "keyword": "jakarta.xml.bind",
+    "match_thresholds": [
+      [
+        3,
+        0,
+        0
+      ],
+      [
+        4,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 4,
+    "search_range": "2.3.2\u21923.0.1; 2.3.2\u21924.0.0; 2.3.3\u21924.0.0",
+    "example_prs": [
+      "https://github.com/camunda-community-hub/camunda-platform-7-camel/pull/114",
+      "https://github.com/pac4j/dropwizard-pac4j/pull/278",
+      "https://github.com/citerus/dddsample-core/pull/121"
+    ]
+  },
+  {
+    "name": "org.apache.poi:poi",
+    "group_id": "org.apache.poi",
+    "artifact_id": "poi",
+    "packages": [
+      "org.apache.poi"
+    ],
+    "keyword": "poi",
+    "match_thresholds": [
+      [
+        5,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 4,
+    "search_range": "4.1.2\u21925.0.0; 4.1.2\u21925.2.0; 4.1.2\u21925.2.1; 4.1.2\u21925.2.2",
+    "example_prs": [
+      "https://github.com/dadoonet/fscrawler/pull/1398",
+      "https://github.com/dadoonet/fscrawler/pull/1407",
+      "https://github.com/dadoonet/fscrawler/pull/1360"
+    ]
+  },
+  {
+    "name": "org.graalvm.js:js-scriptengine",
+    "group_id": "org.graalvm.js",
+    "artifact_id": "js-scriptengine",
+    "packages": [
+      "org.graalvm.js"
+    ],
+    "keyword": "js",
+    "match_thresholds": [
+      [
+        22,
+        1,
+        0
+      ],
+      [
+        23,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 3,
+    "search_range": "22.0.0\u219222.1.0; 22.3.2\u219223.0.0; 22.3.2\u219223.0.1",
+    "example_prs": [
+      "https://github.com/fmtn/a/pull/219",
+      "https://github.com/fmtn/a/pull/214",
+      "https://github.com/fmtn/a/pull/138"
+    ]
+  },
+  {
+    "name": "com.sun.xml.bind:jaxb-impl",
+    "group_id": "com.sun.xml.bind",
+    "artifact_id": "jaxb-impl",
+    "packages": [
+      "javax.xml.bind",
+      "com.sun.xml.bind"
+    ],
+    "keyword": "jaxb",
+    "match_thresholds": [
+      [
+        4,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 3,
+    "search_range": "2.3.3\u21924.0.0; 2.3.3\u21924.0.1; 2.3.3\u21924.0.2",
+    "example_prs": [
+      "https://github.com/pmckeown/dependency-track-maven-plugin/pull/290",
+      "https://github.com/pmckeown/dependency-track-maven-plugin/pull/335",
+      "https://github.com/pmckeown/dependency-track-maven-plugin/pull/348"
+    ]
+  },
+  {
+    "name": "com.h2database:h2",
+    "group_id": "com.h2database",
+    "artifact_id": "h2",
+    "packages": [
+      "com.h2database"
+    ],
+    "keyword": "h2",
+    "match_thresholds": [
+      [
+        2,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 2,
+    "search_range": "1.3.175\u21922.0.206; 1.3.175\u21922.1.210",
+    "example_prs": [
+      "https://github.com/geosolutions-it/geostore/pull/245",
+      "https://github.com/geosolutions-it/geostore/pull/248"
+    ]
+  },
+  {
+    "name": "org.junit.jupiter:junit-jupiter-params",
+    "group_id": "org.junit.jupiter",
+    "artifact_id": "junit-jupiter-params",
+    "packages": [
+      "org.junit.jupiter"
+    ],
+    "keyword": "junit",
+    "match_thresholds": [
+      [
+        5,
+        9,
+        2
+      ],
+      [
+        5,
+        10,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 2,
+    "search_range": "5.9.1\u21925.9.2; 5.9.3\u21925.10.0",
+    "example_prs": [
+      "https://github.com/s4u/pgpverify-maven-plugin/pull/479",
+      "https://github.com/s4u/pgpverify-maven-plugin/pull/445"
+    ]
+  },
+  {
+    "name": "org.yaml:snakeyaml",
+    "group_id": "org.yaml",
+    "artifact_id": "snakeyaml",
+    "packages": [
+      "org.yaml.snakeyaml"
+    ],
+    "keyword": "snakeyaml",
+    "match_thresholds": [
+      [
+        1,
+        31,
+        0
+      ],
+      [
+        1,
+        32,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 2,
+    "search_range": "1.13\u21921.31; 1.13\u21921.32",
+    "example_prs": [
+      "https://github.com/versly/wsdoc/pull/81",
+      "https://github.com/versly/wsdoc/pull/78"
+    ]
+  },
+  {
+    "name": "net.minidev:json-smart",
+    "group_id": "net.minidev",
+    "artifact_id": "json-smart",
+    "packages": [
+      "net.minidev.json"
+    ],
+    "keyword": "json-smart",
+    "match_thresholds": [
+      [
+        2,
+        4,
+        9
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 2,
+    "search_range": "2.4.8\u21922.4.9",
+    "example_prs": [
+      "https://github.com/btrplace/scheduler/pull/441",
+      "https://github.com/btrplace/scheduler/pull/443"
+    ]
+  },
+  {
+    "name": "commons-io:commons-io",
+    "group_id": "commons-io",
+    "artifact_id": "commons-io",
+    "packages": [
+      "org.apache.commons.io"
+    ],
+    "keyword": "commons",
+    "match_thresholds": [
+      [
+        2,
+        11,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "2.7\u21922.11.0",
+    "example_prs": [
+      "https://github.com/damianszczepanik/cucumber-reporting/pull/1098"
+    ]
+  },
+  {
+    "name": "com.thoughtworks.xstream:xstream",
+    "group_id": "com.thoughtworks.xstream",
+    "artifact_id": "xstream",
+    "packages": [
+      "com.thoughtworks.xstream"
+    ],
+    "keyword": "xstream",
+    "match_thresholds": [
+      [
+        1,
+        4,
+        19
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "1.4.17\u21921.4.19",
+    "example_prs": [
+      "https://github.com/apache/logging-chainsaw/pull/14"
+    ]
+  },
+  {
+    "name": "com.fasterxml.jackson.dataformat:jackson-dataformat-cbor",
+    "group_id": "com.fasterxml.jackson.dataformat",
+    "artifact_id": "jackson-dataformat-cbor",
+    "packages": [
+      "com.fasterxml.jackson.dataformat"
+    ],
+    "keyword": "jackson",
+    "match_thresholds": [
+      [
+        2,
+        13,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "2.4.0\u21922.13.3",
+    "example_prs": [
+      "https://github.com/tokuhirom/avans/pull/88"
+    ]
+  },
+  {
+    "name": "org.eclipse.persistence:org.eclipse.persistence.moxy",
+    "group_id": "org.eclipse.persistence",
+    "artifact_id": "org.eclipse.persistence.moxy",
+    "packages": [
+      "org.eclipse.persistence"
+    ],
+    "keyword": "org.eclipse.persistence.moxy",
+    "match_thresholds": [
+      [
+        4,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "3.0.2\u21924.0.1",
+    "example_prs": [
+      "https://github.com/retest/recheck/pull/1068"
+    ]
+  },
+  {
+    "name": "com.fasterxml.jackson.core:jackson-core",
+    "group_id": "com.fasterxml.jackson.core",
+    "artifact_id": "jackson-core",
+    "packages": [
+      "com.fasterxml.jackson.core"
+    ],
+    "keyword": "jackson",
+    "match_thresholds": [
+      [
+        2,
+        13,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "2.4.2\u21922.13.3",
+    "example_prs": [
+      "https://github.com/tokuhirom/avans/pull/86"
+    ]
+  },
+  {
+    "name": "javax:javaee-api",
+    "group_id": "javax",
+    "artifact_id": "javaee-api",
+    "packages": [
+      "javax"
+    ],
+    "keyword": "javaee",
+    "match_thresholds": [
+      [
+        8,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "7.0\u21928.0.1",
+    "example_prs": [
+      "https://github.com/apache/directory-scimple/pull/49"
+    ]
+  },
+  {
+    "name": "org.jenkins-ci.plugins:github-api",
+    "group_id": "org.jenkins-ci.plugins",
+    "artifact_id": "github-api",
+    "packages": [
+      "org.kohsuke.github"
+    ],
+    "keyword": "github",
+    "match_thresholds": [
+      [
+        1,
+        303,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "1.117\u21921.303-400.v35c2d8258028",
+    "example_prs": [
+      "https://github.com/jenkinsci/github-checks-plugin/pull/265"
+    ]
+  },
+  {
+    "name": "org.json:json",
+    "group_id": "org.json",
+    "artifact_id": "json",
+    "packages": [
+      "org.json"
+    ],
+    "keyword": "json",
+    "match_thresholds": [
+      [
+        20230227,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "20090211\u219220230227",
+    "example_prs": [
+      "https://github.com/jericks/geoserver-shell/pull/15"
+    ]
+  },
+  {
+    "name": "com.google.flogger:google-extensions",
+    "group_id": "com.google.flogger",
+    "artifact_id": "google-extensions",
+    "packages": [
+      "com.google.flogger"
+    ],
+    "keyword": "google",
+    "match_thresholds": [
+      [
+        0,
+        7,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "0.6\u21920.7.1",
+    "example_prs": [
+      "https://github.com/googleapis/java-pubsublite/pull/901"
+    ]
+  },
+  {
+    "name": "org.junit.jupiter:junit-jupiter-engine",
+    "group_id": "org.junit.jupiter",
+    "artifact_id": "junit-jupiter-engine",
+    "packages": [
+      "org.junit.jupiter"
+    ],
+    "keyword": "junit",
+    "match_thresholds": [
+      [
+        5,
+        10,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "5.8.1\u21925.10.0",
+    "example_prs": [
+      "https://github.com/artipie/http/pull/552"
+    ]
+  },
+  {
+    "name": "com.squareup.okhttp3:okhttp",
+    "group_id": "com.squareup.okhttp3",
+    "artifact_id": "okhttp",
+    "packages": [
+      "okhttp3"
+    ],
+    "keyword": "okhttp",
+    "match_thresholds": [
+      [
+        3,
+        14,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "3.3.1\u21923.14.9",
+    "example_prs": [
+      "https://github.com/spotify/semantic-metrics/pull/132"
+    ]
+  },
+  {
+    "name": "eu.europa.ec.joinup.sd-dss:dss-pades-pdfbox",
+    "group_id": "eu.europa.ec.joinup.sd-dss",
+    "artifact_id": "dss-pades-pdfbox",
+    "packages": [
+      "eu.europa.ec.joinup.sd-dss"
+    ],
+    "keyword": "dss",
+    "match_thresholds": [
+      [
+        5,
+        10,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "5.9\u21925.10.2",
+    "example_prs": [
+      "https://github.com/open-pdf-sign/open-pdf-sign/pull/9"
+    ]
+  },
+  {
+    "name": "org.apache.sshd:sshd-common",
+    "group_id": "org.apache.sshd",
+    "artifact_id": "sshd-common",
+    "packages": [
+      "org.apache.sshd"
+    ],
+    "keyword": "sshd",
+    "match_thresholds": [
+      [
+        2,
+        10,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "2.9.2\u21922.10.0",
+    "example_prs": [
+      "https://github.com/jcabi/jcabi-ssh/pull/143"
+    ]
+  },
+  {
+    "name": "com.google.inject:guice",
+    "group_id": "com.google.inject",
+    "artifact_id": "guice",
+    "packages": [
+      "com.google.inject"
+    ],
+    "keyword": "guice",
+    "match_thresholds": [
+      [
+        7,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "5.1.0\u21927.0.0",
+    "example_prs": [
+      "https://github.com/pmckeown/dependency-track-maven-plugin/pull/392"
+    ]
+  },
+  {
+    "name": "org.apache.httpcomponents:httpclient",
+    "group_id": "org.apache.httpcomponents",
+    "artifact_id": "httpclient",
+    "packages": [
+      "org.apache.http",
+      "org.apache.hc"
+    ],
+    "keyword": "httpclient",
+    "match_thresholds": [
+      [
+        4,
+        5,
+        13
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "4.5.1\u21924.5.13",
+    "example_prs": [
+      "https://github.com/lookfirst/sardine/pull/334"
+    ]
+  },
+  {
+    "name": "org.apache.derby:derby",
+    "group_id": "org.apache.derby",
+    "artifact_id": "derby",
+    "packages": [
+      "org.apache.derby"
+    ],
+    "keyword": "derby",
+    "match_thresholds": [
+      [
+        10,
+        16,
+        1
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "10.15.2.0\u219210.16.1.1",
+    "example_prs": [
+      "https://github.com/equinor/neqsim/pull/496"
+    ]
+  },
+  {
+    "name": "org.jetbrains.kotlin:kotlin-stdlib",
+    "group_id": "org.jetbrains.kotlin",
+    "artifact_id": "kotlin-stdlib",
+    "packages": [
+      "kotlin"
+    ],
+    "keyword": "kotlin",
+    "match_thresholds": [
+      [
+        1,
+        6,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "1.3.31\u21921.6.0",
+    "example_prs": [
+      "https://github.com/takari/polyglot-maven/pull/241"
+    ]
+  },
+  {
+    "name": "org.springframework:spring-webmvc",
+    "group_id": "org.springframework",
+    "artifact_id": "spring-webmvc",
+    "packages": [
+      "org.springframework"
+    ],
+    "keyword": "spring",
+    "match_thresholds": [
+      [
+        5,
+        3,
+        18
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "4.1.6.RELEASE\u21925.3.18",
+    "example_prs": [
+      "https://github.com/kstateome/lti-launch/pull/35"
+    ]
+  },
+  {
+    "name": "org.apache.sshd:sshd-core",
+    "group_id": "org.apache.sshd",
+    "artifact_id": "sshd-core",
+    "packages": [
+      "org.apache.sshd"
+    ],
+    "keyword": "sshd",
+    "match_thresholds": [
+      [
+        2,
+        10,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "2.9.2\u21922.10.0",
+    "example_prs": [
+      "https://github.com/jcabi/jcabi-ssh/pull/144"
+    ]
+  },
+  {
+    "name": "org.jsoup:jsoup",
+    "group_id": "org.jsoup",
+    "artifact_id": "jsoup",
+    "packages": [
+      "org.jsoup"
+    ],
+    "keyword": "jsoup",
+    "match_thresholds": [
+      [
+        1,
+        15,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "1.14.2\u21921.15.3",
+    "example_prs": [
+      "https://github.com/SPARQL-Anything/sparql.anything/pull/303"
+    ]
+  },
+  {
+    "name": "io.quarkiverse.googlecloudservices:quarkus-google-cloud-common-grpc",
+    "group_id": "io.quarkiverse.googlecloudservices",
+    "artifact_id": "quarkus-google-cloud-common-grpc",
+    "packages": [
+      "io.quarkiverse.googlecloudservices"
+    ],
+    "keyword": "quarkus",
+    "match_thresholds": [
+      [
+        2,
+        0,
+        0
+      ]
+    ],
+    "tier": "bump-tf",
+    "evidence_count": 1,
+    "search_range": "1.4.0\u21922.2.0",
+    "example_prs": [
+      "https://github.com/quarkiverse/quarkus-micrometer-registry/pull/314"
+    ]
+  }
+]
