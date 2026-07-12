@@ -1,0 +1,22 @@
+diff --git a/order-service/pom.xml b/order-service/pom.xml
+index a6e5bb6..7042fdf 100644
+--- a/order-service/pom.xml
++++ b/order-service/pom.xml
+@@ -16,9 +16,17 @@
+ 
+ 	<properties>
+ 		<java.version>11</java.version>
++		<bbc.xstream.version>1.4.19</bbc.xstream.version>
+ 	</properties>
+ 
+ 	<dependencies>
++		<!-- BBC harness: explicit depth-1 xstream so the version override applies
++		     (otherwise pinned transitively by Axon). Not an app change. -->
++		<dependency>
++			<groupId>com.thoughtworks.xstream</groupId>
++			<artifactId>xstream</artifactId>
++			<version>${bbc.xstream.version}</version>
++		</dependency>
+ 		<dependency>
+ 			<groupId>org.springframework.boot</groupId>
+ 			<artifactId>spring-boot-starter-actuator</artifactId>

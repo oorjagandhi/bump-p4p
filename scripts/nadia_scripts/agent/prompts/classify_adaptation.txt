@@ -1,0 +1,56 @@
+You are a strict classifier for Behavioral Breaking Change (BBC) adaptations in Java Maven dependency bump commits.
+
+A BBC candidate is only useful when:
+1. The old dependency version with old code would pass.
+2. The new dependency version with old code would compile but fail at runtime or test assertion time.
+3. The same new dependency version with the changed Java code would pass again.
+
+Classify whether the Java changes in the provided commit diff look like a genuine adaptation to the bumped library's changed runtime behavior.
+
+Return exactly one JSON object and no prose. Use this schema:
+{
+  "is_adaptation": true,
+  "confidence": "high",
+  "reasoning": "short concrete explanation grounded in the diff",
+  "adaptation_type": "null_guard",
+  "adaptation_location": "production_source",
+  "library_directly_called": true,
+  "library_directly_called_evidence": "import/API call evidence from changed Java files",
+  "bbc_type": "RuntimeException",
+  "expected_exception": "NullPointerException",
+  "red_flags": [],
+  "should_verify": true,
+  "skip_reason": null
+}
+
+Allowed values:
+- confidence: high, medium, low
+- adaptation_type: null_guard, api_replacement, precondition_fix, type_cast, exception_handling, allowlist, limit_override, import_change, new_config_bean, other
+- adaptation_location: production_source, test_only, both
+- bbc_type: RuntimeException, TestAssertion, CheckedException, ProgramAssertion, ResourceError, unclear
+
+Strict rejection rules:
+- If changed Java files do not import or directly call the bumped library's Java package/API, set is_adaptation=false and should_verify=false.
+- If only new Java files were added and no existing Java files were modified, reject.
+- If the dependency is test-scoped but the Java change is in src/main/java, reject unless the diff proves production code genuinely uses the library.
+- If the commit bundles multiple unrelated features/refactors with the dependency bump, reject.
+- If pom.xml adds new dependency blocks rather than just changing a version, reject.
+- If Java changes are internal application logic with no library API calls, reject.
+- If the change likely causes a compile-time failure with old code and new library, classify as syntactic breaking change and reject.
+- When uncertain, reject. Verification time is expensive.
+
+Positive BBC adaptation examples:
+- XStream 1.4.17 to 1.4.18: default-deny serialization causes ForbiddenClassException. Adaptation calls xStream.allowTypesByWildcard or allowTypes. Type allowlist, bbc_type RuntimeException.
+- Apache POI 4.x to 5.x: IOUtils adds 100MB byte-array cap causing RecordFormatException for large workbooks. Adaptation calls IOUtils.setByteArrayMaxOverride. Type limit_override, bbc_type RuntimeException.
+- Spring Security 2.1 to 2.5: passwords require an encoder id, causing IllegalArgumentException for bare passwords. Adaptation prefixes passwords with {noop} or configures PasswordEncoder. Type precondition_fix or new_config_bean.
+- Guava 18 to 19: Futures.withFallback/FutureFallback replaced by catchingAsync/AsyncFunction; old compiled code can hit NoSuchMethodError. Type api_replacement.
+- Mockito 1.x to 2.x: matcher behavior changed; any() no longer accepts null and ArgumentMatcher changed semantics. Adaptation uses typed nullable matchers or interface-style matcher. Type api_replacement or precondition_fix.
+
+Candidate metadata:
+{{CANDIDATE_JSON}}
+
+Deterministic diff summary:
+{{DIFF_SUMMARY_JSON}}
+
+Full unified diff:
+{{DIFF_TEXT}}

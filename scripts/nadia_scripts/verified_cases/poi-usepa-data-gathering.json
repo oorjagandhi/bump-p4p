@@ -1,0 +1,43 @@
+{
+  "case_id": "poi-usepa-data-gathering",
+  "status": "signature_confirmed",
+  "status_note": "US EPA project calls the POI-5-only API IOUtils.setByteArrayMaxOverride in production; both POI 4.1.2 and 5.2.3 appear at the commit, suggesting this commit is itself the 4->5 transition (bump + adaptation together). NOT yet differential-verified.",
+  "recorded_date": "2026-07-01",
+  "discovery_method": "Phase 2 external mining: GitHub code search for 'setByteArrayMaxOverride' (call, not definition), then history check.",
+
+  "library": {
+    "group_id": "org.apache.poi",
+    "artifact_id": "poi / poi-ooxml",
+    "boundary_type": "major",
+    "breaking_boundary": "4.x -> 5.x",
+    "observed_versions_at_commit": ["4.1.2", "5.2.3"]
+  },
+
+  "behavioral_break": {
+    "reference": "Characterized from BUMP (dadoonet/fscrawler POI 4.1.2->5.x TEST_FAILUREs).",
+    "signature_api": "org.apache.poi.util.IOUtils.setByteArrayMaxOverride",
+    "why_it_breaks": "POI 5.0 added a default maximum byte-array size in IOUtils; reading larger data throws at runtime. Compiles fine against POI 5 -> behavioural. Fix raises the limit via the POI-5-only IOUtils.setByteArrayMaxOverride(n).",
+    "category": "runtime_limit_exceeded"
+  },
+
+  "adaptation": {
+    "repo": "USEPA/data_gathering",
+    "commit": "1b65d7a",
+    "commit_message": "Changes for Koc data gathering",
+    "author": "AA\\TMARTI02",
+    "date": "2026-01-20",
+    "adaptation_in_test_code": false,
+    "adaptation_quality": "production_usage_adaptation",
+    "location": "production (src/gov/epa/api/ExperimentalConstants.java)",
+    "the_call": "IOUtils.setByteArrayMaxOverride(200000000);",
+    "summary": "Raised POI's byte-array limit to ~200 MB to process large data files under POI 5's stricter default cap."
+  },
+
+  "verification": {
+    "method": "signature only (causally-clean, POI-5-only API)",
+    "differential_status": "PENDING",
+    "differential_needed": "Build repo, apply POI 4->5 to pre-adaptation code, confirm the byte-limit break manifests and that setByteArrayMaxOverride resolves it (or a generated mimic test).",
+    "standalone_repro_note": "A standalone mimic (IOUtils.toByteArray with a large declared length) was attempted 2026-07-01 and did NOT reproduce the break: POI's byte cap is enforced deep in its document/record parsing, not at the top-level API (toByteArray just allocates until OOM). A faithful repro needs a crafted document or the repo's own parsing path (repo build required). Unlike xstream's one-call ForbiddenClassException, this parser-internal break is not standalone-reproducible.",
+    "conclusion": "Signature-confirmed POI-5 production adaptation; full BBC verification pending (standalone mimic insufficient - see standalone_repro_note)."
+  }
+}

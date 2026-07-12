@@ -1,0 +1,19 @@
+{
+  "break_id": "xstream-1.4.19-forbiddenclass",
+  "library": {
+    "group_id": "com.thoughtworks.xstream",
+    "artifact_id": "xstream",
+    "from_version": "1.4.17",
+    "to_version": "1.4.19",
+    "boundary": "1.4.18"
+  },
+  "bump_breaking_commit": "19e20b0d69cb6dadbc54313cb6c6e5f70670ac93",
+
+  "code_search_query": "\"com.thoughtworks.xstream\" \"1.4.19\" filename:pom.xml",
+
+  "root_cause": "JUDGMENT: xstream 1.4.18+ switched to a default-deny security model; deserializing/serializing a class not on the allowlist throws com.thoughtworks.xstream.security.ForbiddenClassException. Failing test: apache/logging-chainsaw LogPanelPreferenceModelTest#testLogPanelPreferenceModelSerialization (ForbiddenClassException on LogPanelPreferenceModel).",
+
+  "affected_usage_regex": "new XStream\\(|\\.fromXML\\(|\\.toXML\\(",
+
+  "mimic_note": "JUDGMENT: parse/serialize a domain class via XStream without allowlisting it -> ForbiddenClassException under 1.4.19, works under 1.4.17. NOTE: adaptation signature (allowTypes) is confounded with general security hardening; the BREAK side is clean."
+}

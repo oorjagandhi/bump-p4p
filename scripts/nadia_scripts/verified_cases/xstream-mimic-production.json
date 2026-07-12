@@ -1,0 +1,64 @@
+{
+  "case_id": "xstream-mimic-production",
+  "status": "verified_bbc",
+  "case_type": "authored_mimic",
+  "verified_date": "2026-07-06",
+  "verified_by": "3-state differential (Maven 3.9.11, JDK 11) on scratchpad/xstream-mimic",
+
+  "motivation": "The real apache/logging-chainsaw adaptation is test-only (allowTypes added inside the failing test; ~10 production usages left unadapted). This authored mimic reproduces the SAME break with the adaptation in PRODUCTION code, so it demonstrates the production-side fix the chainsaw case lacks.",
+
+  "library": {
+    "group_id": "com.thoughtworks.xstream",
+    "artifact_id": "xstream",
+    "from_version": "1.4.17",
+    "to_version": "1.4.19",
+    "boundary_type": "patch",
+    "dependency_scope": "compile"
+  },
+
+  "in_repo_version_transition": {
+    "crossed_boundary": "n/a",
+    "mechanism": "authored mimic — no real repository history",
+    "bump_commit": null,
+    "evidence": "Self-contained authored project; the 1.4.17 -> 1.4.19 transition is set synthetically by the differential, not a real in-repo commit."
+  },
+
+  "bump_source": {
+    "comment": "Break characterized from BUMP; the failing test here is derived from the BUMP failing test.",
+    "project": "apache/logging-chainsaw",
+    "breaking_commit": "19e20b0d69cb6dadbc54313cb6c6e5f70670ac93",
+    "bump_entry_file": "data/benchmark_test_failures/19e20b0d69cb6dadbc54313cb6c6e5f70670ac93.json",
+    "reproduction_log": "reproductionLogs/successfulReproductionLogs/19e20b0d69cb6dadbc54313cb6c6e5f70670ac93.log",
+    "bump_failing_test": "org.apache.log4j.chainsaw.LogPanelPreferenceModelTest#testLogPanelPreferenceModelSerialization",
+    "java_version": 11
+  },
+
+  "behavioral_break": {
+    "failing_test": "mimic.PreferenceStoreTest#testPreferenceModelSerialization",
+    "exception": "com.thoughtworks.xstream.security.ForbiddenClassException: mimic.PreferenceModel",
+    "affected_class": "mimic.PreferenceModel",
+    "category": "runtime_exception",
+    "why_it_breaks": "xstream 1.4.18 switched its security framework to default-deny: classes not on an explicit allowlist are rejected on unmarshalling. save()/toXML compiles and runs; load()/fromXML throws ForbiddenClassException at runtime -> behavioural break, not syntactic."
+  },
+
+  "adaptation": {
+    "location": "production (src/main/java/mimic/PreferenceStore.java)",
+    "adaptation_in_test_code": false,
+    "adaptation_quality": "production_usage_adaptation",
+    "the_call": "stream.allowTypes(new Class[]{ PreferenceModel.class });",
+    "summary": "The production XStream factory (PreferenceStore.newXStream) allowlists the deserialized domain type to satisfy xstream >=1.4.18 default-deny. The test contains no XStream security config, so a green run proves production code was adapted (contrast the chainsaw case, which fixed only the test).",
+    "artifact": "scripts/nadia_scripts/scratchpad/xstream-mimic"
+  },
+
+  "verification": {
+    "method": "3-state differential build+test with Maven on JDK 11; xstream version swapped via -Dxstream.version, production adaptation toggled via -Dmimic.adapt",
+    "states": [
+      { "name": "1_baseline", "config": "xstream 1.4.17, prod not adapted", "result": "PASS", "tests": "run=1 failures=0 errors=0" },
+      { "name": "2_new_lib_old_code", "config": "xstream 1.4.19, prod not adapted", "result": "FAIL", "detail": "com.thoughtworks.xstream.security.ForbiddenClassException: mimic.PreferenceModel", "tests": "run=1 failures=0 errors=1" },
+      { "name": "3_adapted", "config": "xstream 1.4.19 + allowTypes in PRODUCTION code", "result": "PASS", "tests": "run=1 failures=0 errors=0" }
+    ],
+    "conclusion": "Confirmed BBC with a production-side adaptation: a passing test breaks only under xstream >=1.4.18 with otherwise-unchanged code, and allowlisting the type in production code resolves it."
+  },
+
+  "external_mining_note": "GitHub mining for a real external production adaptation surfaced Apache ActiveMQ (AMQ-8358 upgrade to 1.4.18). Its production XStream whitelist (activemq-stomp XStreamSupport.java, addPermission/allowTypesByWildcard) was added earlier in commit 6f03921b for AMQ-6013 ('restrict classes which can be serialized inside the broker') as PROACTIVE hardening, NOT triggered by the 1.4.18 bump — so at upgrade time only a test (SamplePojo) needed fixing. This is the confounded-signature false-positive mode documented in the methodology: xstream allowTypes co-occurs with general RCE hardening. Hence the authored mimic is used to demonstrate the production-side fix cleanly."
+}

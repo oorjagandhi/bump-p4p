@@ -1,0 +1,44 @@
+{
+  "case_id": "poi-kenzoknz-pdf-converter",
+  "status": "signature_confirmed",
+  "status_note": "The client calls a POI-5-only adaptation API (IOUtils.setByteArrayMaxOverride) in production while on POI 5.2.4, so the adaptation is causally POI-5-triggered. NOT yet differential-verified.",
+  "recorded_date": "2026-07-01",
+  "discovery_method": "Phase 2 external mining: GitHub code search for the POI-5 adaptation signature 'setByteArrayMaxOverride', then find_adaptation.py-style history check.",
+
+  "library": {
+    "group_id": "org.apache.poi",
+    "artifact_id": "poi / poi-ooxml",
+    "boundary_type": "major",
+    "breaking_boundary": "4.x -> 5.x",
+    "observed_version": "5.2.4"
+  },
+
+  "behavioral_break": {
+    "reference": "Characterized from BUMP (dadoonet/fscrawler POI 4.1.2->5.x TEST_FAILUREs).",
+    "signature_api": "org.apache.poi.util.IOUtils.setByteArrayMaxOverride",
+    "why_it_breaks": "POI 5.0 introduced a default maximum byte-array size in IOUtils; reading data larger than the default throws at runtime, so extraction/parsing silently fails. Compiles fine against POI 5 -> behavioural. The fix raises the limit via IOUtils.setByteArrayMaxOverride(n), a POI-5-only API.",
+    "category": "runtime_limit_exceeded"
+  },
+
+  "adaptation": {
+    "repo": "kenzoknz/pdf-converter",
+    "commit": "5f3f39c",
+    "commit_message": "remove unnecessary things",
+    "author": "Nguyen Thanh",
+    "date": "2025-11-20",
+    "adaptation_in_test_code": false,
+    "adaptation_quality": "production_usage_adaptation",
+    "location": "production (src/main/java, servlet/controller code)",
+    "the_call": "IOUtils.setByteArrayMaxOverride(200 * 1024 * 1024); // 200 MB",
+    "summary": "Raised POI's byte-array limit to 200 MB to allow processing large documents under POI 5's stricter default cap.",
+    "caveat": "First appearance of the call in git history is a general commit (\"remove unnecessary things\"); small project. POI version at that commit confirmed as 5.2.4."
+  },
+
+  "verification": {
+    "method": "signature only (causally-clean, POI-5-only API)",
+    "differential_status": "PENDING",
+    "differential_needed": "Build the repo, apply the POI 4->5 bump to pre-adaptation code, confirm the byte-limit break manifests and that setByteArrayMaxOverride resolves it (or a generated mimic test).",
+    "standalone_repro_note": "A standalone mimic (IOUtils.toByteArray with a large declared length) was attempted 2026-07-01 and did NOT reproduce the break: POI's byte cap is enforced deep in its document/record parsing, not at the top-level API (toByteArray just allocates until OOM). A faithful repro needs a crafted document or the repo's own parsing path (repo build required). Unlike xstream's one-call ForbiddenClassException, this parser-internal break is not standalone-reproducible.",
+    "conclusion": "Signature-confirmed POI-5 production adaptation; full BBC verification pending (standalone mimic insufficient - see standalone_repro_note)."
+  }
+}

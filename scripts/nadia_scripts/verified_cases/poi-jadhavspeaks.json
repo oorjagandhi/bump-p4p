@@ -1,0 +1,65 @@
+{
+  "case_id": "poi-jadhavspeaks",
+  "status": "verified_bbc",
+  "status_note": "Real EXTERNAL native-Maven Java production adaptation to the POI 5 byte-cap, found by the pipeline and now CONFIRMED by a full 3-state differential through the real production ExcelParser.parse(). Upgraded from signature_confirmed on 2026-07-09 once the fixture was fixed: the break trips on an .xlsx whose sharedStrings.xml exceeds POI 5's 100,000,000-byte cap, built from DISTINCT, INCOMPRESSIBLE strings (see verification.why_now_reproduced).",
+  "case_type": "external_production_adaptation",
+  "recorded_date": "2026-07-07",
+  "verified_date": "2026-07-09",
+  "discovery_method": "bbc_e2e.py run poi-4.1.2-to-5.x -> mine-commits q='poi setByteArrayMaxOverride' -> classify (native Maven, production). Top *-ranked Maven candidate.",
+
+  "library": {
+    "group_id": "org.apache.poi",
+    "artifact_id": "poi / poi-ooxml / poi-scratchpad",
+    "at_version": "5.2.5",
+    "baseline_used": "4.1.2",
+    "breaking_boundary": "5.0.0 (IOUtils default byte-array cap)",
+    "boundary_type": "major",
+    "dependency_scope": "compile"
+  },
+
+  "bump_source": {
+    "bump_project": "dadoonet/fscrawler",
+    "bump_breaking_commit": "b209fe48162aad0f97eec1ddbb10fae165af4791",
+    "bump_failing_test": "fr.pilato.elasticsearch.crawler.fs.tika.TikaDocParserTest#testExtractFromDocx",
+    "java_version": 11
+  },
+
+  "behavioral_break": {
+    "mechanism": "POI 5.0 introduced a default IOUtils byte-array cap; allocating past it during record/stream parsing throws org.apache.poi.util.RecordFormatException at runtime. Compiles fine -> behavioural. Fix: IOUtils.setByteArrayMaxOverride(n) (POI-5-only API).",
+    "signature_api": "org.apache.poi.util.IOUtils.setByteArrayMaxOverride",
+    "category": "runtime_limit_exceeded"
+  },
+
+  "adaptation": {
+    "repo": "jadhavspeaks/file_compare_diffrent_ext",
+    "commit": "156a9624",
+    "parent_commit": "7d6ffdd3000e705e051ba71f37a6f6789a1bbd9e",
+    "commit_message": "Fix(parser): Increase Excel file size limit",
+    "build_system": "maven",
+    "language": "java",
+    "adaptation_in_test_code": false,
+    "adaptation_quality": "production_usage_adaptation",
+    "production_files": ["src/main/java/com/filecomparator/parser/ExcelParser.java"],
+    "the_call": "IOUtils.setByteArrayMaxOverride(200_000_000);  // MAX_BYTE_ARRAY_OVERRIDE, 'well above default'",
+    "in_repo_causal_evidence": "Added with the comment 'Override POI's default limits to handle large files' in the production parse() method.",
+    "summary": "Raised POI's byte-array cap to 200MB in the production Excel parser to handle large files under POI 5's new default limit."
+  },
+
+  "verification": {
+    "method": "3-state differential RUN on the real production source (ExcelParser.parse -> WorkbookFactory.create) via the repo's own Maven pom, JDK 17, surefire argLine -Xmx3g. States 1&2 use the parent code (7d6ffdd3); state 3 uses the adapted code (156a9624). State 1 downgrades all 3 org.apache.poi artifacts to 4.1.2 in the pom.",
+    "test": "bbc.PoiBbcTest (authored, JUnit5) — builds an .xlsx whose sharedStrings.xml is ~135MB from 4500 DISTINCT, INCOMPRESSIBLE strings, then calls the production ExcelParser.parse(). Preserved in scratchpad/poi-jadhavspeaks-harness/.",
+    "states": [
+      { "name": "1_baseline", "config": "parent code, POI 4.1.2", "result": "PASS", "tests": "run=1 failures=0 errors=0" },
+      { "name": "2_new_lib_old_code", "config": "parent code, POI 5.2.5", "result": "FAIL", "detail": "org.apache.poi.util.RecordFormatException: Tried to read data but the maximum length for this record type is 100,000,000.", "tests": "run=1 failures=0 errors=1" },
+      { "name": "3_adapted", "config": "adapted code (IOUtils.setByteArrayMaxOverride(200_000_000)), POI 5.2.5", "result": "PASS", "tests": "run=1 failures=0 errors=0" }
+    ],
+    "differential_status": "CONFIRMED — baseline passes, the same parent code breaks only under POI 5 with the byte-cap RecordFormatException, and the production override resolves it.",
+    "why_now_reproduced": "The earlier attempt used a ~75MB .xlsx whose 25 cells all held the SAME large string. Two flaws: (1) XSSF shared-string DEDUP collapsed it to one ~3MB entry, and (2) 75MB is under POI 5's 100MB default cap. The fix uses 4500 DISTINCT strings (no dedup) of random letters (INCOMPRESSIBLE, so the zip inflate-ratio / zip-bomb guard is not tripped first) totalling ~135MB in sharedStrings.xml. Reading via WorkbookFactory.create(InputStream) buffers that single zip part into a byte[] through IOUtils, which exceeds the 100MB cap -> RecordFormatException. The 200MB production override clears it.",
+    "gotchas": [
+      "Repetitive/identical content trips POI's zip-bomb guard (RecordFormatException 'Zip bomb detected', MIN_INFLATE_RATIO 0.01) BEFORE the byte cap — the fixture must be incompressible so the part is genuinely >100MB uncompressed at a normal compression ratio.",
+      "Shared-string DEDUP: identical cell strings collapse to one SST entry, so the fixture must use DISTINCT strings.",
+      "Surefire needs -Xmx3g (building + reading ~135MB of strings)."
+    ],
+    "conclusion": "Confirmed BBC: a real external native-Maven production adaptation. The parent code round-trips a large workbook on POI 4.1.2, the same code throws POI 5's byte-cap RecordFormatException, and the production IOUtils.setByteArrayMaxOverride(200MB) resolves it."
+  }
+}

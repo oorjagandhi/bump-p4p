@@ -1,0 +1,19 @@
+{
+  "break_id": "jsoup-1.15-whitespace",
+  "library": {
+    "group_id": "org.jsoup",
+    "artifact_id": "jsoup",
+    "from_version": "1.14.2",
+    "to_version": "1.15.3",
+    "boundary": "1.15.0"
+  },
+  "bump_breaking_commit": "fa6503da9fd5431abca41561a34d54e07fbbf7d0",
+
+  "code_search_query": "\"org.jsoup\" \"1.15\" filename:pom.xml",
+
+  "root_cause": "JUDGMENT: jsoup 1.15 trims trailing whitespace after block open tags in serialized output (1.14.x kept it). This shifts extracted/serialized text, changing downstream output. Failing test: SPARQL-Anything/sparql.anything HTMLMicrodataTest#testMicrodata1 (assertIsomorphic on RDF triples).",
+
+  "affected_usage_regex": "\\.outerHtml\\(|\\.html\\(\\)|\\.toString\\(\\)",
+
+  "mimic_note": "JUDGMENT: standalone mimic = parse HTML, assert output contains a trailing space after a block open tag (present in 1.14.2, trimmed in 1.15.3). See scratchpad/jsoup-mimic/src/test/java/JsoupParseTest.java."
+}

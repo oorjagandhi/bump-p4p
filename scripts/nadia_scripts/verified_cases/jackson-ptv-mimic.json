@@ -1,0 +1,57 @@
+{
+  "case_id": "jackson-ptv-mimic",
+  "status": "verified_bbc",
+  "case_type": "authored_mimic",
+  "verified_date": "2026-07-08",
+  "verified_by": "3-state differential (Maven, JDK 17) on an authored self-contained project (scratchpad/jackson-mimic)",
+  "note": "Authored mimic for Jackson's default-typing default-deny (PolymorphicTypeValidator). Used because every EXTERNAL Jackson PTV adaptation found in mining is either framework-coupled (Spring Security session serialization, e.g. madgeek-arc/resource-catalogue) or a data-driven allowlist-widening (e.g. omprakash201194/kin-keeper), not a clean standalone version-driven break. See jackson-caveat below.",
+
+  "library": {
+    "group_id": "com.fasterxml.jackson.core",
+    "artifact_id": "jackson-databind",
+    "at_version": "2.17.2",
+    "boundary_type": "opt-in security (PolymorphicTypeValidator introduced 2.10; enableDefaultTyping() removed 2.12)",
+    "dependency_scope": "compile"
+  },
+
+  "jackson_caveat": {
+    "not_a_silent_behavioural_break": "Unlike xstream 1.4.18 (which flipped the DEFAULT to deny, so unchanged code silently starts throwing), Jackson's change is primarily a COMPILE break: enableDefaultTyping() was deprecated in 2.10 and REMOVED in 2.12, forcing migration to activateDefaultTyping(PolymorphicTypeValidator). The deny-behaviour (ForbiddenClass-style) only appears once you OPT IN to a restrictive PTV.",
+    "why_mimic_varies_posture_not_version": "Because the deny is opt-in, a pure library-VERSION differential with identical code cannot demonstrate it (old code doesn't compile on the new version). The mimic therefore varies the security POSTURE the upgrade forces a developer to choose: permissive (LaissezFaire) -> restrictive PTV (default-deny) -> allowlisted PTV (adaptation). This is the faithful analogue of the xstream default-deny -> allowlist story.",
+    "external_evidence": {
+      "bump_commits_are_visible": "Unlike the transitive xstream/Axon cases, Jackson is a direct/BOM-managed dependency so version bumps ARE explicit commits, e.g. apache/spark 8eb8f747 (pom 2.9.10 -> 2.10.0, the PTV-introduction boundary), and many CVE-driven <jackson.version> edits.",
+      "real_ptv_adaptations": [
+        "madgeek-arc/resource-catalogue@7f625e24 - SessionConfig.java introduces BasicPolymorphicTypeValidator, but routed through Spring Security session serialization (SecurityJacksonModules.getModules(loader, ptv)) and on Jackson 3 (tools.jackson) / Spring Boot 4 -> framework-coupled, not standalone-verifiable.",
+        "omprakash201194/kin-keeper@89eb519c - CacheConfig.java (native Maven) BasicPolymorphicTypeValidator allowlist, but the commit only WIDENS an existing allowlist (adds java.math) -> data-driven, not version-driven."
+      ]
+    }
+  },
+
+  "adaptation": {
+    "repo": "authored (scratchpad/jackson-mimic)",
+    "build_system": "maven",
+    "language": "java",
+    "adaptation_in_test_code": false,
+    "adaptation_quality": "production_usage_adaptation",
+    "production_files": ["src/main/java/mimic/PaymentStore.java"],
+    "the_call": "BasicPolymorphicTypeValidator.builder().allowIfSubType(\"mimic.\").allowIfSubType(\"java.\").build();  // passed to ObjectMapper.activateDefaultTyping(ptv, NON_FINAL)",
+    "summary": "PaymentStore round-trips an Account (whose polymorphic holder is a Balance) through Jackson default typing. The adaptation is adaptedMapper(): a BasicPolymorphicTypeValidator that allowlists the app's own package, satisfying the default-deny validator."
+  },
+
+  "behavioral_break": {
+    "mechanism": "Jackson default typing with a restrictive PolymorphicTypeValidator denies resolution of any class not on the allowlist during deserialization -> InvalidTypeIdException. Analogous to xstream 1.4.18 ForbiddenClassException.",
+    "affected_class": "mimic.Account (and its polymorphic holder mimic.Balance)",
+    "observed_exception": "com.fasterxml.jackson.databind.exc.InvalidTypeIdException: Could not resolve type id 'mimic.Account' as a subtype of `mimic.Account`: Configured `PolymorphicTypeValidator` (of type `BasicPolymorphicTypeValidator`) denied resolution",
+    "category": "runtime_exception"
+  },
+
+  "verification": {
+    "method": "3-state differential (Maven, JDK 17), Jackson 2.17.2 held constant, varying the production PaymentStore mapper factory (security posture).",
+    "test": "mimic.PaymentStoreBbcTest (JUnit5; round-trip Account, assert the Balance amount survives). Preserved in scratchpad/jackson-mimic/.",
+    "states": [
+      { "name": "1_baseline", "config": "PaymentStore.permissiveMapper() (LaissezFaire default typing)", "result": "PASS", "tests": "run=1 failures=0 errors=0" },
+      { "name": "2_new_lib_old_code", "config": "PaymentStore.securedUnadaptedMapper() (restrictive PTV, app package NOT allowlisted)", "result": "FAIL", "detail": "InvalidTypeIdException: PolymorphicTypeValidator denied resolution of mimic.Account", "tests": "run=1 (deny asserted)" },
+      { "name": "3_adapted", "config": "PaymentStore.adaptedMapper() (restrictive PTV, app package allowlisted)", "result": "PASS", "tests": "run=1 failures=0 errors=0" }
+    ],
+    "conclusion": "Confirmed BBC (authored mimic): permissive default typing round-trips the app's own type; the default-deny posture rejects it with InvalidTypeIdException; the production allowlist (BasicPolymorphicTypeValidator over the app package) resolves it — the Jackson analogue of the xstream 1.4.18 default-deny -> allowlist adaptation."
+  }
+}

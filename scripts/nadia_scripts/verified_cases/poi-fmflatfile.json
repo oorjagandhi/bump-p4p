@@ -1,0 +1,58 @@
+{
+  "case_id": "poi-fmflatfile",
+  "status": "signature_confirmed",
+  "status_note": "Real EXTERNAL production adaptation to the POI 5 byte-array cap, DISCOVERED BY THE PIPELINE (bbc_e2e.py mine-commits). Signature is causally clean: setByteArrayMaxOverride is a POI-5-only API AND the commit message names the exact exception it avoids. Differential not run: the client is Scala/sbt (our Java+Maven harness does not apply) and the POI break is parser-internal (needs a crafted oversized workbook, not a standalone mimic).",
+  "case_type": "external_production_adaptation",
+  "recorded_date": "2026-07-07",
+  "discovery_method": "bbc_e2e.py run poi-4.1.2-to-5.x -> mine-commits q='poi setByteArrayMaxOverride' -> classify (production, not library-source). First case found end-to-end by the automated pipeline.",
+
+  "library": {
+    "group_id": "org.apache.poi",
+    "artifact_id": "poi / poi-ooxml",
+    "at_version": "5.2.3",
+    "breaking_boundary": "5.0.0 (IOUtils default byte-array size cap)",
+    "boundary_type": "major",
+    "dependency_scope": "compile"
+  },
+
+  "bump_source": {
+    "comment": "Break characterized from BUMP (dadoonet/fscrawler POI 4.1.2->5.x TEST_FAILUREs).",
+    "bump_project": "dadoonet/fscrawler",
+    "bump_breaking_commit": "b209fe48162aad0f97eec1ddbb10fae165af4791",
+    "bump_failing_test": "fr.pilato.elasticsearch.crawler.fs.tika.TikaDocParserTest#testExtractFromDocx",
+    "java_version": 11
+  },
+
+  "behavioral_break": {
+    "mechanism": "POI 5.0 introduced a default maximum byte-array size in org.apache.poi.util.IOUtils; reading a record/stream larger than the default throws org.apache.poi.util.RecordFormatException at runtime. Compiles fine against POI 5 -> behavioural, not syntactic. Fix: raise the cap via IOUtils.setByteArrayMaxOverride(n), an API that exists ONLY in POI 5.",
+    "signature_api": "org.apache.poi.util.IOUtils.setByteArrayMaxOverride",
+    "category": "runtime_limit_exceeded"
+  },
+
+  "adaptation": {
+    "repo": "tpunder/fm-flatfile",
+    "repo_note": "Frugal Mechanic FlatFile — a Scala flat-file/Excel reading library (sbt build).",
+    "commit": "db0227d4",
+    "parent_commit": "9a9a9c1f399a5beeb990dcefccf449edddd2648e",
+    "commit_message": "Set IOUtils.setByteArrayMaxOverride to avoid org.apache.poi.util.RecordFormatException",
+    "language": "scala",
+    "adaptation_in_test_code": false,
+    "adaptation_quality": "production_usage_adaptation",
+    "production_files": ["src/main/scala/fm/flatfile/excel/ExcelFlatFileReader.scala"],
+    "the_call": "IOUtils.setByteArrayMaxOverride(1000000000)",
+    "in_repo_causal_evidence": "The commit message explicitly states the call is to AVOID org.apache.poi.util.RecordFormatException — direct attribution to the POI 5 byte-cap behaviour.",
+    "summary": "Raised POI's byte-array cap to ~1e9 in the production Excel reader to cope with POI 5's new default limit."
+  },
+
+  "verification": {
+    "method": "signature only (POI-5-only API + exact exception named in the commit message)",
+    "differential_status": "NOT ATTEMPTED",
+    "differential_blockers": [
+      "Client is Scala/sbt — the Java+Maven harness (scratchpad/*-harness) does not apply; would need an sbt harness.",
+      "POI byte-cap break is parser-internal (enforced deep in record parsing), so it does not reproduce from a standalone top-level mimic; a faithful differential needs a crafted oversized workbook fed through the client's real ExcelFlatFileReader."
+    ],
+    "conclusion": "Signature-confirmed real external PRODUCTION adaptation to the POI 5 byte-cap, found automatically by the pipeline. Full differential out of scope (Scala build + parser-internal break)."
+  },
+
+  "pipeline_note": "First dataset entry produced end-to-end by bbc_e2e.py. Also validated two classifier fixes in this run: (1) library-fork filter — apache/poi and its forks matched the POI-API commit search but are the API DEFINITION not a client CALL, now tagged library_source and excluded; (2) Scala/Kotlin + top-level-module path detection — fm-flatfile's src/main/scala file was initially missed by a .java-only, leading-slash path check."
+}

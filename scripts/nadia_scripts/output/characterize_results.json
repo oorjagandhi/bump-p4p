@@ -1,0 +1,233 @@
+{
+  "0ee8b9376b967938e8efd89a0959214a30d1b3fb": {
+    "tests": [
+      "com.pholser.junit.quickcheck.internal.generator.CompositeGeneratorTest.shrinkingChoosesAComponentCapableOfShrinkingTheValue"
+    ],
+    "asserts": [
+      "- expected:<[3, 6]> but was:<[]>"
+    ],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "8b057977647445aade80627a06bd65867f64b948": {
+    "tests": [
+      "com.pholser.junit.quickcheck.internal.generator.CompositeGeneratorTest.shrinkingChoosesAComponentCapableOfShrinkingTheValue"
+    ],
+    "asserts": [
+      "- expected:<[3, 6]> but was:<[]>"
+    ],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "7c90c61e90e9936d8a7e355de8900214c759cb61": {
+    "tests": [
+      "com.pholser.junit.quickcheck.internal.generator.CompositeGeneratorTest.shrinkingChoosesAComponentCapableOfShrinkingTheValue"
+    ],
+    "asserts": [
+      "- expected:<[3, 6]> but was:<[]>"
+    ],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "4631885da3cfd6601de5d24133fa3828a590ca9e": {
+    "tests": [
+      "com.pholser.junit.quickcheck.internal.generator.CompositeGeneratorTest.shrinkingChoosesAComponentCapableOfShrinkingTheValue"
+    ],
+    "asserts": [
+      "- expected:<[3, 6]> but was:<[]>"
+    ],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "9b63e53888ebdd9c84f4eec3cb661299dea41344": {
+    "tests": [
+      "com.google.api.gax.tracing.OpencensusTracerTest.testLongRunningExample",
+      "com.google.api.gax.tracing.OpencensusTracerFactoryTest.testImplicitParentSpan"
+    ],
+    "asserts": [],
+    "excs": []
+  },
+  "c007e01d4bad22201d0ce3dcf3a4dc04bc282647": {
+    "tests": [],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "89c60030429466a6cca77c2549a53a17c085033d": {
+    "tests": [],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "bab3a3c5b1aa9ee57dcbff7f146576f2c0c7251d": {
+    "tests": [],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "e35a97cf177d8cd7d022c4adca7da24f1a17a2eb": {
+    "tests": [],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "533591407112b14f7ff2d46d515c599eb4674e95": {
+    "tests": [],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "a05bfd52ed33fb68c5edb2b53d9424d82ac60fa8": {
+    "tests": [],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "4bbf6c2f38c57568196164323ded8ba8aff9953d": {
+    "tests": [],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "60d8c1a25e2d7fc688f1b2306be5675f089b74e9": {
+    "tests": [],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "4dd50c6cb5a3ad507f1252df7263080fbe9bc10d": {
+    "tests": [],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "bc73c14c4b588fd53f1f8e5f88be79f827ac6c6e": {
+    "tests": [],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "d2fb00d2a9b8268caf773f70985f39be6eae8ea7": {
+    "tests": [],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "426453d4be2fa291749ffda52de1653e16ddf3c9": {
+    "tests": [],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "097d93fbb2f9998ef1390ad10f92d1b70fda8b90": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "90df9018630b8f8248f332e747d88254d99da1c9": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "4c7b193ce573e31766da82268ffc9ba51412faa6": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "9d450e88e8744638ba37037d6f41e65d9067aa3b": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "b209fe48162aad0f97eec1ddbb10fae165af4791": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "8f16da085185a09deb5f3d810cc66f6e73348a22": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "44a15fa526c10b0c39d8d7337b833d42448fcca4": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "65b5a75419981118d5a65e295abfd2069dfce0b0": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "dde0743630a540bff1ba3033b7016fcfc345122f": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "4507371bb061f3add726d3ab7527bebb8c41960e": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "51e103fc80aec2526ab5dd3bcc2d4d5ce4177842": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "99d4dfc8ca5b2db281f154ca9db3ad953b792b4d": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "30caf72b737bd40b6b4a16c6b25ba574e3048810": {
+    "tests": [],
+    "asserts": [],
+    "excs": []
+  },
+  "d4aade950ffc07b63a0140e43ecf930a2c8aec43": {
+    "tests": [
+      "testMessage(com.github.sardine.impl.SardineExceptionTest)"
+    ],
+    "asserts": [
+      "- expected:<[]m (400 response phra...> but was:<[status code: 400, reason phrase: ]m (400 response phra...>"
+    ],
+    "excs": [
+      "- org.junit.ComparisonFailure"
+    ]
+  },
+  "fa6503da9fd5431abca41561a34d54e07fbbf7d0": {
+    "tests": [
+      "com.github.sparqlanything.html.HTMLMicrodataTest.testMicrodata1",
+      "com.github.sparqlanything.html.HTMLMicrodataRemoteTest.testMicrodata1"
+    ],
+    "asserts": [],
+    "excs": [
+      "- java.lang.AssertionError"
+    ]
+  },
+  "19e20b0d69cb6dadbc54313cb6c6e5f70670ac93": {
+    "tests": [
+      "testLogPanelPreferenceModelSerialization(org.apache.log4j.chainsaw.LogPanelPreferenceModelTest)"
+    ],
+    "asserts": [],
+    "excs": [
+      "- com.thoughtworks.xstream.security.ForbiddenClassException"
+    ]
+  }
+}

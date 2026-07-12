@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>mimic</groupId>
+  <artifactId>xstream-mimic</artifactId>
+  <version>1.0</version>
+  <packaging>jar</packaging>
+
+  <!--
+    Production-shaped mimic of the BUMP xstream break (apache/logging-chainsaw,
+    LogPanelPreferenceModelTest#testLogPanelPreferenceModelSerialization).
+
+    The adaptation (XStream.allowTypes) lives in PRODUCTION code (PreferenceStore),
+    NOT in the test - unlike the real chainsaw commit which only fixed the test.
+
+    3-state differential (see run_differential.sh):
+      1) -Dxstream.version=1.4.17                      -> PASS  (old lib, default-allow)
+      2) -Dxstream.version=1.4.19                      -> FAIL  (ForbiddenClassException)
+      3) -Dxstream.version=1.4.19 -Dmimic.adapt=true   -> PASS  (prod code adapted)
+  -->
+
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- override on the command line: -Dxstream.version=1.4.17 -->
+    <xstream.version>1.4.19</xstream.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>${xstream.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+        <configuration>
+          <!-- forward -Dmimic.adapt to the test JVM so PreferenceStore sees it -->
+          <systemPropertyVariables>
+            <mimic.adapt>${mimic.adapt}</mimic.adapt>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

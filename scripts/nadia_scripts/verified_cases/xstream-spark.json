@@ -1,0 +1,71 @@
+{
+  "case_id": "xstream-spark",
+  "status": "signature_confirmed",
+  "status_note": "Real EXTERNAL native-Maven production adaptation to the xstream 1.4.18 default-deny break, in a mature product (Ignite Realtime Spark, XMPP client), found by the pipeline (commit search). Causally clean (tracked issue SPARK-2259, single-line production allowTypes). NOT differential-verifiable standalone: the production class is coupled to a live XMPP session AND swallows the exception (see verification).",
+  "case_type": "external_production_adaptation",
+  "recorded_date": "2026-07-07",
+  "discovery_method": "bbc_e2e.py run xstream-... -> mine-commits q='xstream ForbiddenClassException' -> classify (native Maven, production). One of 12 *-ranked Maven candidates.",
+
+  "library": {
+    "group_id": "com.thoughtworks.xstream",
+    "artifact_id": "xstream",
+    "at_version": "1.4.18",
+    "baseline_used": "1.4.17",
+    "breaking_boundary": "1.4.18 (default-deny security)",
+    "boundary_type": "patch",
+    "dependency_scope": "compile"
+  },
+
+  "in_repo_version_transition": {
+    "crossed_boundary": true,
+    "mechanism": "direct dependency; explicit boundary-crossing bump commit",
+    "bump_commit": "f0698b7d",
+    "evidence": "Merge commit f0698b7d ('Update XStream to 1.4.18', PR #660) bumps xstream across the 1.4.18 default-deny boundary in the repo's own history; the allowTypes adaptation (SPARK-2259, aad38d68) follows. Strongest in-repo transition of the set: a literal 'Update XStream to 1.4.18' bump commit. (Later f0698b7d -> a4263390 also bumps 1.4.19 -> 1.4.20.)"
+  },
+
+  "bump_source": {
+    "bump_project": "apache/logging-chainsaw",
+    "bump_breaking_commit": "19e20b0d69cb6dadbc54313cb6c6e5f70670ac93",
+    "bump_failing_test": "org.apache.log4j.chainsaw.LogPanelPreferenceModelTest#testLogPanelPreferenceModelSerialization",
+    "java_version": 11
+  },
+
+  "behavioral_break": {
+    "mechanism": "xstream 1.4.18 default-deny: fromXML on a non-allowlisted class throws com.thoughtworks.xstream.security.ForbiddenClassException.",
+    "affected_production_path": "org.jivesoftware.spark.ui.status.CustomMessages.load() -> xstream.fromXML(List<CustomStatusItem>).",
+    "affected_class": "org.jivesoftware.spark.ui.status.CustomStatusItem",
+    "category": "runtime_exception",
+    "live_before_fix": "xstream was already 1.4.18 at the fix's parent (3821d04); the break was live before the fix (two-commit pattern)."
+  },
+
+  "adaptation": {
+    "repo": "igniterealtime/Spark",
+    "repo_note": "Ignite Realtime Spark — a mature open-source XMPP/Jabber client. Multi-module Maven (core module + 20 plugin modules); core depends on the internal 'emoticons' module.",
+    "commit": "aad38d68",
+    "parent_commit": "3821d04ec08e84fef84f32a39fd6b2ce200166e5",
+    "issue": "SPARK-2259",
+    "commit_message": "SPARK-2259 XStream ForbiddenClassException in CustomStatusItem Class",
+    "build_system": "maven",
+    "module": "core",
+    "language": "java",
+    "adaptation_in_test_code": false,
+    "adaptation_quality": "production_usage_adaptation",
+    "production_files": ["core/src/main/java/org/jivesoftware/spark/ui/status/CustomMessages.java"],
+    "the_call": "xstream.allowTypes(new Class[]{CustomStatusItem.class});",
+    "in_repo_causal_evidence": "Tracked issue SPARK-2259 titled 'XStream ForbiddenClassException in CustomStatusItem Class'; the fix is a single line added to the production static XStream initializer.",
+    "summary": "Allowlisted CustomStatusItem on the production static XStream used by CustomMessages.load()/save(), satisfying xstream 1.4.18 default-deny."
+  },
+
+  "verification": {
+    "method": "reuse-pom multi-module harness GENERATED (scratchpad/xstream-spark-harness, -pl core -am, baseline override on core/pom.xml) — but the differential could not be completed standalone.",
+    "differential_status": "NOT COMPLETED (production class not standalone-instantiable)",
+    "blockers": [
+      "Environment coupling: CustomMessages's static field `new File(SparkManager.getUserDirectory(), ...)` runs at class-load; SparkManager.getUserDirectory() calls sessionManager.getUserBareAddress(), which requires a LIVE XMPP session. Referencing CustomMessages in a bare test NPEs before any xstream call — verifying it would require mocking/standing up a Spark session.",
+      "Exception swallowing: CustomMessages.load() catches the exception and returns an empty list, so the break surfaces as empty-vs-populated data, not a thrown exception (testable only via list contents, and only after the environment blocker is solved)."
+    ],
+    "tooling_validated": "Confirmed the reuse-pom harness now supports MULTI-MODULE Maven (--module core -> -pl core -am, test into core/src/test/java, baseline override on core/pom.xml). The generator correctly detected the literal xstream 1.4.18 in core/pom.xml.",
+    "conclusion": "Signature-confirmed real external native-Maven production adaptation in a mature product. Not standalone-differential-verifiable due to live-session coupling + exception swallowing — a general trait of framework-coupled real apps (contrast TVRenamer's simple standalone preference persister)."
+  },
+
+  "lesson": "Native-Maven xstream clients found in the wild are mostly FRAMEWORK-COUPLED (Spark's XMPP session; Axon apps' Spring XStreamConfig beans), so their production xstream path is not exercisable without the framework running. TVRenamer verified cleanly precisely because it was a SIMPLE standalone preferences persister. For a Maven-verifiable BBC, prioritise clients whose adapted production path is callable without app/framework bootstrap."
+}
