@@ -52,9 +52,23 @@ def _git(args, cwd) -> str:
 
 
 def _detect_framework(repo_dir: str) -> str:
-    out = subprocess.run(["git", "grep", "-l", "junit-jupiter"], cwd=repo_dir,
-                         capture_output=True, text=True).stdout
-    return "jupiter (JUnit5)" if out.strip() else "junit4"
+    """Detect JUnit4 vs Jupiter on the module's classpath.
+
+    Robust to Jupiter arriving TRANSITIVELY: Spring Boot's spring-boot-starter-test
+    (2.2+) pulls junit-jupiter with no literal 'junit-jupiter' string in the repo, which
+    the old literal grep missed -> it wrongly reported junit4 and the generated JUnit4
+    test failed to compile against a Jupiter-only classpath.
+    """
+    def grep(pat: str) -> str:
+        return subprocess.run(["git", "grep", "-lE", pat], cwd=repo_dir,
+                              capture_output=True, text=True).stdout.strip()
+    jupiter = grep(r"junit-jupiter|org\.junit\.jupiter|spring-boot-starter-test")
+    junit4 = grep(r"import +org\.junit\.Test;|<artifactId>junit</artifactId>|org\.junit\.runner")
+    if jupiter:
+        return "jupiter (JUnit5)"
+    if junit4:
+        return "junit4"
+    return "jupiter (JUnit5)"   # modern-Maven default when neither signal is present
 
 
 def _gather(cand, repo_dir: str) -> dict:
