@@ -62,3 +62,12 @@ scripts/nadia_scripts/.m2-bbc/
 github_token.txt
 *.token
 .env
+### Build + tooling output ###
+target/
+**/__pycache__/
+*.pyc
+
+### nadia_scripts: run artifacts (regenerable; not research records) ###
+scripts/nadia_scripts/_runlogs/
+scripts/nadia_scripts/cmp_*.json
+scripts/nadia_scripts/_bbc_baseline.py
