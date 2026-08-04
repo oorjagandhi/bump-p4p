@@ -166,6 +166,16 @@ leaves a review queue: a human can pick up the genuinely hard ones.
 This is a **research-integrity property, not a limitation**. The agent is built so that
 the easy way to make a number go up is unavailable to it.
 
+Note on where these land (2026-08-04): `signature_confirmed` remains a valid agent
+*outcome*, but it is no longer a *case*. `verified_cases/` now holds only entries that
+satisfy all five inclusion rules in its README; a `signature_confirmed` result is filed
+under `verified_cases/excluded/` with the reason. The distinction matters because the two
+were previously stored side by side under one `status` field, so a count of the folder
+mixed "proved by differential" with "looks right but never run". Five POI entries sat in
+that state — POI's byte cap is enforced inside its document parsing, so a standalone
+repro needs a crafted document and the repo's own build, which is exactly the
+`signature_confirmed` condition.
+
 ---
 
 ## 6. What this buys the research
@@ -193,6 +203,9 @@ design that promised that would be the untrustworthy one.
 
 ## 7. Where it stands today
 
+*Status as of 2026-08-04. The figures below replace an earlier count of "16 case files —
+9 verified_bbc, 6 signature_confirmed"; see "What changed" at the end of this section.*
+
 **Working:**
 - Deterministic plumbing — `agent/orchestrator.py` implements the state machine: clone,
   JDK selection, the three-state runner, signature matching, outcome classification.
@@ -200,26 +213,64 @@ design that promised that would be the untrustworthy one.
   (`agent/prompts/seam_a_testgen.md`, `seam_b_diagnose.md`).
 - The seam implementations exist in `agent/seams.py`, including deterministic input
   gathering (adaptation diff, adapted production code, test-framework detection).
-- The method itself is proven end-to-end by hand: **16 case files** in `verified_cases/`
-  — 9 `verified_bbc`, 6 `signature_confirmed` — across XStream, POI, Jackson and
-  SnakeYAML. (Two of the verified entries are constructed mimics rather than real
-  repositories, and are marked as such; real-repository cases are the ones that count.)
 - The LLM seams are proven in the **Claude-as-seam** configuration — the model answering
-  the seam directly, with the deterministic harness around it.
+  the seam directly, with the deterministic harness around it. Every authored driver in
+  the dataset was produced this way.
+- **Candidate screening is now six deterministic gates**, not one: production adaptation,
+  content evidence (the diff really touches the library), default-branch reachability,
+  boundary traversal (direct **and transitive**), compile-vs-behavioural break, and
+  trigger (does the client's data reach the changed behaviour). Each rejects a class of
+  candidate that previously reached the oracle and wasted a run.
+- **`test_gates.py`** holds regression fixtures for the two most error-prone gates, with
+  BOTH polarities. This exists because gates fail silently: a gate stuck on "no" is
+  indistinguishable from one reporting a genuine negative, and two did exactly that.
+- **`agent/acceptance_artshishkin.py` passes**, reproducing the recorded 3-state result
+  exactly (PASS / FAIL+signature / PASS, matching test counts).
 
 **Not yet working:**
-- The **headless** configuration (`seams.py` calling the Anthropic SDK unattended) needs
-  the `anthropic` package installed and a credential in the environment. Until then the
-  agent runs with a human or an interactive model at the seams, not autonomously.
+- The **headless** configuration (`seams.py` calling the Anthropic SDK unattended) needs a
+  credential in the environment. The SDK is installed; `ANTHROPIC_API_KEY` is not set.
+  Until then the agent runs with an interactive model at the seams, not autonomously.
 - `agent/fanout.py` mis-buckets candidates when spreading work across a break's candidate
-  list, so the fan-out layer is not yet trustworthy for a full unattended sweep.
+  list, so the fan-out layer is not trustworthy for a full unattended sweep. Single-case
+  autonomy is testable now; fan-out is not.
 - `verify.version_property` is still carried as a TODO in the orchestrator rather than
   resolved from the catalog per break.
 
-**The acceptance test** for autonomy is deliberately conservative: re-verify two cases we
-already established by hand (`acceptance_jadhavspeaks.py`, `acceptance_amirsnw.py`) and
-require the agent to reproduce, unaided, what we produced manually. Only after that does
-fanning out over the catalog mean anything.
+**The dataset today:** 3 cases in `verified_cases/`, each with a recorded 3-state
+differential — `xstream-tvrenamer` (direct crossing), `xstream-axon-artshishkin` and
+`xstream-axon-saga-einsteinarbert` (both transitive). Everything else lives in
+`verified_cases/excluded/`, sorted by which inclusion rule it fails: `authored_mimics/`,
+`mechanism_only/`, `no_boundary_crossing/`. A case must satisfy all five rules in that
+folder's README — verified by differential, production code, real external repo, a client
+adaptation rather than a mechanism demo, and a boundary crossing in the client's own
+history.
+
+**The acceptance test** for autonomy is deliberately conservative: re-verify a case we
+already established by hand and require the agent to reproduce it unaided. The current
+bar is `acceptance_artshishkin.py`. The two older scripts
+(`acceptance_jadhavspeaks.py`, `acceptance_amirsnw.py`) target cases that are now in
+`excluded/no_boundary_crossing/` — both clients were born past their boundary — so they no
+longer validate against anything that counts. In all three, SEAM_A output is FROZEN into
+the script; they validate the deterministic half given a known-good seam result. The
+autonomy test is to replace that constant with a live `seams.generate_test(...)` call and
+require the same verdict.
+
+**What changed on 2026-08-04, and why the numbers moved:**
+- `verify_traversal` had **never confirmed a candidate**: `_gh()` called `.get()` on
+  GitHub's list responses and `find_boundary_bump` swallowed the resulting error as "no
+  commits". Every traversal verdict recorded before that date is void.
+- Traversal now resolves the version the build **actually gets**, so crossings that arrive
+  through a framework are visible. Two Axon cases previously filed as non-crossings turned
+  out to be genuine transitive crossings.
+- The inclusion rules were made explicit and applied, which moved most former entries into
+  `excluded/`. The count fell from 16 files to 3 cases. The earlier number was not wrong
+  arithmetic — it summed four different kinds of evidence under one status field.
+- `02_verify_bbc.py` (verify against the client's OWN test suite) was fixed and run on the
+  traversal-confirmed pairs. It returned `no_bc` for two hand-verified cases: **false
+  negatives**. The cause is structural — BUMP's corpus exists because a test failed, but
+  externally mined adaptations reached production precisely because no test caught them.
+  Operating rule: that tool may PROMOTE a case, never REJECT one.
 
 ---
 
