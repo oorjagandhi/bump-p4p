@@ -901,6 +901,12 @@ def summarize():
 MAX_TRAVERSAL_COMMITS = int(os.environ.get("BBC_MAX_TRAVERSAL_COMMITS", "200"))
 # How many build-file commits (newest-first from the adapt commit) to scan for the bump.
 TRAVERSAL_SCAN = int(os.environ.get("BBC_TRAVERSAL_SCAN", "200"))
+# Transitive crossings COUNT (2026-08-04): a client who bumped a framework that moved
+# the library across the boundary, then adapted production code, experienced the break
+# just as much as one who bumped the library directly. Resolution is a POM walk per
+# commit, so it is budgeted separately from the (cheap) declared-version scan.
+RESOLVE_TRANSITIVE = os.environ.get("BBC_RESOLVE_TRANSITIVE", "1").lower() not in ("0", "false", "no")
+TRANSITIVE_SCAN = int(os.environ.get("BBC_TRANSITIVE_SCAN", "30"))
 
 
 def _parse_ver(s):
@@ -942,11 +948,40 @@ def _candidate_buildfiles(repo, adapt_sha, token):
 
 
 def find_boundary_bump(repo, brk, token, adapt_sha, max_scan=TRAVERSAL_SCAN):
-    """Walk each build file's history (newest-first from adapt_sha) for a commit that bumps the
-    target DIRECT dependency across the break boundary. Returns the bump commit or None.
-    Transitive deps (no <version> to read) never resolve -> correctly return None."""
+    """Walk each build file's history (newest-first from adapt_sha) for a commit whose
+    RESOLVED target version crosses the break boundary.
+
+    Declared-version first (cheap, exact). But when the library is not declared in the
+    client's pom it arrives transitively, and reading the pom text can never see it —
+    which is what made every Axon case look like a non-traversal. So fall back to the
+    version the build actually resolves to (resolve_version, a Maven Central POM walk).
+    That separates the two situations the old verdict conflated:
+
+      transitive crossing  resolved below -> at/above the boundary  -> IS a case
+      born past boundary   resolved >= boundary on both sides       -> NOT a case
+      unresolvable         -> reported as such, never as "no crossing"
+
+    Returns the bump commit with `kind` (direct|transitive) and `via` (the coordinate
+    the crossing came through), or None.
+    """
     gid, aid = brk["library"]["group_id"], brk["library"]["artifact_id"]
     boundary = brk["verify"]["break_boundary"]
+    budget = TRANSITIVE_SCAN if RESOLVE_TRANSITIVE else 0
+    unresolved = 0
+
+    def _resolved(bf_path, sha):
+        """(version, kind, via) the build actually gets at this commit."""
+        text = _gh_file(repo, bf_path, sha, token)
+        if text is None:
+            return None, None, None
+        try:
+            import resolve_version as RV
+        except ImportError:
+            return None, None, None
+        r = RV.resolve_from_client(text, gid, aid)
+        via = r["path"][0] if r.get("path") else None
+        return r["version"], r["kind"], via
+
     for bf in _candidate_buildfiles(repo, adapt_sha, token):
         try:
             commits = _gh(f"{GH}/repos/{repo}/commits", token, path=bf, sha=adapt_sha, per_page=max_scan)
@@ -965,22 +1000,51 @@ def find_boundary_bump(repo, brk, token, adapt_sha, max_scan=TRAVERSAL_SCAN):
             if not parents:
                 continue
             vnew = dep_version(_gh_file(repo, bf, c["sha"], token), gid, aid)
-            if not vnew:
+            if vnew:
+                vold = dep_version(_gh_file(repo, bf, parents[0]["sha"], token), gid, aid)
+                if _crosses_boundary(vold, vnew, boundary):
+                    return {"bump_sha": c["sha"], "buildfile": bf,
+                            "from": vold, "to": vnew, "kind": "direct", "via": None,
+                            "date": c["commit"]["committer"]["date"]}
                 continue
-            vold = dep_version(_gh_file(repo, bf, parents[0]["sha"], token), gid, aid)
-            if _crosses_boundary(vold, vnew, boundary):
-                return {"bump_sha": c["sha"], "buildfile": bf, "from": vold, "to": vnew,
+
+            # Not declared here -> the library is transitive. Resolve what the build
+            # really gets on each side. Budgeted: each resolution is a POM walk.
+            if budget <= 0:
+                continue
+            budget -= 1
+            rnew, knew, via = _resolved(bf, c["sha"])
+            if not rnew:
+                unresolved += 1
+                continue
+            rold, _, via_old = _resolved(bf, parents[0]["sha"])
+            if not rold:
+                unresolved += 1
+                continue
+            if _crosses_boundary(rold, rnew, boundary):
+                return {"bump_sha": c["sha"], "buildfile": bf,
+                        "from": rold, "to": rnew, "kind": knew or "transitive",
+                        "via": via or via_old,
                         "date": c["commit"]["committer"]["date"]}
+    if unresolved:
+        return {"unresolved": unresolved}
     return None
 
 
 def verify_traversal(repo, adapt_sha, brk, token, max_commits=MAX_TRAVERSAL_COMMITS):
     """Confirm the client crossed the break boundary within max_commits of the adaptation."""
     bump = find_boundary_bump(repo, brk, token, adapt_sha)
+    if bump and "bump_sha" not in bump:
+        # resolution failed on every transitive candidate — unknown, NOT a negative
+        return {"traversal_confirmed": False, "resolution": "unresolved",
+                "reason": f"no declared-version crossing, and the transitive version "
+                          f"could not be resolved for {bump['unresolved']} commit(s) "
+                          f"(BOM/parent-managed or unavailable POM) — undecided, "
+                          f"confirm with `mvn dependency:tree`"}
     if not bump:
         return {"traversal_confirmed": False,
-                "reason": "no boundary-crossing DIRECT-dep bump in the adaptation's ancestry "
-                          "(transitive dependency, or born on the new version)"}
+                "reason": "no boundary-crossing bump in the adaptation's ancestry, "
+                          "declared or resolved (client was born at/above the boundary)"}
     # Commits from the bump to the adaptation. Same commit is valid; otherwise
     # the bump must be an ancestor of the adaptation commit.
     dist = None
@@ -999,10 +1063,12 @@ def verify_traversal(repo, adapt_sha, brk, token, max_commits=MAX_TRAVERSAL_COMM
                 "reason": "bump found but could not confirm it precedes the adaptation"}
     ok = 0 <= dist <= max_commits
     shape = "BUNDLED_BUMP_AND_ADAPTATION" if dist == 0 else "POST_MERGE_FIX"
+    kind = bump.get("kind", "direct")
+    via = f" via {bump['via']}" if bump.get("via") else ""
     return {"traversal_confirmed": ok, "distance_commits": dist, "bump": bump,
-            "shape": shape,
-            "reason": (f"bump {bump['from']}->{bump['to']} in {bump['buildfile']} "
-                       f"@{bump['bump_sha'][:8]}, "
+            "shape": shape, "traversal_kind": kind,
+            "reason": (f"[{kind}] bump {bump['from']}->{bump['to']}{via} in "
+                       f"{bump['buildfile']} @{bump['bump_sha'][:8]}, "
                        f"{'same commit as adaptation' if dist == 0 else str(dist) + ' commits before the adaptation'}"
                        if ok else
                        f"bump {bump['from']}->{bump['to']} found but {dist} commits away "

@@ -45,9 +45,18 @@ TRAVERSAL_FIXTURES = [
      "apache/logging-chainsaw", "7ec771e2fbc0", True),
     ("TVRenamer POST_MERGE_FIX (gradle build file)", XS,
      "The-Ant-Forge/TVRenamer", "b236f68e", True),
-    ("Axon artshishkin — XStream is transitive", XS,
-     "artshishkin/art-kargopolov-cqrs-saga-axon-microservices", "b76d747f8d27", False),
-    ("Axon amirsnw — XStream is transitive", XS,
+    # Transitive crossing: the client bumped axon-spring-boot-starter 4.5 -> 4.5.14,
+    # which moved xstream 1.4.16 -> 1.4.19 across the 1.4.18 boundary. Recorded as a
+    # NON-traversal until 2026-08-04 — declared-version traversal cannot see it, and
+    # the failure message ("transitive dependency, or born on the new version")
+    # conflated a real crossing with a non-case. This is the known-POSITIVE for the
+    # transitive resolver; if it ever reverts to False the POM walk has regressed.
+    ("Axon artshishkin — TRANSITIVE crossing via axon-spring-boot-starter", XS,
+     "artshishkin/art-kargopolov-cqrs-saga-axon-microservices", "b76d747f8d27", True),
+    # Same shape, but its chain is BOM/parent-managed and does not resolve from
+    # Maven Central alone -> reported `unresolved`. traversal_confirmed is False,
+    # but the verdict is UNDECIDED, not a negative: needs `mvn dependency:tree`.
+    ("Axon amirsnw — unresolved chain (undecided, not a negative)", XS,
      "amirsnw/chainrtrade-axon-CQRS-DDD", "d408d4cac768", False),
 ]
 
