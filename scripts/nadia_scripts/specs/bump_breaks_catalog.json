@@ -1,7 +1,54 @@
 {
  "_comment": "Master catalog of BUMP-confirmed behavioural breaks selected for this study. Each entry is anchored to a real BUMP TEST_FAILURE reproduction (breaking_commit -> data/benchmark_test_failures/<sha>.json + reproductionLogs/successfulReproductionLogs/<sha>.log). Use `bbc_pipeline.py characterize <breaking_commit>` to pull the exact failing test + exception, then derive a per-break spec in this folder. SHAs verified against data/benchmark_test_failures on 2026-07-06.",
- "_provenance": "Curated from BUMP (chains-project/breaking-updates). All entries are failureCategory=TEST_FAILURE, javaVersionUsedForReproduction=11.",
+ "_provenance": "MIXED SOURCES. Most entries are curated from BUMP (chains-project/breaking-updates), failureCategory=TEST_FAILURE, javaVersionUsedForReproduction=11 — these have a populated 'clients' array with breaking_commit(s). A GROWING MINORITY are EXTERNAL breaks mined from security advisories (OSV Maven feed via mine_advisories.py), NOT from BUMP: these carry a top-level \"provenance\":\"EXTERNAL_ADVISORY_NOT_BUMP\" flag plus an 'external_source' block, have an empty 'clients' array (no BUMP breaking_commit), and are found via 'mine-commits'+'classify' rather than 'characterize'/'run'.",
  "breaks": [
+  {
+   "break_id": "commons-io-2.7-to-2.11-copyfile-iae",
+   "library": {
+    "group_id": "commons-io",
+    "artifact_id": "commons-io",
+    "from_version": "2.7",
+    "to_version": "2.11.0",
+    "boundary_type": "minor",
+    "search_boundary": "2.7 -> 2.11.0",
+    "dependency_scope": "compile"
+   },
+   "why_it_breaks": "commons-io 2.8.0 added strict input validation (FileUtils.requireFile). FileUtils.copyFile(srcFile, destFile) with a DIRECTORY as srcFile now throws an UNCHECKED java.lang.IllegalArgumentException ('Parameter 'srcFile' is not a file: <path>'), where <=2.7 threw a CHECKED IOException. Client code with catch(IOException) around copyFile no longer catches it, so the failure escapes to the production path.",
+   "clients": [
+    {
+     "project": "cucumber-reporting",
+     "breaking_commit": "12684ee6cfd293b27c08495f97900bcd849b452c",
+     "to_version": "2.11.0"
+    }
+   ],
+   "characterization": {
+    "failing_tests": [
+     "net.masterthought.cucumber.ReportBuilderTest#copyCustomResources_OnDirAsFile_ThrowsIOException (cucumber-reporting)"
+    ],
+    "signal": "java.lang.IllegalArgumentException: Parameter 'srcFile' is not a file: <path> at org.apache.commons.io.FileUtils.requireFile / FileUtils.copyFile. commons-io 2.8+ throws unchecked IAE where 2.7 threw checked IOException.",
+    "category": "exception_type_change",
+    "repro_log": "reproductionLogs/successfulReproductionLogs/12684ee6cfd293b27c08495f97900bcd849b452c.log",
+    "characterized_date": "2026-07-15"
+   },
+   "mining": {
+    "library_keyword": "commons-io",
+    "signal_quality": "medium",
+    "commit_search_terms": [
+     "commons-io is not a file",
+     "requireFile",
+     "commons-io copyFile IllegalArgumentException",
+     "commons-io 2.8 copyFile"
+    ]
+   },
+   "verify": {
+    "version_property": "bbc.commons-io.version",
+    "runnable_baseline": "2.7",
+    "break_boundary": "2.8.0",
+    "java": 11,
+    "jvm_add_opens": [],
+    "signal_grep": "IllegalArgumentException.*is not a file|requireFile"
+   }
+  },
   {
    "break_id": "mockito-4.11-to-5.x-inline",
    "library": {
@@ -62,6 +109,7 @@
     ]
    },
    "verify": {
+    "version_property": "bbc.mockito-core.version",
     "runnable_baseline": "4.11.0",
     "break_boundary": "5.0.0",
     "java": 11,
@@ -124,15 +172,45 @@
     "commit_search_terms": [
      "logback 1.4",
      "logback-classic 1.4",
-     "jakarta logback"
+     "jakarta logback",
+     "logback 1.4.0",
+     "logback 1.4.1",
+     "logback 1.4.5",
+     "logback 1.4.6",
+     "bump logback",
+     "upgrade logback",
+     "update logback dependency",
+     "logback slf4j 2",
+     "StaticLoggerBinder",
+     "NOPLogger",
+     "logback ServiceLoader",
+     "slf4j binding logback",
+     "logback jakarta"
+    ],
+    "direct_bump_search_terms": [
+     "bump",
+     "upgrade",
+     "update dependency",
+     "dependency update",
+     "1.4.0",
+     "1.4.1",
+     "1.4.5",
+     "1.4.6",
+     "slf4j 2"
     ]
    },
    "verify": {
+    "version_property": "bbc.logback-classic.version",
     "runnable_baseline": "1.2.11",
     "break_boundary": "1.4.0",
     "java": 11,
     "jvm_add_opens": [],
-    "signal_grep": "AssertionError"
+    "signal_grep": "StaticLoggerBinder|NOPLogger|NoClassDefFoundError|Failed to load class|SLF4J"
+   },
+   "brief": {
+    "what_changed": "logback 1.4.0 moves to the SLF4J 2.x ServiceLoader binding and drops org.slf4j.impl.StaticLoggerBinder. A client still pinned to slf4j-api 1.7.x binds nothing: LoggerFactory silently falls back to a NOP logger, so logging output disappears rather than erroring. Where the old binder class is referenced directly, or a 1.7-era appender/config API is used, it fails harder.",
+    "expected_signal_hint": "logging output silently becomes empty (NOP logger substituted), or NoClassDefFoundError/ClassNotFoundException on org.slf4j.impl.StaticLoggerBinder, or an SLF4J binding warning on stderr instead of the expected log record",
+    "signal_pattern": "StaticLoggerBinder|NOPLogger|NoClassDefFoundError|Failed to load class|SLF4J"
    }
   },
   {
@@ -205,6 +283,7 @@
     ]
    },
    "verify": {
+    "version_property": "bbc.slf4j-api.version",
     "runnable_baseline": "1.7.32",
     "break_boundary": "2.0.0",
     "java": 11,
@@ -266,6 +345,7 @@
     ]
    },
    "verify": {
+    "version_property": "bbc.poi-ooxml.version",
     "runnable_baseline": "4.1.2",
     "break_boundary": "5.0.0",
     "java": 11,
@@ -324,10 +404,13 @@
     "commit_search_terms": [
      "setByteArrayMaxOverride",
      "IOUtils.setByteArrayMaxOverride",
+     "getByteArrayMaxOverride",
+     "ByteArrayMaxOverride",
      "POITextExtractor"
     ]
    },
    "verify": {
+    "version_property": "bbc.poi.version",
     "runnable_baseline": "4.1.2",
     "break_boundary": "5.0.0",
     "java": 11,
@@ -389,10 +472,13 @@
     "signal_quality": "clean",
     "commit_search_terms": [
      "setByteArrayMaxOverride",
-     "IOUtils"
+     "IOUtils.setByteArrayMaxOverride",
+     "getByteArrayMaxOverride",
+     "ByteArrayMaxOverride"
     ]
    },
    "verify": {
+    "version_property": "bbc.poi-scratchpad.version",
     "runnable_baseline": "4.1.2",
     "break_boundary": "5.0.0",
     "java": 11,
@@ -438,6 +524,7 @@
     ]
    },
    "verify": {
+    "version_property": "bbc.httpclient.version",
     "runnable_baseline": "4.5.1",
     "break_boundary": "4.5.13",
     "java": 11,
@@ -482,15 +569,46 @@
      "jsoup 1.15",
      "prettyPrint",
      "outerHtml",
-     "Entities"
+     "Entities",
+     "jsoup 1.15.0",
+     "jsoup 1.15.1",
+     "jsoup 1.15.2",
+     "jsoup 1.15.3",
+     "bump jsoup",
+     "upgrade jsoup",
+     "update jsoup dependency",
+     "jsoup whitespace",
+     "jsoup prettyPrint false",
+     "jsoup wholeText",
+     "jsoup outputSettings",
+     "jsoup indentAmount",
+     "jsoup maxPaddingWidth",
+     "jsoup text whitespace",
+     "jsoup cleaned output"
+    ],
+    "direct_bump_search_terms": [
+     "bump",
+     "upgrade",
+     "update dependency",
+     "dependency update",
+     "1.15.0",
+     "1.15.1",
+     "1.15.2",
+     "1.15.3"
     ]
    },
    "verify": {
+    "version_property": "bbc.jsoup.version",
     "runnable_baseline": "1.14.2",
     "break_boundary": "1.15.0",
     "java": 11,
     "jvm_add_opens": [],
-    "signal_grep": "AssertionError"
+    "signal_grep": "ComparisonFailure|AssertionError|AssertionFailedError|expected:.*but was:"
+   },
+   "brief": {
+    "what_changed": "jsoup 1.15.x changed HTML output and text extraction behaviour: pretty-print indentation and whitespace normalisation were reworked, text-node trimming around inline/block boundaries changed, and Safelist/cleaning output shifted accordingly. Client code compiles unchanged; the break shows up as a different output string, not an exception. Adaptations typically switch to wholeText(), set outputSettings().prettyPrint(false) or indentAmount/maxPaddingWidth, or update expected strings.",
+    "expected_signal_hint": "an assertion failure (AssertionError / ComparisonFailure) on the exact HTML or extracted-text string produced by the client; whitespace, newlines or indentation differ; no exception is thrown",
+    "signal_pattern": "ComparisonFailure|AssertionError|AssertionFailedError|expected:.*but was:"
    }
   },
   {
@@ -529,10 +647,42 @@
     "commit_search_terms": [
      "ForbiddenClassException",
      "allowTypes",
-     "allowTypesByWildcard"
+     "allowTypesByWildcard",
+     "setupDefaultSecurity",
+     "addPermission",
+     "allowTypeHierarchy",
+     "AnyTypePermission",
+     "NoTypePermission",
+     "xstream 1.4.18",
+     "xstream 1.4.19",
+     "xstream 1.4.20",
+     "xstream 1.4.21",
+     "bump xstream",
+     "upgrade xstream",
+     "update xstream dependency",
+     "xstream security",
+     "XStream security permissions",
+     "explicit security permissions",
+     "XStream whitelist",
+     "XStream allowlist",
+     "XStream permissions",
+     "fromXML ForbiddenClassException"
+    ],
+    "direct_bump_search_terms": [
+     "bump",
+     "upgrade",
+     "update dependency",
+     "dependency update",
+     "1.4.18",
+     "1.4.19",
+     "1.4.20",
+     "1.4.21",
+     "security update",
+     "CVE"
     ]
    },
    "verify": {
+    "version_property": "bbc.xstream.version",
     "runnable_baseline": "1.4.17",
     "break_boundary": "1.4.18",
     "java": 17,
@@ -544,8 +694,13 @@
      "--add-opens java.base/java.io=ALL-UNNAMED",
      "--add-opens java.desktop/java.beans=ALL-UNNAMED"
     ],
-    "signal_grep": "ForbiddenClassException: [A-Za-z.]+",
+    "signal_grep": "ForbiddenClassException|NoTypePermission|security framework of XStream not initialized|no security framework configured",
     "note": "PROVEN end-to-end on The-Ant-Forge/TVRenamer (verified_cases/xstream-tvrenamer.json)."
+   },
+   "brief": {
+    "what_changed": "XStream changed its security model from a blacklist (deny a few known-dangerous types, allow everything else) to a whitelist (allow only a small set of built-in types, deny everything else). Client code that unmarshals its own domain types without first calling allowTypes / allowTypesByWildcard / addPermission still compiles and still marshals correctly, but now throws at unmarshal time. Marshalling (object -> XML) is unaffected; the break is on the read path.",
+    "expected_signal_hint": "com.thoughtworks.xstream.security.ForbiddenClassException (wrapped in a ConversionException / CannotResolveClassException) raised from fromXML/unmarshal on a client domain type",
+    "signal_pattern": "ForbiddenClassException|NoTypePermission|security framework of XStream not initialized|no security framework configured"
    }
   },
   {
@@ -591,6 +746,7 @@
     ]
    },
    "verify": {
+    "version_property": "bbc.json-smart.version",
     "runnable_baseline": "2.4.8",
     "break_boundary": "2.4.9",
     "java": 11,
@@ -641,6 +797,7 @@
     ]
    },
    "verify": {
+    "version_property": "bbc.json.version",
     "runnable_baseline": "pick a pre-strictness org.json (e.g. an early-2020s release)",
     "break_boundary": "the release that added strict getString coercion",
     "java": 11,
@@ -688,11 +845,199 @@
     ]
    },
    "verify": {
+    "version_property": "bbc.h2.version",
     "runnable_baseline": "1.3.175 (or 1.4.200)",
     "break_boundary": "2.0.x",
     "java": 11,
     "signal_grep": "SqlException|Syntax error|reserved keyword",
     "note": "NOT yet verified. Framework-mediated (Hibernate) + adaptation often config (JDBC URL MODE/NON_KEYWORDS) or schema; may need the app's DB. Medium priority."
+   }
+  },
+  {
+   "break_id": "snakeyaml-1.x-to-2.0-safeconstructor",
+   "provenance": "EXTERNAL_ADVISORY_NOT_BUMP",
+   "_provenance_note": "This entry is NOT from BUMP. It was discovered by mine_advisories.py from the OSV Maven security-advisory feed (GHSA-mjmj-j48q-9wg2 / CVE-2022-1471), NOT from a BUMP TEST_FAILURE reproduction. There is no BUMP breaking_commit; 'clients' is empty until mining finds real client adaptations.",
+   "library": {
+    "group_id": "org.yaml",
+    "artifact_id": "snakeyaml",
+    "from_version": "1.33",
+    "to_version": "2.0",
+    "boundary_type": "major",
+    "search_boundary": "1.x -> 2.0",
+    "dependency_scope": "compile"
+   },
+   "why_it_breaks": "snakeyaml 2.0 (CVE-2022-1471) makes SafeConstructor the effective default via a restrictive LoaderOptions TagInspector: new Yaml().load(...) no longer instantiates arbitrary Java types from YAML global tags. YAML that maps to application types (custom '!!com.example.Foo' tags) that 1.x deserialized now throws at load time. Client code still compiles; it throws at runtime on previously-accepted input -> semantic break. Adaptation: pass an explicit Constructor, or configure LoaderOptions.setTagInspector(tag -> tag.getClassName().equals(...)) / a trusted-tag inspector to re-allow the needed types.",
+   "external_source": {
+    "advisory": "GHSA-mjmj-j48q-9wg2",
+    "cve": "CVE-2022-1471",
+    "cwe": [
+     "CWE-502",
+     "CWE-20"
+    ],
+    "discovered_via": "mine_advisories.py (OSV Maven feed) — deserialize tier, default-deny",
+    "note": "EXTERNAL break: NOT from BUMP, so no clients[0].breaking_commit. The 'characterize' and 'run' subcommands require a BUMP breaking_commit and do NOT apply here; use 'mine-commits' then 'classify'."
+   },
+   "spec": null,
+   "verified_case": "../verified_cases/snakeyaml-mongoose.json",
+   "verify_status": "VERIFIED_BBC 2026-07-20 — 3-state differential green (1.33 PASS / 2.0 FAIL 'Global tag is not allowed' / adapted PASS) on scratchpad/snakeyaml-mongoose-harness. Real signature_confirmed clients: telaminai/mongoose-plugins@9e5916e1, Minekarta-Studio/KartaEmeraldCurrency@8bb46ffa, quarkusio/quarkus@06a8c629. Mining yield: 275 commits / 199 repos. FIRST external-advisory-mined break proven end-to-end.",
+   "clients": [],
+   "characterization": {
+    "failing_tests": [],
+    "signal": "org.yaml.snakeyaml.constructor.ConstructorException / YAMLException: 'Global tag is not allowed' (or 'could not determine a constructor for the tag') — 2.0 restrictive TagInspector rejects arbitrary-type YAML that 1.x accepted.",
+    "category": "runtime_exception",
+    "repro_log": null,
+    "characterized_date": "2026-07-20",
+    "note": "Characterization derived from the advisory + the known 2.0 API change, NOT a BUMP repro log. Confirm the exact exception message at verify time."
+   },
+   "mining": {
+    "library_keyword": "snakeyaml",
+    "signal_quality": "medium",
+    "commit_search_terms": [
+     "TagInspector",
+     "setTagInspector",
+     "TrustedTagInspector",
+     "trustedTagInspector",
+     "SafeConstructor",
+     "LoaderOptions",
+     "CustomClassLoaderConstructor",
+     "ConstructorException",
+     "Global tag is not allowed",
+     "could not determine a constructor",
+     "snakeyaml 2.0",
+     "snakeyaml 2.1",
+     "snakeyaml 2.2",
+     "snakeyaml 2.3",
+     "CVE-2022-1471",
+     "snakeyaml deserialization",
+     "snakeyaml security"
+    ],
+    "direct_bump_search_terms": [
+     "bump",
+     "upgrade",
+     "update dependency",
+     "dependency update",
+     "2.0",
+     "2.1",
+     "2.2",
+     "security update",
+     "CVE"
+    ]
+   },
+   "verify": {
+    "version_property": "bbc.snakeyaml.version",
+    "runnable_baseline": "1.33",
+    "break_boundary": "2.0",
+    "java": 11,
+    "jvm_add_opens": [],
+    "signal_grep": "Global tag is not allowed|ConstructorException|could not determine a constructor",
+    "note": "VERIFIED — see verify_status (3-state differential green 2026-07-20). Clean default-deny (direct xstream analogue). Adaptation = explicit Constructor / LoaderOptions.setTagInspector. First EXTERNAL-mined break fed through the pipeline."
+   }
+  },
+  {
+   "break_id": "jackson-databind-default-typing-ptv",
+   "provenance": "EXTERNAL_ADVISORY_NOT_BUMP",
+   "status": "REJECTED_NOT_A_CLEAN_BEHAVIOURAL_BREAK",
+   "rejection_finding": "Investigated 2026-07-20 (mined 241 commits/208 repos; inspected real diffs incl. madgeek-arc/resource-catalogue@7f625e24, omprakash201194/kin-keeper@89eb519c). Jackson default-typing does NOT exhibit the 'same code, new version, now throws' property: (1) the permissive idiom enableDefaultTyping()/LaissezFaire stayed permissive through the deprecation window; (2) BasicPolymorphicTypeValidator/activateDefaultTyping appear overwhelmingly in Spring Redis-cache serialization config (greenfield — modern jackson requires a PTV there by design) and in iterative allowlist tuning, NOT version-upgrade break fixes; (3) remaining hits are CVE dependency-bumps (no code change) and Jackson 2->3 migrations. Sits on the BLOCKLIST/API-MIGRATION side of the deserialize tier, not the DEFAULT-DENY side. Kept as a documented NEGATIVE result. Do not re-attempt.",
+   "_provenance_note": "NOT from BUMP. Discovered by mine_advisories.py from the OSV Maven advisory feed (jackson-databind CWE-502 default-typing / polymorphic-deserialization CVE series). No BUMP breaking_commit; clients empty until mining finds real adaptations.",
+   "library": {
+    "group_id": "com.fasterxml.jackson.core",
+    "artifact_id": "jackson-databind",
+    "from_version": "2.9.10",
+    "to_version": "2.10.0",
+    "boundary_type": "minor",
+    "search_boundary": "2.9.x -> 2.10.x",
+    "dependency_scope": "compile"
+   },
+   "why_it_breaks": "jackson 2.10 locked down polymorphic default typing (CVE series). enableDefaultTyping() was deprecated in favour of activateDefaultTyping(PolymorphicTypeValidator); polymorphic deserialization of types not permitted by the validator throws com.fasterxml.jackson.databind.exc.InvalidDefinitionException / InvalidTypeIdException at runtime. Adaptation: supply a BasicPolymorphicTypeValidator allowlist. TO BE CONFIRMED from real diffs — jackson default-typing has an API-migration confound (enableDefaultTyping deprecated 2.10, removed 2.12), so verify the actual break shape before designing the differential.",
+   "external_source": {
+    "advisory": "jackson-databind default-typing CVE series (e.g. CVE-2019-14379/14361 and the 2.10 PolymorphicTypeValidator lockdown)",
+    "cwe": [
+     "CWE-502"
+    ],
+    "discovered_via": "mine_advisories.py (OSV Maven feed) — deserialize tier, largest untapped pool (~23 advisories)",
+    "note": "EXTERNAL break: use 'mine-commits' + 'classify', not 'characterize'/'run'."
+   },
+   "spec": null,
+   "verified_case": null,
+   "clients": [],
+   "characterization": {
+    "failing_tests": [],
+    "signal": "com.fasterxml.jackson.databind.exc.InvalidDefinitionException: ... 'not a subtype' / cannot be validated / PolymorphicTypeValidator denied resolution of type id.",
+    "category": "runtime_exception",
+    "repro_log": null,
+    "characterized_date": "2026-07-20",
+    "note": "Derived from advisory + known 2.10 API change. Confirm exact break/adaptation from real mined diffs."
+   },
+   "mining": {
+    "library_keyword": "jackson",
+    "signal_quality": "medium",
+    "commit_search_terms": [
+     "PolymorphicTypeValidator",
+     "BasicPolymorphicTypeValidator",
+     "activateDefaultTyping",
+     "enableDefaultTyping",
+     "LaissezFaireSubTypeValidator"
+    ]
+   },
+   "verify": {
+    "version_property": "bbc.jackson-databind.version",
+    "runnable_baseline": "2.9.10",
+    "break_boundary": "2.10.0",
+    "java": 11,
+    "jvm_add_opens": [],
+    "signal_grep": "InvalidDefinitionException|InvalidTypeIdException|PolymorphicTypeValidator|not a subtype",
+    "note": "NOT yet verified. Watch the API-migration confound (enableDefaultTyping deprecated->removed). The clean behavioural face is: polymorphic JSON that 2.9 deserialized now denied by the default validator."
+   }
+  },
+  {
+   "break_id": "jackson-core-2.15-streamreadconstraints",
+   "provenance": "EXTERNAL_CHANGELOG_NOT_BUMP",
+   "_provenance_note": "NOT from BUMP and NOT from the CVE advisory feed. This is external-mining discovery SOURCE #2 (library changelog / release notes): jackson-core 2.15.0 added StreamReadConstraints default parser limits. A genuine 'same code, new version, now throws' behavioural break (the clean jackson break, unlike the REJECTED default-typing one). No BUMP breaking_commit; clients found via mine-commits.",
+   "library": {
+    "group_id": "com.fasterxml.jackson.core",
+    "artifact_id": "jackson-core",
+    "from_version": "2.14.2",
+    "to_version": "2.15.0",
+    "boundary_type": "minor",
+    "search_boundary": "2.14.x -> 2.15.x",
+    "dependency_scope": "compile"
+   },
+   "why_it_breaks": "jackson-core 2.15.0 introduced StreamReadConstraints with default parser limits: maxNestingDepth=1000, maxNumberLength=1000, maxNameLength, maxStringLength (5M in 2.15.0, 20M in 2.15.1+). JSON exceeding a limit that 2.14 parsed fine now throws com.fasterxml.jackson.core.exc.StreamConstraintsException at parse time. Code compiles unchanged; it throws at runtime on previously-accepted input -> behavioural break. Adaptation: build a JsonFactory with relaxed StreamReadConstraints, e.g. JsonFactory.builder().streamReadConstraints(StreamReadConstraints.builder().maxNestingDepth(N).maxStringLength(N).build()).build().",
+   "external_source": {
+    "changelog": "jackson-core 2.15.0 release notes — StreamReadConstraints",
+    "discovered_via": "domain knowledge / release notes (external-mining source #2), NOT the CVE advisory miner",
+    "note": "EXTERNAL break: use 'mine-commits' + 'classify'."
+   },
+   "spec": null,
+   "verified_case": "../verified_cases/jackson-streamreadconstraints.json",
+   "verify_status": "VERIFIED_BBC 2026-07-20 — 3-state differential green (2.14.2 PASS / 2.15.0 FAIL 'StreamConstraintsException: Depth (1001) exceeds the maximum allowed nesting depth (1000)' / adapted PASS) on scratchpad/jackson-streamconstraints-harness. Real signature_confirmed clients: dotCMS/core@b30dfa31, cibseven/cibseven@81a8d2b2, centiservice/mats3@79e05ec1, ESSI-Lab/DAB@9385e949. Mining yield: 184 commits / 159 repos.",
+   "clients": [],
+   "characterization": {
+    "failing_tests": [],
+    "signal": "com.fasterxml.jackson.core.exc.StreamConstraintsException: 'Document nesting depth (1001) exceeds the maximum allowed (1000...)' / 'String value length ... exceeds the maximum allowed' / 'Number value length ... exceeds the maximum allowed'.",
+    "category": "runtime_exception",
+    "repro_log": null,
+    "characterized_date": "2026-07-20"
+   },
+   "mining": {
+    "library_keyword": "jackson",
+    "signal_quality": "medium",
+    "commit_search_terms": [
+     "StreamReadConstraints",
+     "maxStringLength",
+     "maxNestingDepth",
+     "maxNumberLength",
+     "StreamConstraintsException"
+    ]
+   },
+   "verify": {
+    "version_property": "bbc.jackson.version",
+    "runnable_baseline": "2.14.2",
+    "break_boundary": "2.15.0",
+    "java": 11,
+    "jvm_add_opens": [],
+    "signal_grep": "StreamConstraintsException|exceeds the maximum allowed",
+    "note": "Clean same-code-now-throws limit break (json-smart max-depth analogue). Parent uses plain new ObjectMapper() (stable across 2.14/2.15); adapted uses the 2.15-only StreamReadConstraints API (separate compile profile)."
    }
   }
  ]
