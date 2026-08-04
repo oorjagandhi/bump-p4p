@@ -798,11 +798,17 @@
    },
    "verify": {
     "version_property": "bbc.json.version",
-    "runnable_baseline": "pick a pre-strictness org.json (e.g. an early-2020s release)",
-    "break_boundary": "the release that added strict getString coercion",
+    "runnable_baseline": "20090211",
+    "break_boundary": "20131018",
     "java": 11,
     "signal_grep": "is not a string|JSONException",
-    "note": "NOT yet verified. Version span is huge; pin a tighter boundary around the getString-strictness change. Clean production adaptation (getString -> optString/coerce)."
+    "note": "Boundary pinned EMPIRICALLY 2026-08-04 by running JSONObject(\"{\\\"id\\\":0}\").getString(\"id\") against real jars: 20090211 COERCES (returns \"0\"); 20131018 and every later release THROW. The boundary is 20131018, not the catalogued to_version 20230227. Only the exception WORDING changed after that: '... not a string.' (<=20190722) -> '... is not a string' (20200518+) -> '... is not a string (class java.lang.Integer : 0)' (20220924+). Previously this field read 'the release that added strict getString coercion', which has no digits, so _parse_ver returned None and _crosses_boundary was False for EVERY candidate — traversal could never confirm anything for this break, silently."
+   },
+   "yield_status": {
+    "assessed": "2026-08-04",
+    "can_yield_witnessed_crossings": false,
+    "reason": "The boundary is 20131018 (Oct 2013). Every one of the 31 mined production adaptations that has a resolved version is above it (earliest 20160810), so no mineable client can have crossed it — they are all born past the boundary. The adaptations are real responses to org.json's strictness, but not to a transition the client lived through.",
+    "implication": "A break is only mineable for witnessed crossings if the boundary is recent enough that clients still cross it. Check the boundary DATE before mining, not just its existence."
    }
   },
   {
@@ -925,7 +931,10 @@
    },
    "trigger": {
     "kind": "resource_pattern",
-    "resource_suffixes": [".yml", ".yaml"],
+    "resource_suffixes": [
+     ".yml",
+     ".yaml"
+    ],
     "pattern": "!!\\s*[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z0-9_]+)+",
     "description": "A GLOBAL tag naming a Java class (e.g. !!com.example.Foo). snakeyaml 2.0's default TagInspector rejects exactly these. Requiring a dot excludes the standard YAML tags (!!str, !!int, !!map), which are never rejected. LOCAL tags (single !, resolved from the constructor's own yamlConstructors map) also do NOT reach the inspector, so they must not match.",
     "note": "A client whose YAML contains no global tag cannot experience this break, however cleanly it compiles and however real its bump. Verified on adityajoy-1902/Dashboard-V-2: root-type Constructor(Application.class) with tag-free YAML -> the adaptation was purely a compile migration.",
