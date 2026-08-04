@@ -8,6 +8,38 @@ Each case is anchored in a BUMP-confirmed behavioural break and independently
 verified with a **3-state differential** build+test, so every entry here is
 evidence-backed, not inferred.
 
+## What belongs in this folder
+
+A file here is a **client production adaptation to a behavioural break, verified by a
+3-state differential**. All four conditions, no exceptions:
+
+1. `status: verified_bbc` — a differential was actually run, not inferred
+2. the adaptation is in **production code** (`src/main`), not tests
+3. it is a **real external client repo**, not an authored mimic
+4. it is a **client adaptation**, not merely a demonstration that the library break exists
+
+Removed 2026-08-04 for failing these:
+
+| removed | why |
+|---|---|
+| `poi-fmflatfile`, `poi-impactupgrade-nucleus-engine`, `poi-kenzoknz-pdf-converter`, `poi-oboguev-rtss`, `poi-usepa-data-gathering`, `xstream-spark` | `signature_confirmed` — causally real, but no differential was ever run (rule 1). POI's byte cap is enforced inside its document parsing, so a standalone repro needs a crafted document and the repo's own build. |
+| `xstream-logging-chainsaw` | the adaptation touches only `src/test/java/.../LogPanelPreferenceModelTest.java` (rule 2). The break manifested and was fixed, but production code was never forced to change, so it is not evidence that this break forces production adaptation. |
+
+Moved to `excluded/`, kept because they are still evidence of something — just not of a
+client adapting:
+
+- `excluded/authored_mimics/` — `xstream-mimic-production`, `jackson-ptv-mimic`: we wrote
+  the client. They demonstrate the mechanism, prove nothing about real-world behaviour.
+- `excluded/mechanism_only/` — `snakeyaml-mongoose`, `jackson-streamreadconstraints`: the
+  harness proves the library's behaviour changed, but the clients did not cross the
+  boundary in-repo (see each file's audit block). Adaptation to a break's *behaviour*,
+  not to a version transition they made.
+
+Note on `xstream-logging-chainsaw`: it remains a valid **traversal** fixture in
+`test_gates.py` — BUMP recorded its bump commit, so its boundary crossing is
+independently confirmed. Valid crossing, test-only adaptation, not a case.
+
+
 ## How a case is verified (the A→D recipe)
 
 - **A. Characterize** — from BUMP: `data/benchmark_test_failures/<sha>.json` +
