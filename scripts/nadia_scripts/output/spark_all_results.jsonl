@@ -1,0 +1,1 @@
+{"repo": "igniterealtime/Spark", "bump_sha": "f0698b7d", "adapt_sha": "aad38d68", "note": "xstream 1.4.16->1.4.18 in core/pom.xml; adaptation CustomMessages.java allowTypes(CustomStatusItem)", "verification": {"status": "error: 'pom_file'"}}

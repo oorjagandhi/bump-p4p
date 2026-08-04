@@ -406,8 +406,13 @@ def verify_candidate(rec: dict, work_dir: Path, java_homes: dict, timeout: int, 
     # Unified model: the version bump and the adaptation may be the same commit
     # (adapt_sha == bump_sha) or two commits (e.g. dependabot bump + maintainer
     # fix, with adapt_sha = the PR's merge commit). Old records only have "sha".
-    bump_sha  = rec.get("bump_sha", rec["sha"])
-    adapt_sha = rec.get("adapt_sha", rec["sha"])
+    # NOT rec.get("bump_sha", rec["sha"]) — Python evaluates the default eagerly, so
+    # that raises KeyError on records that carry bump_sha/adapt_sha and no legacy
+    # "sha". The documented two-commit model therefore never ran.
+    bump_sha  = rec.get("bump_sha") or rec.get("sha")
+    adapt_sha = rec.get("adapt_sha") or rec.get("sha") or bump_sha
+    if not bump_sha:
+        raise KeyError("record needs bump_sha (or legacy sha)")
     pom_file  = rec["pom_file"]
     v["bump_sha"]  = bump_sha
     v["adapt_sha"] = adapt_sha
@@ -617,9 +622,16 @@ def main():
          open(args.all_results, "w") as f_all:
 
         for i, rec in enumerate(candidates, 1):
-            print(f"[{i}/{len(candidates)}] {rec['repo']}  {rec['sha'][:8]}  "
+            # Same fallback verify_candidate uses. This line required the legacy
+            # 'sha' unconditionally, so the documented two-commit model
+            # (bump_sha + adapt_sha, e.g. dependabot bump + maintainer fix)
+            # crashed with KeyError before any verification ran.
+            _bump = rec.get("bump_sha") or rec.get("sha", "?")
+            _adapt = rec.get("adapt_sha") or rec.get("sha", "?")
+            _shown = _bump[:8] if _bump == _adapt else f"{_bump[:8]}->{_adapt[:8]}"
+            print(f"[{i}/{len(candidates)}] {rec['repo']}  {_shown}  "
                   f"{rec.get('artifact_id','?')}  "
-                  f"{rec.get('old_version','?')} → {rec.get('new_version','?')}")
+                  f"{rec.get('old_version','?')} -> {rec.get('new_version','?')}")
             try:
                 result = verify_candidate(rec, work_dir, java_homes, args.timeout, m2_repo)
             except subprocess.TimeoutExpired:
