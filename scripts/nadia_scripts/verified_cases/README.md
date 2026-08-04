@@ -17,6 +17,16 @@ A file here is a **client production adaptation to a behavioural break, verified
 2. the adaptation is in **production code** (`src/main`), not tests
 3. it is a **real external client repo**, not an authored mimic
 4. it is a **client adaptation**, not merely a demonstration that the library break exists
+5. the client **crossed the break boundary in its own history** — a direct or
+   transitive dependency bump took the resolved library version from below the
+   boundary to at/above it
+
+Rule 5 is what makes a case evidence of *adaptation to a breaking update* rather than
+*a latent bug the client happened to hit*. A client born at or above the boundary never
+experienced a transition: the restrictive behaviour was there from its first commit, so
+its fix is a response to the library's behaviour, not to a change in it. Both are real
+engineering, but only the first supports a claim about how clients respond when a
+dependency breaks them.
 
 Removed 2026-08-04 for failing these:
 
@@ -34,6 +44,16 @@ client adapting:
   harness proves the library's behaviour changed, but the clients did not cross the
   boundary in-repo (see each file's audit block). Adaptation to a break's *behaviour*,
   not to a version transition they made.
+- `excluded/no_boundary_crossing/` — fully verified production adaptations in real
+  external repos that fail rule 5:
+    - `xstream-axon-saga-einsteinarbert` — `axon-spring-boot-starter 4.6.1` set in the
+      first commit and never bumped; xstream 1.4.19 from the repo's birth.
+    - `xstream-chaintrade-amirsnw` — recorded `crossed_boundary: false`; the transitive
+      chain is BOM-managed and does not resolve from Maven Central alone, so the
+      automated gate reports it as undecided rather than negative.
+    - `poi-jadhavspeaks` — no crossing on either poi or poi-ooxml; born at/above 5.0.0.
+  These are the clearest evidence for the rarity finding: the adaptation is real and
+  the break is real, but the client never lived through the transition.
 
 Note on `xstream-logging-chainsaw`: it remains a valid **traversal** fixture in
 `test_gates.py` — BUMP recorded its bump commit, so its boundary crossing is
