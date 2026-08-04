@@ -58,6 +58,20 @@ TRAVERSAL_FIXTURES = [
     # but the verdict is UNDECIDED, not a negative: needs `mvn dependency:tree`.
     ("Axon amirsnw — unresolved chain (undecided, not a negative)", XS,
      "amirsnw/chainrtrade-axon-CQRS-DDD", "d408d4cac768", False),
+    # Second TRANSITIVE positive, and a caution about trusting written records.
+    # order-service/pom.xml (the module holding the adaptation) went
+    # axon-spring-boot-starter 4.0.3 -> 4.6.1, moving xstream 1.4.10 -> 1.4.19.
+    # The case file asserted crossed_boundary: false, "4.6.1 set in the first commit
+    # and never bumped" -- true of the ROOT pom, false of the module pom. The resolver
+    # was right and the hand audit was wrong; always resolve the module pom nearest
+    # the adaptation.
+    ("Axon einsteinarbert — TRANSITIVE crossing in the MODULE pom", XS,
+     "einsteinarbert/axon-saga-example", "dddd794b5d0f", True),
+    # Clean known-NEGATIVE: born at/above the boundary, resolvable on both sides.
+    # Needed because every other negative here is `unresolved`, and a resolver stuck
+    # on "cannot resolve" would pass an all-unresolved suite.
+    ("poi jadhavspeaks — born at/above 5.0.0, no crossing", "poi-4.1.2-to-5.x",
+     "jadhavspeaks/file_compare_diffrent_ext", "156a9624", False),
 ]
 
 # (label, break_id, repo, sha, from_v, to_v, expected verdict)

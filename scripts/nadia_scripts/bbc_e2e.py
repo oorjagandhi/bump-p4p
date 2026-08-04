@@ -947,6 +947,16 @@ def _candidate_buildfiles(repo, adapt_sha, token):
     return out
 
 
+def _coord_key(via):
+    """'group:artifact' from a resolution-path entry like 'g:a:version'. The VERSION
+    is deliberately dropped — the same coordinate at two versions is the same route
+    (that is the bump); a different coordinate is a different route (that is not)."""
+    if not via:
+        return None
+    parts = str(via).split(":")
+    return ":".join(parts[:2]) if len(parts) >= 2 else str(via)
+
+
 def find_boundary_bump(repo, brk, token, adapt_sha, max_scan=TRAVERSAL_SCAN):
     """Walk each build file's history (newest-first from adapt_sha) for a commit whose
     RESOLVED target version crosses the break boundary.
@@ -1021,10 +1031,19 @@ def find_boundary_bump(repo, brk, token, adapt_sha, max_scan=TRAVERSAL_SCAN):
             if not rold:
                 unresolved += 1
                 continue
+            # The two sides must be reached the SAME way. If the winning coordinate
+            # differs, the numbers describe different paths through the graph, not a
+            # version change — comparing them invents a crossing. This produced a
+            # false GOLD on einsteinarbert/axon-saga-example: a "upgrade version of
+            # spring boot" commit where Axon never moved (4.6.1 both sides), but the
+            # parent resolved xstream 1.4.10 via a different route.
+            if via and via_old and _coord_key(via) != _coord_key(via_old):
+                unresolved += 1
+                continue
             if _crosses_boundary(rold, rnew, boundary):
                 return {"bump_sha": c["sha"], "buildfile": bf,
                         "from": rold, "to": rnew, "kind": knew or "transitive",
-                        "via": via or via_old,
+                        "via": via or via_old, "via_parent": via_old,
                         "date": c["commit"]["committer"]["date"]}
     if unresolved:
         return {"unresolved": unresolved}

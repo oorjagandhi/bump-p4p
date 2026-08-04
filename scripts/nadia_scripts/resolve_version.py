@@ -151,58 +151,71 @@ def declared_version(text, target_g, target_a, props=None):
 
 
 def resolve(text, target_g, target_a, depth=0, seen=None, own_version=None):
-    """Version of target_g:target_a this POM resolves to, directly or transitively.
-    Returns (version, path); (None, []) if unresolvable — which callers MUST treat as
-    unknown, not as absent.
+    """Version of target_g:target_a this POM resolves to. Returns (version, path).
 
-    BREADTH-first, deliberately. Depth-first with a shared visited-set is wrong here:
-    exploring a deep branch marks a coordinate as seen at depth 4 (where it hit the
-    depth limit and failed), which then blocks reaching that same coordinate as a
-    direct dependency at depth 1, where it would have resolved. That is what hid
-    xstream behind axon-spring-boot-starter:4.5. BFS also matches Maven's actual
-    conflict mediation, which is nearest-wins — the shallowest occurrence.
+    Breadth-first, and deliberately LEVEL-COMPLETE: it does not return on the first
+    hit, it finishes the whole depth level and requires every occurrence at that
+    level to agree. Returning the first hit produced a false positive on
+    einsteinarbert/axon-saga-example — a "upgrade version of spring boot" commit
+    where Axon did not change at all (4.6.1 on both sides), but the parent side
+    happened to reach xstream 1.4.10 by a different path. The resolved version had
+    not moved; the path my search took had. Disagreement at the shallowest level
+    now yields (None, []) => unknown, never a version.
     """
     if text is None:
         return None, []
-    queue = [(text, own_version, 0, [])]
+    level = [(text, own_version, [])]
     seen = seen if seen is not None else set()
-    while queue:
-        cur, cur_v, d, path = queue.pop(0)
-        if cur is None or d > MAX_DEPTH:
-            continue
-        cur = _strip_comments(cur)
-        props = properties(cur, cur_v)
-
-        direct = declared_version(cur, target_g, target_a, props)
-        if direct:
-            return direct, path + [f"{target_g}:{target_a} (declared)"]
-
-        par = parent_of(cur)
-        if par:
-            ptext = fetch_pom(*par)
-            if ptext:
-                v = declared_version(ptext, target_g, target_a,
-                                     properties(ptext, par[2]))
-                if v:
-                    return v, path + [f"parent {par[0]}:{par[1]}:{par[2]}",
-                                      f"{target_g}:{target_a}"]
-
-        if d == MAX_DEPTH:
-            continue
-        for blk in _dep_blocks(cur):
-            g, a, v, scope = _coords(blk)
-            if not g or not a or scope in ("test", "provided", "system"):
+    for d in range(MAX_DEPTH + 1):
+        hits, nxt = [], []
+        for cur, cur_v, path in level:
+            if cur is None:
                 continue
-            cv = expand(v, props)
-            if not cv:
+            cur = _strip_comments(cur)
+            props = properties(cur, cur_v)
+
+            direct = declared_version(cur, target_g, target_a, props)
+            if direct:
+                hits.append((direct, path + [f"{target_g}:{target_a} (declared)"]))
                 continue
-            key = (g, a, cv)
-            if key in seen:
+
+            par = parent_of(cur)
+            if par:
+                ptext = fetch_pom(*par)
+                if ptext:
+                    v = declared_version(ptext, target_g, target_a,
+                                         properties(ptext, par[2]))
+                    if v:
+                        hits.append((v, path + [f"parent {par[0]}:{par[1]}:{par[2]}",
+                                                f"{target_g}:{target_a}"]))
+                        continue
+
+            if d == MAX_DEPTH:
                 continue
-            seen.add(key)
-            child = fetch_pom(g, a, cv)
-            if child:
-                queue.append((child, cv, d + 1, path + [f"{g}:{a}:{cv}"]))
+            for blk in _dep_blocks(cur):
+                g, a, v, scope = _coords(blk)
+                if not g or not a or scope in ("test", "provided", "system"):
+                    continue
+                cv = expand(v, props)
+                if not cv:
+                    continue
+                key = (g, a, cv)
+                if key in seen:
+                    continue
+                seen.add(key)
+                child = fetch_pom(g, a, cv)
+                if child:
+                    nxt.append((child, cv, path + [f"{g}:{a}:{cv}"]))
+
+        if hits:
+            versions = {v for v, _ in hits}
+            if len(versions) > 1:
+                # genuinely ambiguous at this depth: Maven would mediate, we will not guess
+                return None, []
+            return hits[0]
+        if not nxt:
+            break
+        level = nxt
     return None, []
 
 
