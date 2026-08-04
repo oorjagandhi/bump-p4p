@@ -23,6 +23,54 @@ OUT = os.path.join(NADIA, "output")
 VERIFIED = os.path.join(NADIA, "verified_cases")
 AGENT = os.path.join(NADIA, "agent")
 
+# break_id -> the version where the break was INTRODUCED. Prefer verify.break_boundary
+# (e.g. xstream 1.4.18, poi-ooxml 5.0.0, jsoup 1.15.0) over library.to_version, which is the
+# BUMP target's upper bound and can be LATER than the break — using it would wrongly drop
+# genuine cases pinned at the boundary (e.g. Spark @1.4.18 vs to_version 1.4.19).
+def _boundary_version(b):
+    return ((b.get("verify", {}) or {}).get("break_boundary")
+            or (b.get("library", {}) or {}).get("to_version"))
+
+BOUNDARY = {b["break_id"]: _boundary_version(b)
+            for b in json.load(open(O.CATALOG, encoding="utf-8"))["breaks"]}
+
+
+def _ver_tuple(s):
+    """Loose numeric version tuple, e.g. '5.2.5' -> (5,2,5). None/garbage -> None.
+    Only the leading dotted-numeric run is used ('2.0.206-beta' -> (2,0,206))."""
+    if not s:
+        return None
+    parts = []
+    for tok in str(s).split("."):
+        num = ""
+        for ch in tok:
+            if ch.isdigit():
+                num += ch
+            else:
+                break
+        if num == "":
+            break
+        parts.append(int(num))
+    return tuple(parts) or None
+
+
+def _boundary_status(version_at_commit, to_version):
+    """Classify a candidate against the break boundary.
+
+    'below_boundary'  -> resolvable version PROVABLY older than the break's to_version:
+                         the repo isn't even on the broken release, so it cannot be an
+                         adaptation to THIS break. Safe deterministic drop.
+    'on_or_past'      -> resolvable version >= to_version (e.g. jadhavspeaks @ 5.2.5).
+    'unconfirmed'     -> version_at_commit not resolvable. KEPT — genuine adaptation
+                         commits routinely show None here (property/transitive versions:
+                         amirsnw, Spark, einstein all None), so None must NOT be dropped.
+    """
+    vc, tv = _ver_tuple(version_at_commit), _ver_tuple(to_version)
+    if vc is None or tv is None:
+        return "unconfirmed"
+    return "below_boundary" if vc < tv else "on_or_past"
+
+
 def recorded_repos():
     repos = set()
     for f in glob.glob(os.path.join(VERIFIED, "*.json")):
@@ -34,28 +82,51 @@ def recorded_repos():
             pass
     return repos
 
-def candidates_for(break_id):
-    """Yield deduped, filtered work items for a break_id from its *_candidates.jsonl."""
-    # candidate files are named by transition, not always == break_id; match on prefix token
-    key = break_id.split("-")[0]  # poi, xstream, json ...
-    files = glob.glob(os.path.join(OUT, f"*{key}*_candidates.jsonl"))
+def candidates_for(break_id, dropped=None):
+    """Yield deduped, filtered work items for a break_id from its *_candidates.jsonl.
+
+    `dropped`, if a list, collects candidates rejected by the boundary check so callers
+    can report them (never drop silently — a hidden drop reads as 'nothing there')."""
+    exact = os.path.join(OUT, f"{break_id}_candidates.jsonl")
+    files = [exact] if os.path.exists(exact) else []
     done = recorded_repos()
+    to_version = BOUNDARY.get(break_id)
     seen = set()
     for f in files:
-        for line in open(f, encoding="utf-8"):
-            d = json.loads(line)
+        for line_no, line in enumerate(open(f, encoding="utf-8"), 1):
+            if not line.strip():
+                continue
+            try:
+                d = json.loads(line)
+            except Exception:
+                print(f"[fanout] skip invalid JSON: {os.path.basename(f)}:{line_no}", file=sys.stderr)
+                continue
+            if not d.get("repo") or not d.get("sha"):
+                print(f"[fanout] skip malformed row missing repo/sha: {os.path.basename(f)}:{line_no}", file=sys.stderr)
+                continue
             if not (d.get("verifiable") and d.get("is_production_adaptation")): continue
             if d.get("library_source") or d.get("test_only"): continue
             if not d.get("is_maven"): continue
             sha = d.get("sha", "")[:12]
             if sha in seen: continue
             seen.add(sha)
+            # Boundary sanity: drop only candidates whose version is RESOLVABLE and
+            # provably older than the break's to_version (e.g. poi 3.16 vs 4.1.2->5.x).
+            # None stays — genuine cases are frequently None here (see _boundary_status).
+            bstat = _boundary_status(d.get("version_at_commit"), to_version)
+            if bstat == "below_boundary":
+                if dropped is not None:
+                    dropped.append({"repo": d.get("repo"), "sha": sha,
+                                    "version_at_commit": d.get("version_at_commit"),
+                                    "to_version": to_version})
+                continue
             status = "already_recorded" if d.get("repo") in done else "queued"
             yield {
                 "break_id": break_id, "repo": d.get("repo"), "adapt_sha": d.get("sha"),
                 "parent_sha": d.get("parent"), "build_system": d.get("build_system"),
                 "production_files": d.get("production_files", []),
                 "message": (d.get("message", "") or "")[:100], "status": status,
+                "boundary_status": bstat,
             }
 
 def main():
@@ -67,18 +138,25 @@ def main():
 
     grand = collections.Counter()
     per_break = {}
+    all_dropped = []
     for bid in break_ids:
-        items = list(candidates_for(bid))
+        dropped = []
+        items = list(candidates_for(bid, dropped=dropped))
+        all_dropped += [dict(break_id=bid, **x) for x in dropped]
         q = [i for i in items if i["status"] == "queued"]
         rec = [i for i in items if i["status"] == "already_recorded"]
-        per_break[bid] = {"queued": len(q), "already_recorded": len(rec)}
-        grand["queued"] += len(q); grand["recorded"] += len(rec)
+        per_break[bid] = {"queued": len(q), "already_recorded": len(rec),
+                          "dropped_below_boundary": len(dropped)}
+        grand["queued"] += len(q); grand["recorded"] += len(rec); grand["dropped"] += len(dropped)
         if args:  # single-break mode: write the worklist
             path = os.path.join(AGENT, f"worklist_{bid}.json")
             json.dump(items, open(path, "w", encoding="utf-8"), indent=1)
-            print(f"{bid}: {len(q)} queued, {len(rec)} already recorded -> {path}")
+            print(f"{bid}: {len(q)} queued, {len(rec)} already recorded, "
+                  f"{len(dropped)} dropped<boundary -> {path}")
             for i in q:
                 print(f"   [queue] {i['repo']}@{(i['adapt_sha'] or '')[:10]}  {i['message'][:60]}")
+            for x in dropped:
+                print(f"   [drop ] {x['repo']} @ {x['version_at_commit']} < boundary {x['to_version']}")
 
     if not args:
         print("=== catalog fan-out summary ===")
@@ -88,6 +166,10 @@ def main():
             print(f"  {bid:40} {c['queued']:5}  {c['already_recorded']:7}{mark}")
         print(f"\nTOTAL queued (ready for the agent to verify): {grand['queued']}")
         print(f"TOTAL already recorded:                        {grand['recorded']}")
+        print(f"TOTAL dropped below break boundary:            {grand['dropped']}")
+        for x in all_dropped:
+            print(f"   [drop] {x['break_id']:32} {x['repo']} @ {x['version_at_commit']} "
+                  f"< boundary {x['to_version']}")
 
     if do_run:
         print("\n(--run: verify_candidate would execute here for candidates with a seam "

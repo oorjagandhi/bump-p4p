@@ -1,0 +1,94 @@
+{
+  "case_id": "snakeyaml-mongoose",
+  "status": "verified_bbc",
+  "case_type": "external_mined_break__mechanism_verified_via_harness__real_signature_confirmed_clients",
+  "verified_date": "2026-07-20",
+  "verified_by": "3-state differential (Maven 3.9.11, JDK 11) on scratchpad/snakeyaml-mongoose-harness",
+
+  "provenance": "EXTERNAL_ADVISORY_NOT_BUMP",
+  "motivation": "FIRST case in the dataset whose BREAK was NOT sourced from BUMP. The break was discovered by mine_advisories.py from the OSV Maven security-advisory feed (CVE-2022-1471), and real client adaptations were found via GitHub commit search (bbc_e2e.py mine-commits). Proves the external-mining pipeline yields verifiable production BBC cases beyond BUMP's ~8 semantic breaks.",
+
+  "in_repo_version_transition_AUDIT": {
+    "audited_date": "2026-07-20",
+    "finding": "The behavioural MECHANISM (snakeyaml 1.x permissive -> 2.0 default-deny) is verified via the harness across a 1.33->2.0 swap. However the real clients did NOT traverse the 1.x->2.0 boundary IN-REPO — they responded to snakeyaml 2.x's default-deny BEHAVIOUR while already on 2.x. So these are genuine (behaviour -> production re-permit adaptation) pairs, but NOT witnessed (version-bump -> break -> fix) traversals like the BUMP-sourced xstream cases (where BUMP pins the exact breaking dependency-bump commit).",
+    "mongoose-plugins": "snakeyaml resolved to 2.4 at BOTH parent (3189305106) and adapt (9e5916e1) commit (transitive via com.telamin:mongoose:1.0.17); adapt commit touches no pom. No 1.x->2.0 bump — repo was already on 2.4, fixed FQN-loading against the 2.x default. Confirmed via mvn dependency:tree.",
+    "KartaEmeraldCurrency": "snakeyaml is NOT pinned in-repo — provided transitively by the Paper server runtime (compileOnly io.papermc.paper:paper-api); adapt commit touches no build file. Commit body explicitly: 'ComposerException ... caused by recent versions of SnakeYAML disallowing deserialization of arbitrary Java objects by default'. Response to 2.x runtime behaviour, no in-repo version transition.",
+    "quarkus": "NOT a break response — proactive hardening (new Yaml() -> new SafeConstructor()) on its own trusted plain-map extension YAML, which never failed under 2.0. Caught by the noisy 'SafeConstructor' search term."
+  },
+
+  "library": {
+    "group_id": "org.yaml",
+    "artifact_id": "snakeyaml",
+    "from_version": "1.33",
+    "to_version": "2.0",
+    "boundary_type": "major",
+    "dependency_scope": "compile"
+  },
+
+  "external_source": {
+    "advisory": "GHSA-mjmj-j48q-9wg2",
+    "cve": "CVE-2022-1471",
+    "cwe": ["CWE-502", "CWE-20"],
+    "discovered_via": "mine_advisories.py (OSV Maven feed) -> deserialize tier, default-deny",
+    "not_from_bump": true,
+    "bump_breaking_commit": null
+  },
+
+  "behavioral_break": {
+    "failing_test": "com.example.ParentBbcTest#parentLoadsFqnTaggedYaml",
+    "exception": "org.yaml.snakeyaml.error.YAMLException: Global tag is not allowed: tag:yaml.org,2002:com.example.MyNode",
+    "affected_class": "com.example.MyNode (a type referenced from YAML by FQN global tag)",
+    "category": "runtime_exception",
+    "why_it_breaks": "snakeyaml 2.0 (CVE-2022-1471) makes SafeConstructor / a restrictive LoaderOptions TagInspector the default: `new Yaml().loadAs(...)` no longer instantiates arbitrary Java types from YAML global tags. YAML mapping to application types that 1.x deserialized now throws at load time. Code compiles; it throws at runtime on previously-accepted input -> behavioural break. NOTE: 2.0 ALSO ships a separate COMPILE break (Constructor now requires a LoaderOptions arg); the differential's parent uses plain `new Yaml()` to isolate the behavioural break from that."
+  },
+
+  "adaptation": {
+    "location": "production (src/main)",
+    "adaptation_in_test_code": false,
+    "adaptation_quality": "production_usage_adaptation",
+    "the_call": "loaderOptions.setTagInspector(tag -> true)  /  setTagInspector(tag -> tag.getClassName().equals(PlayerData.class.getName()))",
+    "summary": "Re-permit the client's own types under 2.0's default-deny by installing a TagInspector on LoaderOptions. Direct YAML analogue of xstream's allowTypes(...) allowlist.",
+    "artifact": "scripts/nadia_scripts/scratchpad/snakeyaml-mongoose-harness"
+  },
+
+  "real_clients_signature_confirmed": [
+    {
+      "project": "telaminai/mongoose-plugins",
+      "adapt_commit": "9e5916e1",
+      "message": "fix(svc-loader-yaml): TagInspector permits FQN tags",
+      "production_file": "service/svc-loader-yaml/src/main/java/com/telamin/mongoose/plugin/loader/yaml/EventHandlerLoader.java",
+      "the_call": "opts.setTagInspector(tag -> true)",
+      "build_system": "maven",
+      "verifiable_full_differential": false,
+      "why_not_run_directly": "break site is a private method wired into runtime Fluxtion graph compilation; repo targets Java 21 with snakeyaml transitive via a SNAPSHOT reactor -> not cheaply runnable, so recorded signature_confirmed (cf. POI)."
+    },
+    {
+      "project": "Minekarta-Studio/KartaEmeraldCurrency",
+      "adapt_commit": "8bb46ffa",
+      "message": "fix(storage): Configure SnakeYAML to trust PlayerData class",
+      "production_file": "src/main/java/com/minekarta/kec/storage/provider/FileStorageProvider.java",
+      "the_call": "loaderOptions.setTagInspector(tag -> tag.getClassName().equals(PlayerData.class.getName()))",
+      "build_system": "gradle",
+      "verifiable_full_differential": false,
+      "why_not_run_directly": "Gradle build (harness is Maven) + Bukkit deps; cleanest single-type allowlist example."
+    },
+    {
+      "project": "quarkusio/quarkus",
+      "adapt_commit": "06a8c629",
+      "message": "Use SafeConstructor class for SnakeYAML",
+      "production_file": "extensions/vertx-http/deployment/src/main/java/io/quarkus/vertx/http/deployment/devmode/console/DevConsole.java",
+      "the_call": "new Yaml(new SafeConstructor())  (parent was plain `new Yaml()`)",
+      "note": "proactive hardening on trusted input rather than a forced re-permit; its parent `new Yaml()` is the exact idiom used in the harness."
+    }
+  ],
+
+  "verification": {
+    "method": "3-state differential build+test with Maven on JDK 11; snakeyaml version swapped via -Dsnakeyaml.version; parent vs adapted code selected via Maven profile (-Pparent / -Padapted) because the adapted variant uses the 2.0-only setTagInspector API.",
+    "states": [
+      { "name": "1_baseline",         "config": "parent code + snakeyaml 1.33", "result": "PASS", "tests": "run=1 failures=0 errors=0" },
+      { "name": "2_new_lib_old_code", "config": "parent code + snakeyaml 2.0",  "result": "FAIL", "detail": "YAMLException: Global tag is not allowed: tag:yaml.org,2002:com.example.MyNode", "tests": "run=1 failures=0 errors=1" },
+      { "name": "3_adapted",          "config": "adapted code + snakeyaml 2.0", "result": "PASS", "tests": "run=1 failures=0 errors=0" }
+    ],
+    "conclusion": "Confirmed behavioural break with a production-side adaptation: a passing YAML load breaks only under snakeyaml >=2.0 with otherwise-unchanged code, and installing a TagInspector on LoaderOptions in production code resolves it. The break + adaptation pattern is taken verbatim from the real signature_confirmed clients above."
+  }
+}

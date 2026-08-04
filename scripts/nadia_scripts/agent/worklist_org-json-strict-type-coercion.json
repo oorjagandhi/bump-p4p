@@ -1,0 +1,58 @@
+[
+ {
+  "break_id": "org-json-strict-type-coercion",
+  "repo": "FamingHou/geospider",
+  "adapt_sha": "e1ce5497c3fd6a4067e791632172ed45d474ecab",
+  "parent_sha": "6048b2610fd39cdf3acd7920b859f3d5b261cba4",
+  "build_system": "maven",
+  "production_files": [
+   "src/main/java/massey/geospider/probe/facebook/FacebookCommentsProbe.java",
+   "src/main/java/massey/geospider/probe/facebook/FacebookPagesProbe.java",
+   "src/main/java/massey/geospider/probe/facebook/FacebookPostsProbe.java",
+   "src/main/java/massey/geospider/util/JSONHelper.java"
+  ],
+  "message": "Fixing bug as below by checking whether the response string from web",
+  "status": "queued",
+  "boundary_status": "unconfirmed"
+ },
+ {
+  "break_id": "org-json-strict-type-coercion",
+  "repo": "Onto-Med/top-backend",
+  "adapt_sha": "89d27249eea1a5f92d2b7b43b01279bb12534414",
+  "parent_sha": "272ee2dccff4796b032760e57c8563714e389bcc",
+  "build_system": "maven",
+  "production_files": [
+   "src/main/java/care/smith/top/backend/api/nlp/ConceptPipelineApiDelegateImpl.java",
+   "src/main/java/care/smith/top/backend/service/nlp/ConceptGraphsService.java"
+  ],
+  "message": "Add concept pipeline JSON config (#225)",
+  "status": "queued",
+  "boundary_status": "unconfirmed"
+ },
+ {
+  "break_id": "org-json-strict-type-coercion",
+  "repo": "emkds1729/graylog-plugin-gcp-pubsub",
+  "adapt_sha": "2191ce61d51ad09c440ee833ca0a8be5e2e9964b",
+  "parent_sha": "9853f648608d2cbdb5df3508684c0085d6842be4",
+  "build_system": "maven",
+  "production_files": [
+   "src/main/java/org/graylog/plugins/gcppubsub/GcpPubSubLogRetriever.java"
+  ],
+  "message": "v2.0.0: replace destructive sanitize() with key-only regex sanitizer",
+  "status": "queued",
+  "boundary_status": "unconfirmed"
+ },
+ {
+  "break_id": "org-json-strict-type-coercion",
+  "repo": "gridgentoo/pinot",
+  "adapt_sha": "0d92355a9efd19bb4f38549783c21afd87ab8bd4",
+  "parent_sha": "ba0359136141ce1c06c0f65865671c0225a82583",
+  "build_system": "maven",
+  "production_files": [
+   "pinot-core/src/main/java/com/linkedin/pinot/core/realtime/impl/kafka/KafkaJSONMessageDecoder.java"
+  ],
+  "message": "Get quickstart-realtime working again (#3374)",
+  "status": "queued",
+  "boundary_status": "unconfirmed"
+ }
+]

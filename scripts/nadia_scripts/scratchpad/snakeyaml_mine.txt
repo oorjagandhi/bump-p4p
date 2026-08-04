@@ -1,0 +1,282 @@
+[mine-commits] q='snakeyaml TagInspector'
+[mine-commits] q='snakeyaml setTagInspector'
+[mine-commits] q='snakeyaml SafeConstructor'
+[mine-commits] q='snakeyaml snakeyaml 2.0'
+[mine-commits] q='snakeyaml Global tag is not allowed'
+[mine-commits] q='snakeyaml trustedTagInspector'
+[mine-commits] 275 distinct commits across 199 repos
+  telaminai/mongoose-plugins@9e5916e1  [TagInspector]  fix(svc-loader-yaml): TagInspector permits FQN tags
+  Minekarta-Studio/KartaEmeraldCurrency@8bb46ffa  [TagInspector]  fix(storage): Configure SnakeYAML to trust PlayerData class
+  cao2068959/snakeyaml@39a4b874  [TagInspector]  remove Trusted*Inspetor classes from main sources tree
+  finos-osera/backpatch-snakeyaml@39a4b874  [TagInspector]  remove Trusted*Inspetor classes from main sources tree
+  j-sandy/snakeyaml@39a4b874  [TagInspector]  remove Trusted*Inspetor classes from main sources tree
+  snakeyaml/snakeyaml@39a4b874  [TagInspector]  remove Trusted*Inspetor classes from main sources tree
+  manoelc-dev/snakeyaml@39a4b874  [TagInspector]  remove Trusted*Inspetor classes from main sources tree
+  why168/snakeyaml@39a4b874  [TagInspector]  remove Trusted*Inspetor classes from main sources tree
+  clj-commons/clj-yaml@2799a9b0  [TagInspector]  Upgrade to SnakeYAML 2.1 (#87)
+  telaminai/mongoose-plugins@af2d80e9  [TagInspector]  feat(loaders): runtime feed + sink loaders
+  RandomCodeSpace/codeiq@f046489e  [SafeConstructor]  Merge branch 'fix/snakeyaml-safeconstructor-cors'
+  HhuyH/ai-agent-task-system@0715085f  [SafeConstructor]  Fix CVE-2022-1471 using SafeConstructor and SnakeYAML 2.4
+  foremanmining/foreman-windows-agent@7abe7636  [SafeConstructor]  OBM-3057 Use SafeConstructor to avoid vulnerability in snakeyaml
+  PostHog/duckgres@2090f809  [SafeConstructor]  security: fix SnakeYAML deserialization vulnerability in JDBC tests (#454)
+  dbbaskette/herald@0073e0b9  [SafeConstructor]  fix: use SafeConstructor for SnakeYAML safety and fix test cleanup (#215)
+  quasientio/pal@93a9439c  [SafeConstructor]  fix(security): use SafeConstructor in YAML parsers to prevent arbitrary object d
+  mdoering/blixa@96411b38  [SafeConstructor]  fix(coldp): parse metadata.yaml with SnakeYAML SafeConstructor (untrusted input)
+  OpenLiberty/open-liberty@823d396e  [SafeConstructor]  Merge pull request #24307 from Azquelt/snakeyaml-safeconstructor
+  doromajin/vulnscanner@74c4acad  [SafeConstructor]  feat(detectors): add SnakeYAML unsafe deser and SSL verify=False detection
+  dyrnq/apisixWeb@2cd61499  [SafeConstructor]  fix: SnakeYAML反序列化RCE修复 + ManifestController.deploy() 实现
+  sussysimpai-blip/uyuni-codespace@0ce3f964  [SafeConstructor]  Removed usages of deprecated snakeyaml SafeConstructor()
+  Skycryck/Tickstats-Sync@a32c638a  [SafeConstructor]  test(config): T044 malicious-YAML fixture + SnakeYAML rejection assertion
+  radcortez/smallrye-config-release@0c348b93  [SafeConstructor]  Use snakeyaml SafeConstructor (#858)
+  uyuni-project/uyuni@0ce3f964  [SafeConstructor]  Removed usages of deprecated snakeyaml SafeConstructor()
+  embulk/embulk@1cca2009  [SafeConstructor]  Construct SnakeYAML's SafeConstructor and Representer in the latest manner
+  sussysimpai-blip/uyuni-codespace@08e2f88b  [SafeConstructor]  Merge pull request #9001 from mackdk/prepare-for-snakeyaml-upgrade
+  uyuni-project/uyuni@08e2f88b  [SafeConstructor]  Merge pull request #9001 from mackdk/prepare-for-snakeyaml-upgrade
+  smallrye/smallrye-config@0c348b93  [SafeConstructor]  Use snakeyaml SafeConstructor (#858)
+  stuartwdouglasmidstream/github--smallrye--smallrye-config@0c348b93  [SafeConstructor]  Use snakeyaml SafeConstructor (#858)
+  TarekBenSalama/quarkus@8a13b2e2  [SafeConstructor]  Merge pull request #23091 from rsvoboda/Yaml.SafeConstructor
+  spring-projects/spring-tools@2d841f78  [SafeConstructor]  Use SafeConstructor in Snakeyaml YAML constructors
+  gsmet/quarkus-renovate@8a13b2e2  [SafeConstructor]  Merge pull request #23091 from rsvoboda/Yaml.SafeConstructor
+  raghuganapathyUCR/micronaut-core@c909d945  [SafeConstructor]  Use SnakeYaml's SafeConstructor
+  quarkusio/quarkus@8a13b2e2  [SafeConstructor]  Merge pull request #23091 from rsvoboda/Yaml.SafeConstructor
+  winery/winery@1ea313cf  [SafeConstructor]  Merge pull request #216 from kleinech/safeconstructor
+  anavarr/quarkus-virtual@8a13b2e2  [SafeConstructor]  Merge pull request #23091 from rsvoboda/Yaml.SafeConstructor
+  renovate-bot/gsmet-_-quarkus-renovate@8a13b2e2  [SafeConstructor]  Merge pull request #23091 from rsvoboda/Yaml.SafeConstructor
+  splatch/snakeyaml@4007ca42  [SafeConstructor]  start importing SafeConstructor
+  Ladicek/quarkus-arc@8a13b2e2  [SafeConstructor]  Merge pull request #23091 from rsvoboda/Yaml.SafeConstructor
+  TarekBenSalama/quarkus@06a8c629  [SafeConstructor]  Use SafeConstructor class for SnakeYAML
+  OpenLiberty/open-liberty@9ccd4bff  [SafeConstructor]  Make snakeyaml use SafeConstructor by default
+  micronaut-projects/micronaut-core@c909d945  [SafeConstructor]  Use SnakeYaml's SafeConstructor
+  wavemaker/wavemaker-app-runtime-services@50030488  [SafeConstructor]  WMS-23267 - using snakeyaml's safeconstructor and loaderoptions
+  anavarr/quarkus-virtual@06a8c629  [SafeConstructor]  Use SafeConstructor class for SnakeYAML
+  quarkusio/quarkus@06a8c629  [SafeConstructor]  Use SafeConstructor class for SnakeYAML
+  gsmet/quarkus-renovate@06a8c629  [SafeConstructor]  Use SafeConstructor class for SnakeYAML
+  renovate-bot/gsmet-_-quarkus-renovate@06a8c629  [SafeConstructor]  Use SafeConstructor class for SnakeYAML
+  demomm/burptrast@3d55dd72  [SafeConstructor]  updated YamlReader to use SnakeYaml's SafeConstructor.
+  kakoni/embulk@1cca2009  [SafeConstructor]  Construct SnakeYAML's SafeConstructor and Representer in the latest manner
+  swesmith-test/embulk__embulk.4108b4cb@1cca2009  [SafeConstructor]  Construct SnakeYAML's SafeConstructor and Representer in the latest manner
+  kiegroup/kie-cloud-tests@de510e0a  [SafeConstructor]  Fix NoSuchMethodFound error for snakeyaml SafeConstructor (#780)
+  kosazoltan/valutavalto-program@b3892859  [SafeConstructor]  fix(security): semgrep audit 3 hardening (v2.27.9) — MNB HTTPS + GCM tag + Snake
+  Lincoln-cn/JCodeIndexer@664b9e43  [SafeConstructor]  fix: 修复安全漏洞和性能优化
+  Ladicek/quarkus-arc@06a8c629  [SafeConstructor]  Use SafeConstructor class for SnakeYAML
+  demomm/burptrast@120bce2e  [SafeConstructor]  Merge pull request #2 from Contrast-Security-OSS/snakeyaml
+  Contrast-Security-OSS/Burptrast@3d55dd72  [SafeConstructor]  updated YamlReader to use SnakeYaml's SafeConstructor.
+  lloydchang/armory-halyard@4c06c03b  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#1015)
+  CRaC/micronaut-core@c909d945  [SafeConstructor]  Use SnakeYaml's SafeConstructor
+  sadanandam5592/orca@0ffa7e94  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2389)
+  lloydchang/OpsMx-orca-oes@0ffa7e94  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2389)
+  naver/ngrinder@cac2c826  [SafeConstructor]  Merge pull request #1018 from naver/feature/yaml
+  newrelic/newrelic-java-agent@93dcba25  [SafeConstructor]  Refactor to use SafeConstructor for SnakeYAML
+  lloydchang/OpsMx-clouddriver-opsmx@5553109d  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2906)
+  Contrast-Security-OSS/Burptrast@120bce2e  [SafeConstructor]  Merge pull request #2 from Contrast-Security-OSS/snakeyaml
+  Mr3zee/Release-Wizard@2e8030b8  [SafeConstructor]  Parse GitHub Actions workflow_dispatch inputs from YAML files
+  newrelic/newrelic-java-agent@2ff0a81c  [SafeConstructor]  Merge pull request #236 from newrelic/fix-snakeyaml
+  littlesillymonster/my-ngrinder@cac2c826  [SafeConstructor]  Merge pull request #1018 from naver/feature/yaml
+  alibaba/canal@cf97b2ae  [SafeConstructor]  fix: mitigate SnakeYAML deserialization RCE and enforce default password change
+  lloydchang/OpsMx-clouddriver-oes@5553109d  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2906)
+  MRomalde/AISS-2021-L3-G01-migromdor@67e1bc46  [SafeConstructor]  use SafeConstructor in snakeyaml to fix CVE
+  jenkinsci/validating-yaml-parameter-plugin@c7575d84  [SafeConstructor]  fix: upgrade snakeyaml to 2.0 and fix the SafeConstructor calls
+  AllanGiaretta26/prj-spring-ai-evalops@1eaa7572  [SafeConstructor]  feat(evalops-core): add domain model and YAML dataset loader
+  spinnaker/orca@0ffa7e94  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2389)
+  MRomalde/AISS-2021-L3-G01-migromdor@82c71d35  [SafeConstructor]  Merge pull request #1116 from swagger-api/cve-snakeyaml
+  spinnaker-cn/igor@f6f8acb6  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#300)
+  swagger-api/swagger-parser@67e1bc46  [SafeConstructor]  use SafeConstructor in snakeyaml to fix CVE
+  lloydchang/OpsMx-clouddriver-oes-1@5553109d  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2906)
+  spinnaker/clouddriver@5553109d  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2906)
+  madhunamburi227700/halyard-opsmx@4c06c03b  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#1015)
+  raghuganapathyUCR/micronaut-core@30c3a148  [SafeConstructor]  Revert "Use SnakeYaml's SafeConstructor"
+  lloydchang/OpsMx-opsmx-clouddriver@5553109d  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2906)
+  operaton/operaton-starter@5bfaa62d  [SafeConstructor]  feat(story-8-2): Add examples configuration and safe YAML manifest parser
+  lloydchang/OpsMx-igor-oes@f6f8acb6  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#300)
+  lloydchang/OpsMx-orca@0ffa7e94  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2389)
+  lloydchang/OpsMx-clouddriver-oes-2@5553109d  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2906)
+  spinnaker/spinnaker@5553109d  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2906)
+  spinnaker/spinnaker@4c06c03b  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#1015)
+  spinnaker/spinnaker@f6f8acb6  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#300)
+  spinnaker/spinnaker@0ffa7e94  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2389)
+  jamiecool/Spinnaker_clouddriver@5553109d  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2906)
+  plumpy/spinjava@e473116e  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2906)
+  plumpy/spinjava@a296218f  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#300)
+  plumpy/spinjava@2355bac4  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2389)
+  veerendraopsmx/cf-spinnaker-orca@0ffa7e94  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2389)
+  madhunamburi227700/spinnaker@5553109d  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2906)
+  madhunamburi227700/spinnaker@4c06c03b  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#1015)
+  madhunamburi227700/spinnaker@f6f8acb6  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#300)
+  madhunamburi227700/spinnaker@0ffa7e94  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2389)
+  lloydchang/OpsMx-halyard-1@4c06c03b  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#1015)
+  jenkinsci/validating-yaml-parameter-plugin@a760c918  [SafeConstructor]  Merge pull request #55 from cesan3/fix-for-snakeyaml-2.0
+  lloydchang/OpsMx-halyard@4c06c03b  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#1015)
+  spinnaker/halyard@4c06c03b  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#1015)
+  swagger-api/swagger-parser@82c71d35  [SafeConstructor]  Merge pull request #1116 from swagger-api/cve-snakeyaml
+  lloydchang/OpsMx-halyard-oes-1@4c06c03b  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#1015)
+  lloydchang/OpsMx-igor@f6f8acb6  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#300)
+  Ericsson/ecaudit@5f805897  [SafeConstructor]  Use SnakeYaml's SafeConstructor to avoid CVE-2022-1471 (#209)
+  lloydchang/OpsMx-clouddriver-1@5553109d  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2906)
+  spinnaker/igor@f6f8acb6  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#300)
+  lloydchang/OpsMx-clouddriver@5553109d  [SafeConstructor]  fix(core): use snakeyaml's SafeConstructor (#2906)
+  swarnendu-labs/validating-yaml-parameter-plugin@c7575d84  [SafeConstructor]  fix: upgrade snakeyaml to 2.0 and fix the SafeConstructor calls
+  fauzirpl/yava30@77c5c300  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.23 to 2.0
+  rioliu/easytest@7aa0e1be  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0
+  usermery/BA-Dependabot-Test@e7e67a1d  [snakeyaml 2.0]  chore(deps): bump org.yaml:snakeyaml from 1.30 to 2.0
+  dwgx/strict@1c075c2a  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.6 (#2)
+  jboss-eap-qe/eap-microprofile-test-suite@19a1c13e  [snakeyaml 2.0]  Bump snakeyaml from 1.26 to 2.0
+  ez-plugins/EzEconomy@770db0aa  [snakeyaml 2.0]  chore(deps): bump org.yaml:snakeyaml from 2.0 to 2.6
+  Rawz06-Studio/RSLFrancoBot@c0bacd1f  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.6
+  wanaku-ai/camel-code-execution-engine@29915f49  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.6
+  rapiddweller/rapiddweller-benerator-ce@c4a39583  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.6 (#511)
+  diamondq/dq-common-config@cf149ccd  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.21 to 2.0 in /config-parent
+  suneel944/HYB_FW_PDF@e4c9f49f  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0
+  GumTreeDiff/gumtree@90c5441d  [snakeyaml 2.0]  build(deps): bump org.yaml:snakeyaml from 2.0 to 2.6 (#398)
+  oracle/graalvm-reachability-metadata@0e665066  [snakeyaml 2.0]  [GenAI] Test fix for org.yaml:snakeyaml:2.0 using gpt-5.5 (#5160)
+  yiming-dev/passbook_merchants@3234bd3a  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0 (#4)
+  okta/okta-sdk-java@78830bf7  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.33 to 2.0 in /api (#1661)
+  SupaHam/SupaCommons@7f44aa6f  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.31 to 2.0 in /commons-core
+  nisarg-panchal/demo-rest@bcce86b5  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.5
+  fauzirpl/yava30@064f782b  [snakeyaml 2.0]  Merge pull request #14 from fauzirpl/dependabot/maven/org.yaml-snakeyaml-2.0
+  rioliu/easytest@ddd5aacf  [snakeyaml 2.0]  Merge pull request #13 from rioliu/dependabot/maven/org.yaml-snakeyaml-2.0
+  Sunbird-Lern/data-pipeline@2a6a2c1d  [snakeyaml 2.0]  fix(test): resolve cassandra-unit incompatibility with SnakeYAML 2.0
+  entur/schema2proto@e4fb56a7  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.5 (#749)[skip ci]
+  undera/jmeter-plugins@685a1124  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.31 to 2.0 in /plugins/json (#634)
+  project-ncl/pom-manipulation-ext@a76ee21e  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.5
+  nisarg-panchal/demo-rest@89f910f9  [snakeyaml 2.0]  Bump org.yaml:snakeyaml in the maven group across 1 directory
+  usermery/BA-Dependabot-Test@f2e153ce  [snakeyaml 2.0]  Merge pull request #5 from usermery/dependabot/maven/org.yaml-snakeyaml-2.0
+  mock-server/mockserver-monorepo@3fa1158b  [snakeyaml 2.0]  Merge pull request #1719 from mock-server/dependabot/maven/org.yaml-snakeyaml-2.
+  jeddict/jeddict-modeler@41645567  [snakeyaml 2.0]  Merge pull request #546 from jeddict/dependabot/maven/org.yaml-snakeyaml-2.0
+  mock-server/mockserver-monorepo@6589d758  [snakeyaml 2.0]  Merge pull request #1718 from mock-server/dependabot/maven/mockserver-examples/o
+  jboss-eap-qe/eap-microprofile-test-suite@e1fa4354  [snakeyaml 2.0]  Merge pull request #271 from jboss-eap-qe/dependabot/maven/org.yaml-snakeyaml-2.
+  elebirds/Parfait@ef54fbae  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.4
+  apache/airavata@6a6dda83  [snakeyaml 2.0]  Bump snakeyaml from 1.15 to 2.0 in /modules/job-monitor
+  apache/airavata@8b41e98d  [snakeyaml 2.0]  Bump snakeyaml from 1.15 to 2.0 in /tools/load-client
+  objz/CommandBridge@acecb34f  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.4
+  YuanHuaQiang/kcjs-cloud@c0ee936d  [snakeyaml 2.0]  Bump org.yaml:snakeyaml in /kcjs-cloud-dubbo-sp-provider
+  Mutantcat-Working-Group/JustSimple@c13d7156  [snakeyaml 2.0]  build(deps): bump org.yaml:snakeyaml from 1.33 to 2.0
+  Netcracker/qubership-log-generator@c0421eb5  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0
+  cbomkit/cbomkit@aeb5e997  [snakeyaml 2.0]  Bump org.yaml:snakeyaml in the maven group across 1 directory (#229)
+  zhihuili/flower@5c461d61  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0
+  Netcracker/qubership-log-generator@18b95379  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.4
+  Rawz06-Studio/RSLFrancoBot@b39aee5e  [snakeyaml 2.0]  Merge pull request #2 from Rawz06-Studio/dependabot/maven/org.yaml-snakeyaml-2.6
+  Saicharannani/bagawan-repo@b118fa74  [snakeyaml 2.0]  Add target/repository/org/yaml/snakeyaml/2.0/snakeyaml-2.0.pom
+  Saicharannani/bagawan-repo@8f1ddf1a  [snakeyaml 2.0]  Add target/repository/org/yaml/snakeyaml/2.0/snakeyaml-2.0.jar
+  olx-india/AssertX@fd9b9b54  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.33 to 2.0
+  jenkinsci/oes-template-plugin@b0b579e8  [snakeyaml 2.0]  chore(deps): bump org.yaml:snakeyaml from 2.0 to 2.2 (#41)
+  sec-wardenby76/cbomkit@bf8ae56b  [snakeyaml 2.0]  Bump org.yaml:snakeyaml in the maven group across 1 directory (#229)
+  suneel944/HYB_FW_PDF@5b32b4b2  [snakeyaml 2.0]  Merge pull request #34 from suneel944/dependabot/maven/org.yaml-snakeyaml-2.0
+  thinker0/heron-3rdparty@cbc3d2e2  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0 in /heron-hdfs (#17)
+  fromali/cbom@aeb5e997  [snakeyaml 2.0]  Bump org.yaml:snakeyaml in the maven group across 1 directory (#229)
+  apigee/apigee-smartdocs-maven-plugin@3e29f2b6  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.31 to 2.0
+  entur/schema2proto@c390154a  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.33 to 2.0 in the maven group across 1 directory (
+  platformbuilds/cbomkit@aeb5e997  [snakeyaml 2.0]  Bump org.yaml:snakeyaml in the maven group across 1 directory (#229)
+  michelin/kafkagen@3a41274e  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.4 (#10)
+  gradle/guides@cc6748ed  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.21 to 2.0
+  ez-plugins/EzEconomy@6dd0572c  [snakeyaml 2.0]  Merge pull request #89 from ez-plugins/dependabot/maven/org.yaml-snakeyaml-2.6
+  epimorphics/dclib@47f9b81f  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0
+  fernandonogueira/PromEureka@304ca007  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0 (#7)
+  wso2/identity-tools@bc6d61bf  [snakeyaml 2.0]  Bump org.yaml:snakeyaml
+  epimorphics/dclib@c2ee59c7  [snakeyaml 2.0]  Merge pull request #52 from epimorphics/dependabot/maven/org.yaml-snakeyaml-2.0
+  Slinet6056/CoverageGuidedFuzzer@ec97ed18  [snakeyaml 2.0]  build(deps): bump org.yaml:snakeyaml from 2.0 to 2.3
+  manel1874/cbomkit@aeb5e997  [snakeyaml 2.0]  Bump org.yaml:snakeyaml in the maven group across 1 directory (#229)
+  petergeneric/liquibase-oss@febd6a51  [snakeyaml 2.0]  Snakeyaml 2.0 (#3893)
+  browserstack/jbehave-appium-app-browserstack@2b738c0f  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.30 to 2.0 in /ios
+  boubakarbd/Project2-Deploy-to-Beanstalk-AppCode@028c529f  [snakeyaml 2.0]  fix: update snakeyaml version to 2.0
+  Azure/appcat-rulesets@c56a3366  [snakeyaml 2.0]  Maven pom.xml(deps): Bump org.yaml:snakeyaml from 2.0 to 2.4
+  browserstack/jbehave-appium-app-browserstack@54d07220  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.30 to 2.0 in /android
+  knime-community/com.apisports.com@2d0203f2  [snakeyaml 2.0]  Fix SnakeYAML 2.0 API compatibility in DescriptorRegistry
+  eGain/oas-sdk-java@ddf9ea3b  [snakeyaml 2.0]  Fix exclude javafaker SnakeYAML to avoid NoClassDefFoundError
+  masx200/spring-boot-demo-hello-world-native@f4efa69c  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.3
+  uchicom/reptyv@0770ee8f  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.3
+  liquibase/liquibase@febd6a51  [snakeyaml 2.0]  Snakeyaml 2.0 (#3893)
+  Surfer12/local-prompt-march@25b7e701  [snakeyaml 2.0]  Bump org.yaml:snakeyaml in the maven group across 1 directory
+  adityamillind98/liquibase.source@febd6a51  [snakeyaml 2.0]  Snakeyaml 2.0 (#3893)
+  oForevero/liquibase-4.25.2-dm-kingbase@febd6a51  [snakeyaml 2.0]  Snakeyaml 2.0 (#3893)
+  dbgroupdlmu/liquibase-modified-4.25.2@febd6a51  [snakeyaml 2.0]  Snakeyaml 2.0 (#3893)
+  apache/gravitino@5befcef9  [snakeyaml 2.0]  [#11183] improvement(deps): enforce snakeyaml version for transitive dependencie
+  retromcorg/Project-Poseidon@8f2bb13b  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.7 to 2.0 (#117)
+  ColorsWind/SimpleHttp@e06af3f0  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0
+  jenkinsci/uipath-automation-package-plugin@8b71aa4c  [snakeyaml 2.0]  chore(deps): bump org.yaml:snakeyaml from 2.0 to 2.3
+  weidongxu-microsoft/release-automation@c5c25f41  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0
+  ELDependenci/ELDependenci@951e0ee2  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.31 to 2.0 (#26)
+  spawpaw/mybatis-generator-gui-extension@927a7adb  [snakeyaml 2.0]  chore(deps): bump org.yaml:snakeyaml from 1.32 to 2.0 (#72)
+  sepses/Krystal@f7723953  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0
+  Leminee/LemBot@88484086  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.33 to 2.0
+  hendisantika/transfer-service@45318c95  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.3
+  nlnwa/veidemann-rethinkdbadapter@f0a17171  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.31 to 2.0
+  Hyperfoil/Hyperfoil@1b2f673a  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.2
+  SupaHam/SupaCommons@1a2e53ce  [snakeyaml 2.0]  Merge pull request #17 from SupaHam/dependabot/maven/commons-core/org.yaml-snake
+  nisarg-panchal/demo-rest@c8788d4f  [snakeyaml 2.0]  Merge pull request #9 from nisarg-panchal/dependabot/maven/org.yaml-snakeyaml-2.
+  smecalculus/bezmen@6f11e9f6  [snakeyaml 2.0]  Bump snakeyaml from 1.30 to 2.0 in /libs (#1)
+  GeyserMC/Floodgate@869338c5  [snakeyaml 2.0]  Support for SnakeYaml 2.0+ (Velocity 3.5.0 and later) (#654)
+  ugonakawaka/pub@46674bb5  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.27 to 2.0 in /oolldd/yamlkun01go
+  mobaijun/mobaijun-spring-boot-starter@624d69e2  [snakeyaml 2.0]  :arrow_up: Bump org.yaml:snakeyaml from 1.33 to 2.0
+  cereda/wsn2spa@91f3cf07  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0
+  ledigiacomo/InterviewCVEExercise@76fa6c9e  [snakeyaml 2.0]  fix: upgrade snakeyaml to 2.0
+  kb-dk/ds-cumulus-export@80efdf41  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0
+  BetaMC-Developers/Tsunami@8f2bb13b  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.7 to 2.0 (#117)
+  marcbezem/pviz@05e40232  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 1.32 to 2.0 in /pplex
+  dropwizard-jobs/dropwizard-jobs@6b729341  [snakeyaml 2.0]  build(deps): update snakeyaml from version range [2.0,) to 2.6
+  okta/okta-oidc-tck@1295c608  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.2
+  RolePlay-Cauldron/LoriTime@22674c46  [snakeyaml 2.0]  Bump org.yaml:snakeyaml from 2.0 to 2.2
+  telaminai/mongoose-plugins@b9d97ec2  [Global tag is not allowed]  fix(svc-loader-yaml): allow user-class !!FQN tags in graph YAML
+  RedHatInsights/rhsm-subscriptions@41859930  [Global tag is not allowed]  Ensure that snakeyaml does not deserialize objects based on YAML tags
+  RedHatInsights/rhsm-subscriptions@cc87056e  [Global tag is not allowed]  SWATCH-718: Ensure SnakeYAML does not deserialize arbitrary classes (#3859)
+  prometheus/client_java@71832e2b  [Global tag is not allowed]  chore(deps): update dependency org.mock-server:mockserver-netty-no-dependencies 
+  jpicklyk/task-orchestrator@50409f0b  [Global tag is not allowed]  feat: REST API Layer for direct system integration (Phases 0-7) (#188)
+  krzema12/snakeyaml-engine-kmp@b2f1921b  [Global tag is not allowed]  Update dependency org.jetbrains.kotlin:kotlin-gradle-plugin to v2.3.21 (#648)
+  RandomCodeSpace/codeiq@c3637270  [Global tag is not allowed]  feat: port codeiq from Java/Spring Boot to Go single-binary (Phases 1-4) (#130)
+  krzema12/snakeyaml-engine-kmp@ebb7644f  [Global tag is not allowed]  Update kotest to v6.1.5 (#642)
+  aosp-mirror-neo/mirror_superproject@e373f001  [Global tag is not allowed]  Update git submodules
+  apache/linkis@bce24744  [Global tag is not allowed]  [1.9.0 release] [PES][EC][publicservice][spark] feat: ResultSet field processing
+  kafka-ops/julie@3fae19d8  [Global tag is not allowed]  While you were gone... (#566)
+  krzema12/snakeyaml-engine-kmp@38e1d643  [Global tag is not allowed]  Update kotlin monorepo to v2.2.21 (#556)
+  ministryofjustice/hmpps-court-register-api@ee4d497a  [Global tag is not allowed]  RASS-1737 bring in latest template changes (#129)
+  apache/linkis@1596145e  [Global tag is not allowed]  Master feature (#5293)
+  krzema12/snakeyaml-engine-kmp@d658c1c1  [Global tag is not allowed]  fix(deps): update kotlin monorepo to v2.1.21 (#437)
+  mohamamdsajadi/cracked-camunda@1458a6b0  [Global tag is not allowed]  deps: Update dependency org.liquibase:liquibase-core to v4.33.0 (main) (#35135)
+  camunda/camunda@1458a6b0  [Global tag is not allowed]  deps: Update dependency org.liquibase:liquibase-core to v4.33.0 (main) (#35135)
+  ghostventuresai/ghost_camunda@1458a6b0  [Global tag is not allowed]  deps: Update dependency org.liquibase:liquibase-core to v4.33.0 (main) (#35135)
+  Vectorquantiy/camunda@1458a6b0  [Global tag is not allowed]  deps: Update dependency org.liquibase:liquibase-core to v4.33.0 (main) (#35135)
+  ministryofjustice/hmpps-remand-and-sentencing-api@1d99846c  [Global tag is not allowed]  RASS-1253 bring in latest template changes (#601)
+  spring-attic/spring-cloud-dataflow@b982eed3  [Global tag is not allowed]  Merge from main-3 (#5955)
+  ministryofjustice/hmpps-breach-notice-api@eb70b460  [Global tag is not allowed]  Update with the latest template changes (#12)
+  geertvandeweyer/cromwell-aws@9d22c1aa  [Global tag is not allowed]  Develop (#52)
+  mohamamdsajadi/cracked-camunda@40a0d437  [Global tag is not allowed]  feat(backend): Opensearch implementations (#5143)
+  15210510669/camunda@40a0d437  [Global tag is not allowed]  feat(backend): Opensearch implementations (#5143)
+  Vectorquantiy/camunda@40a0d437  [Global tag is not allowed]  feat(backend): Opensearch implementations (#5143)
+  Maremesarr/Zeebe_Blockchain@40a0d437  [Global tag is not allowed]  feat(backend): Opensearch implementations (#5143)
+  camunda/camunda@40a0d437  [Global tag is not allowed]  feat(backend): Opensearch implementations (#5143)
+  ghostventuresai/ghost_camunda@40a0d437  [Global tag is not allowed]  feat(backend): Opensearch implementations (#5143)
+  emilythomas-beep/ds@40a0d437  [Global tag is not allowed]  feat(backend): Opensearch implementations (#5143)
+  geertvandeweyer/cromwell-aws@83ca2779  [Global tag is not allowed]  Develop AWS (#42)
+  H3c-t0r/cammmund@40a0d437  [Global tag is not allowed]  feat(backend): Opensearch implementations (#5143)
+  ministryofjustice/hmpps-locations-inside-prison-api@7102c407  [Global tag is not allowed]  MAP-1728 merging with hmpps-kotlin-template (#294)
+  mohamamdsajadi/cracked-camunda@de2896fd  [Global tag is not allowed]  deps: Update testcontainers-java monorepo to v1.19.7 (main) (#17409)
+  15210510669/camunda@de2896fd  [Global tag is not allowed]  deps: Update testcontainers-java monorepo to v1.19.7 (main) (#17409)
+  Maremesarr/Zeebe_Blockchain@de2896fd  [Global tag is not allowed]  deps: Update testcontainers-java monorepo to v1.19.7 (main) (#17409)
+  Vectorquantiy/camunda@de2896fd  [Global tag is not allowed]  deps: Update testcontainers-java monorepo to v1.19.7 (main) (#17409)
+  camunda/camunda@de2896fd  [Global tag is not allowed]  deps: Update testcontainers-java monorepo to v1.19.7 (main) (#17409)
+  ghostventuresai/ghost_camunda@de2896fd  [Global tag is not allowed]  deps: Update testcontainers-java monorepo to v1.19.7 (main) (#17409)
+  emilythomas-beep/ds@de2896fd  [Global tag is not allowed]  deps: Update testcontainers-java monorepo to v1.19.7 (main) (#17409)
+  benkard/mulkcms2@5e877136  [Global tag is not allowed]  Update all non-major dependencies (mulk/mulkcms2!21)
+  H3c-t0r/cammmund@de2896fd  [Global tag is not allowed]  deps: Update testcontainers-java monorepo to v1.19.7 (main) (#17409)
+  mohamamdsajadi/cracked-camunda@c0562d7a  [Global tag is not allowed]  deps: Update opensearchproject/opensearch Docker tag to v2.13.0 (main) (#17405)
+  15210510669/camunda@c0562d7a  [Global tag is not allowed]  deps: Update opensearchproject/opensearch Docker tag to v2.13.0 (main) (#17405)
+  Maremesarr/Zeebe_Blockchain@c0562d7a  [Global tag is not allowed]  deps: Update opensearchproject/opensearch Docker tag to v2.13.0 (main) (#17405)
+  Vectorquantiy/camunda@c0562d7a  [Global tag is not allowed]  deps: Update opensearchproject/opensearch Docker tag to v2.13.0 (main) (#17405)
+  camunda/camunda@c0562d7a  [Global tag is not allowed]  deps: Update opensearchproject/opensearch Docker tag to v2.13.0 (main) (#17405)
+  ghostventuresai/ghost_camunda@c0562d7a  [Global tag is not allowed]  deps: Update opensearchproject/opensearch Docker tag to v2.13.0 (main) (#17405)
+  emilythomas-beep/ds@c0562d7a  [Global tag is not allowed]  deps: Update opensearchproject/opensearch Docker tag to v2.13.0 (main) (#17405)
+  H3c-t0r/cammmund@c0562d7a  [Global tag is not allowed]  deps: Update opensearchproject/opensearch Docker tag to v2.13.0 (main) (#17405)
+  ministryofjustice/hmpps-document-management-api@1d552f80  [Global tag is not allowed]  Apply template change (#46)
+  brave/security-action@f1d606b1  [Global tag is not allowed]  semgrep_rules: July Fix
+  department-of-veterans-affairs/abd-vro@70bcb98f  [Global tag is not allowed]  Merge/qa to main (#523)
+  department-of-veterans-affairs/abd-vro@cda42425  [Global tag is not allowed]  Merge/qa to main (#623)
+  department-of-veterans-affairs/abd-vro@a2d0da69  [Global tag is not allowed]  Merge/qa to main (#537)
+  department-of-veterans-affairs/abd-vro@69e73f10  [Global tag is not allowed]  Afsin/qa to dev (#722)
+  department-of-veterans-affairs/abd-vro@8742f877  [Global tag is not allowed]  Merge/qa to dev (#698)
+  department-of-veterans-affairs/abd-vro@5191049e  [Global tag is not allowed]  Merge/qa to dev (#694)
+  department-of-veterans-affairs/abd-vro@33b80fc6  [Global tag is not allowed]  Merge/qa to main (#630)
+  scylladb/cassandra-stress@ac5d6c84  [Global tag is not allowed]  Merge 'Sync with Cassandra 3.11.12' from Michael Livshin
+  scylladb/scylla-tools-java@ac5d6c84  [Global tag is not allowed]  Merge 'Sync with Cassandra 3.11.12' from Michael Livshin
+  killbill/killbill-platform@9cd27892  [trustedTagInspector]  replace removed snakeyaml's TrustedTagInspector to just return true
+  wcm-io-devops/conga-ansible-plugin@8eaac854  [trustedTagInspector]  Add our own version of <code>org.yaml.snakeyaml.inspector.TrustedTagInspector</c
+  snork-alt/beanszoo@55d17ce2  [trustedTagInspector]  migrate build to Java 21
+  microsoft/typespec@cd9cae9f  [trustedTagInspector]  Update Java dependencies to latest versions in http-client-java (#7801)

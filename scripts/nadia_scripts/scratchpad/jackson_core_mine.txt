@@ -1,0 +1,190 @@
+[mine-commits] q='jackson StreamReadConstraints'
+[mine-commits] q='jackson maxStringLength'
+[mine-commits] q='jackson maxNestingDepth'
+[mine-commits] q='jackson maxNumberLength'
+[mine-commits] q='jackson StreamConstraintsException'
+[mine-commits] 184 distinct commits across 159 repos
+  rillet-io/Jobrunr-large-error-message-minimum-reproducible-example@14696fdf  [StreamReadConstraints]  add test for increasing Jackson's StreamReadConstraints to handle large error me
+  agentbay-ai/wuying-agentbay-sdk@f58f8756  [StreamReadConstraints]  fix(deps): bump jackson from 2.15.2 to 2.18.6 in Java SDK
+  cibseven/cibseven@81a8d2b2  [StreamReadConstraints]  fix(JacksonConfigurator): add support for StreamReadConstraints in Jackson 2.15.
+  dadoonet/fscrawler@9e559e49  [StreamReadConstraints]  fix(client): 🐛 avoid Jackson round-trip for large bulk JSON documents
+  confluentinc/kafka-connect-elasticsearch@b88c78d1  [StreamReadConstraints]  Bump jackson to 2.18.6
+  cibseven/cibseven-webclient@42dec0dc  [StreamReadConstraints]  fix(jackson): tolerate unknown properties (#1000)
+  dotCMS/core@b30dfa31  [StreamReadConstraints]  fix: raise Jackson StreamReadConstraints limit in ContentletJsonHelper (#35394) 
+  TwistedLady/elevator-system@f263f98f  [StreamReadConstraints]  fix(app): align Jackson versions (jackson-bom 2.21.0)
+  nickitnik0987/parquet_jackson_vuln_fix@b9c11afc  [StreamReadConstraints]  GH-3414: Add parseJson to VariantBuilder for JSON-to-Variant conversion (#3415)
+  fslev/cucumber-reporting-extended@b4f20a9b  [StreamReadConstraints]  increase Jackson StreamReadConstraints String length
+  grid-coordination/clj-oa3@ba8e70a4  [StreamReadConstraints]  Fix codox doc generation and bump version to 0.2.0
+  sassoftware/jackson@84907abb  [StreamReadConstraints]  Remediate SNYK-JAVA-COMFASTERXMLJACKSONCORE-15907551 / GHSA-2m67-wjpj-xhg9
+  apache/parquet-java@b9c11afc  [StreamReadConstraints]  GH-3414: Add parseJson to VariantBuilder for JSON-to-Variant conversion (#3415)
+  ESSI-Lab/DAB@9385e949  [StreamReadConstraints]  [main-private] set the Jackson StreamReadConstraints maxStringLength to 50 MB in
+  opensearch-project/OpenSearch@f4c51213  [StreamReadConstraints]  Fix unbounded recursion in deserialization that can cause StackOverflowError (#2
+  ai-dev-methodologies/ax-template@f146127a  [StreamReadConstraints]  fix(jackson3): codex 게이트 P2·P3 봉합 — 돈 문자열 3층 방어 + primitive-null 계약 pin
+  FasterXML/jackson-dataformats-binary@7fe5f5a6  [StreamReadConstraints]  Sync with jackson-core changes wrt StreamReadConstraints
+  stuartwdouglasmidstream/github--FasterXML--jackson-dataformats-binary@7fe5f5a6  [StreamReadConstraints]  Sync with jackson-core changes wrt StreamReadConstraints
+  Sundsvallskommun/api-service-case-data@5f0c3a3d  [StreamReadConstraints]  HYDRAN-XYZ Exclude attachment endpoints from Logbook payload logging
+  centiservice/mats3@79e05ec1  [StreamReadConstraints]  Upgrade Jackson to 2.15.0, and add effectively disabling of StreamReadConstraint
+  dfuchss/deltabot@9d7a110c  [StreamReadConstraints]  Fix issue java.lang.NoClassDefFoundError: com/fasterxml/jackson/core/StreamReadC
+  yeonsugo/JAVA-jackson-databind@e5bdcfb3  [StreamReadConstraints]  Remove hard-coded `StreamReadConstraints` test variables to isolate change in `j
+  prestodb/presto@5c065d30  [StreamReadConstraints]  revert: Update jackson version to 2.18.6 (#27293) (#27989)
+  prb/jackson-toon@5a892312  [StreamReadConstraints]  Track nesting depth to prevent stack overflow (issue #7)
+  finos-osera/backpatch-jackson-databind@e5bdcfb3  [StreamReadConstraints]  Remove hard-coded `StreamReadConstraints` test variables to isolate change in `j
+  folio-org/okapi@ee5ee23b  [StreamReadConstraints]  OKAPI-1241: Jackson 2.18.6 fixing DoS when parsing long number
+  Vbros123/jackson-databind@e5bdcfb3  [StreamReadConstraints]  Remove hard-coded `StreamReadConstraints` test variables to isolate change in `j
+  FasterXML/jackson-dataformats-text@3c990510  [StreamReadConstraints]  Try to sync StreamReadConstraints validation changes from `jackson-core`; some r
+  bceidson/jackson-databind@e5bdcfb3  [StreamReadConstraints]  Remove hard-coded `StreamReadConstraints` test variables to isolate change in `j
+  prestodb/presto@9f349d2e  [StreamReadConstraints]  chore(deps): Upgrade Jackson to 2.18.9 (#28084)
+  timmyzhang66/script-to-animation-agent@92483b0b  [StreamReadConstraints]  fix: Use reflection to call StreamReadConstraints.overrideDefaultStreamReadConst
+  stuartwdouglasmidstream/github--FasterXML--jackson-dataformats-text@3c990510  [StreamReadConstraints]  Try to sync StreamReadConstraints validation changes from `jackson-core`; some r
+  kienthuan96/floci-demo@d16945f3  [StreamReadConstraints]  fix(lambda): raise Jackson maxStringLength for large inline zip uploads (#412) (
+  vboursinos/jackson-databind@e5bdcfb3  [StreamReadConstraints]  Remove hard-coded `StreamReadConstraints` test variables to isolate change in `j
+  GenSpectrum/LAPIS@013129fa  [StreamReadConstraints]  fix(lapis): upgrade to Spring boot 4 (#1719)
+  FasterXML/jackson-databind@e5bdcfb3  [StreamReadConstraints]  Remove hard-coded `StreamReadConstraints` test variables to isolate change in `j
+  vert-x3/vertx-dependencies@65790aba  [StreamReadConstraints]  Bump jackson from 2.18.2 to 2.18.6 fixing DoS when parsing long number (#241)
+  cjfravel-dev/ariadne@f1162ff3  [StreamReadConstraints]  Add multi-version Spark/Delta support via Maven profiles (#42)
+  arangodb/arangodb-java-driver@5b1b958a  [StreamReadConstraints]  [DE-762] configure jackson stream constraints (#537)
+  uxzwal/Floci@d16945f3  [StreamReadConstraints]  fix(lambda): raise Jackson maxStringLength for large inline zip uploads (#412) (
+  prb/jackson-toon@bd8cceff  [StreamReadConstraints]  Fix BigDecimal to BigInteger conversion performance issue
+  devops-abed/Floci_ab@d16945f3  [StreamReadConstraints]  fix(lambda): raise Jackson maxStringLength for large inline zip uploads (#412) (
+  svenruppert/dependencies@985e74dc  [StreamReadConstraints]  security: bump tools.jackson.core jackson-core / jackson-databind 3.1.0 → 3.1.1
+  docker-hardened-images/catalog@594536ff  [StreamReadConstraints]  nifi: patch jackson-core GHSA-2m67-wjpj-xhg9 (#34731)
+  abedzaoui/Floci_00@d16945f3  [StreamReadConstraints]  fix(lambda): raise Jackson maxStringLength for large inline zip uploads (#412) (
+  isolgpus/Luxis@d9dfd386  [StreamReadConstraints]  Fix mismatched Jackson versions causing ExceptionInInitializerError
+  floci-io/floci@d16945f3  [StreamReadConstraints]  fix(lambda): raise Jackson maxStringLength for large inline zip uploads (#412) (
+  ai-dev-methodologies/ax-template@bf5762b1  [StreamReadConstraints]  fix(jackson3): codex R4 봉합 — StreamReadConstraints 전체 envelope pin + 필터 회귀 2건
+  keaipiao/sosoGitHub@5e886ac7  [StreamReadConstraints]  feat(repo-detail): PR-2 阶段 3 D2 (1/N) — B2 V20 埋点表 + B3 jackson 解析依赖 + ParserSec
+  JuanLuisLozadaGx/Amazon@d16945f3  [StreamReadConstraints]  fix(lambda): raise Jackson maxStringLength for large inline zip uploads (#412) (
+  mock-server/mockserver-monorepo@978338d7  [StreamReadConstraints]  feat: implement 8 community issues — percentage matching, HTTP method factories,
+  moderneinc/jsonrpc@976ff4ee  [StreamReadConstraints]  Fix silent hang when deserialization fails with no request id (#14)
+  takamaka-dev/messages@64bce62b  [StreamReadConstraints]  docs: §2.5 parser-depth confirmation resolved — Jackson + Dart both safe at dept
+  tonikelope/megabasterd@3508e2d3  [StreamReadConstraints]  Bump jackson-{core,annotations,databind} 2.15.3 -> 2.18.6
+  nakul2207/openrewrite__rewrite__7316-fix@19c94ab7  [StreamReadConstraints]  Python: Serialize large integers as strings in RPC to avoid Jackson limits (#682
+  apache/camel@972d6fc3  [StreamReadConstraints]  camel-elasticsearch: Downgrade the jackson version to 2.14.3 (#10203)
+  palantir/conjure-java-runtime@5ef52794  [StreamReadConstraints]  Apply an excessively permissive large string length limit by default (#2601)
+  swisspost/gateleen@39dfe18d  [StreamReadConstraints]  io.vertx.core.json.DecodeException: Failed to decode:String value length (200540
+  grid-coordination/clj-midas@58355f40  [StreamReadConstraints]  Pin Jackson on the build classpath; add CONTRIBUTING.md
+  pinecone-io/pinecone-java-client@0ecbcf95  [StreamReadConstraints]  fix(deps): bump jackson to 2.18.8 to fix CVE-2025-52999 (high-severity DoS) (#22
+  datasharingframework/dsf@bf29385d  [StreamReadConstraints]  jackson version back to 2.14 ...
+  opensearch-project/OpenSearch@c93e9af2  [StreamReadConstraints]  Restore default max nesting depth to 1000 and decouple stream depth limit (#2248
+  javatechno/camel@972d6fc3  [StreamReadConstraints]  camel-elasticsearch: Downgrade the jackson version to 2.14.3 (#10203)
+  awslabs/spark-sql-kinesis-connector@3383b8d4  [StreamReadConstraints]  Bump com.fasterxml.jackson.core:jackson-core from 2.18.3 to 2.18.6 (#80)
+  openrewrite/rewrite@19c94ab7  [StreamReadConstraints]  Python: Serialize large integers as strings in RPC to avoid Jackson limits (#682
+  msgpack/msgpack-java@799e2d18  [StreamReadConstraints]  Fix Jackson deprecation warnings in MessagePackFactory (#903)
+  Proximal-Environments/rewrite_rewrite-base-1_workspace@19c94ab7  [StreamReadConstraints]  Python: Serialize large integers as strings in RPC to avoid Jackson limits (#682
+  javatechno/camel-4.6.2@972d6fc3  [StreamReadConstraints]  camel-elasticsearch: Downgrade the jackson version to 2.14.3 (#10203)
+  devdownin/SpectraLLM@157ba80e  [StreamReadConstraints]  feat: derniers points de l'audit ingestion/GED — locale de chunking, réconciliat
+  codelibs/fess-crawler@b3641349  [StreamReadConstraints]  fix(extractor): bound Ps/Json/Pdf extractor memory usage (#179)
+  babaraliranar/camel_mpd@972d6fc3  [StreamReadConstraints]  camel-elasticsearch: Downgrade the jackson version to 2.14.3 (#10203)
+  prb/jackson-toon@a79e740f  [StreamReadConstraints]  Use Jackson's NumberInput for optimized number parsing (issue #8)
+  NTU-Siqiang-Group/AsterDB@08559317  [StreamReadConstraints]  TINKERPOP-2948 bump jackson databind to 2.15.0 (#2139)
+  KangweiZhu/tinkerpop-flakyfix@08559317  [StreamReadConstraints]  TINKERPOP-2948 bump jackson databind to 2.15.0 (#2139)
+  07artem132/SignalCli.NET@9f8d18d9  [StreamReadConstraints]  defensive(signal-cli-protocol-alignment/attachment-threshold-margin): lower MaxI
+  jboss-fuse/camel@972d6fc3  [StreamReadConstraints]  camel-elasticsearch: Downgrade the jackson version to 2.14.3 (#10203)
+  xiaoli123/agentscope-core@375f3f7c  [StreamReadConstraints]  fix(rag): Exclude jackson3 from elasticsearch-java9 (#744)
+  apache/tinkerpop@08559317  [StreamReadConstraints]  TINKERPOP-2948 bump jackson databind to 2.15.0 (#2139)
+  deadlockcharlie/tinkerpop@08559317  [StreamReadConstraints]  TINKERPOP-2948 bump jackson databind to 2.15.0 (#2139)
+  indushekhar1201/Floci-emulator@0f9f39af  [StreamReadConstraints]  fix(blob): support large blob uploads beyond 20 MB (#41)
+  namedstanley/camel@972d6fc3  [StreamReadConstraints]  camel-elasticsearch: Downgrade the jackson version to 2.14.3 (#10203)
+  floci-io/floci-az@0f9f39af  [StreamReadConstraints]  fix(blob): support large blob uploads beyond 20 MB (#41)
+  comute/CamelPMD@972d6fc3  [StreamReadConstraints]  camel-elasticsearch: Downgrade the jackson version to 2.14.3 (#10203)
+  rvlsec/rewrite@19c94ab7  [StreamReadConstraints]  Python: Serialize large integers as strings in RPC to avoid Jackson limits (#682
+  opena2a-org/agent-identity-management@d74080d2  [StreamReadConstraints]  ATX: strict-parse the credential (fold-aware duplicate rejection) in the Java SD
+  amanminz/quizchef@a3c5c623  [StreamReadConstraints]  feat(identity,quiz,session,common): close input-validation gaps
+  forest-town/repo-2823585@972d6fc3  [StreamReadConstraints]  camel-elasticsearch: Downgrade the jackson version to 2.14.3 (#10203)
+  agentscope-ai/agentscope-java@375f3f7c  [StreamReadConstraints]  fix(rag): Exclude jackson3 from elasticsearch-java9 (#744)
+  xiaoqianghan08-ai/agentscope-x@375f3f7c  [StreamReadConstraints]  fix(rag): Exclude jackson3 from elasticsearch-java9 (#744)
+  paulirwin/java-api-extractor@13261251  [StreamReadConstraints]  Bump com.fasterxml.jackson.core:jackson-core from 2.17.2 to 2.18.6 in the maven 
+  wahllllll/agentscope-java-demo@375f3f7c  [StreamReadConstraints]  fix(rag): Exclude jackson3 from elasticsearch-java9 (#744)
+  GlofX/agentscope-java@375f3f7c  [StreamReadConstraints]  fix(rag): Exclude jackson3 from elasticsearch-java9 (#744)
+  micronaut-projects/micronaut-starter@64645a5a  [StreamReadConstraints]  update to 7.6.6 (#2911)
+  sunnyadn/js-toml@1e45ca56  [StreamReadConstraints]  Cap radix-prefixed integer literals at 1000 digits and use native BigInt
+  1997nanxi/agentscope-java@375f3f7c  [StreamReadConstraints]  fix(rag): Exclude jackson3 from elasticsearch-java9 (#744)
+  z-fenix/agentscope@375f3f7c  [StreamReadConstraints]  fix(rag): Exclude jackson3 from elasticsearch-java9 (#744)
+  dlvenable/opensearch-ci-bot-data-prepper@193df93e  [StreamReadConstraints]  feat: Add configurable stream read constraints for JSON input codec (#5541)
+  hackerhero0x01/data-prepper@193df93e  [StreamReadConstraints]  feat: Add configurable stream read constraints for JSON input codec (#5541)
+  opensearch-project/data-prepper@193df93e  [StreamReadConstraints]  feat: Add configurable stream read constraints for JSON input codec (#5541)
+  cibseven/cibseven-webclient@e06f84fc  [StreamReadConstraints]  feat: upgrade to Spring Boot 4.0.4 and Jackson 3 (#888)
+  Opetushallitus/kielitutkintorekisteri@e63d135f  [maxStringLength]  Pienennä Jackson maxStringLength -oletusarvo 10 megatavuun
+  mmaudet/eu-dss-module@ff05ad9b  [maxStringLength]  fix(server): raise Jackson maxStringLength to 200M so large docs (base64-in-JSON
+  havochvatten/MSP-Symphony@92f60258  [maxStringLength]  Override maxStringLength
+  ailyedu2030/micro-course@94109aac  [maxStringLength]  fix: inject Spring ObjectMapper and raise Jackson maxStringLength to 100MB
+  apache/camel@7d71e14c  [maxStringLength]  CAMEL-22250: camel-jackson - Allow to configure stream reader constra… (#18641)
+  jboss-fuse/camel@7d71e14c  [maxStringLength]  CAMEL-22250: camel-jackson - Allow to configure stream reader constra… (#18641)
+  ailyedu2030/micro-course@0aa69772  [maxStringLength]  fix: disable subtitle_enable to prevent 20MB+ TTS response causing Jackson 20MB 
+  namedstanley/camel@7d71e14c  [maxStringLength]  CAMEL-22250: camel-jackson - Allow to configure stream reader constra… (#18641)
+  07artem132/SignalCli.NET@9e1c1376  [maxStringLength]  @
+  JHyunJung/passkey-package@2b0357cf  [maxStringLength]  fix(G02): Jackson StreamReadConstraints로 트리 완전파싱 전 과대 JSON 조기거부 (security)
+  gatling/gatling@1da9061d  [maxStringLength]  fix: Lift Jackson maxStringLength in Recorder, close #4407
+  TwoHeadsDragon/metersphere@e30f7ef2  [maxStringLength]  build: jackson-core default maxStringLength 调整
+  934303488/MeterSphereCustom@e30f7ef2  [maxStringLength]  build: jackson-core default maxStringLength 调整
+  sdwurg180507280211/metersphere@e30f7ef2  [maxStringLength]  build: jackson-core default maxStringLength 调整
+  07artem132/SignalCli.NET@f6ea588a  [maxStringLength]  docs(audit-followup-2026/obsolete-doc-sync + signal-cli-quirks-doc): sync 4.0 + 
+  FortnoxAB/reactive-wizard@6f06ced3  [maxStringLength]  Set maxStringLength in Jackson JsonFactory to maxResponseSize in HttpClient.
+  FortnoxAB/reactive-wizard@ac18a514  [maxStringLength]  Changed StreamReadConstraints' maxStringLength from the value given in HttpClien
+  jdereg/json-io@c9975e0b  [maxStringLength]  Doc: clarify WriterContext vs JsonGenerator architectural relationship + streami
+  EventoFramework/evento-framework@887bd5d3  [maxStringLength]  fix(common): remove 20 MB CBOR string cap and eliminate SerializedQueryResponse 
+  apache/pinot@dce035f9  [maxStringLength]  Add jsonPath*Fast / jsonPath*FirstMatch extractor functions (#18972)
+  jdereg/json-io@c86b4069  [maxStringLength]  Feature: complete streaming-write API — CharStreamGenerator impl + JsonIo.create
+  keaipiao/sosoGitHub@391a3a7b  [maxStringLength]  docs(repo-detail): PR-2 /autoplan 评审收敛 — ADR-14~23 全面修订
+  tounsii007/netscope@8d6a6f04  [maxStringLength]  20 workflows + 29 confirmed security fixes (5 review rounds) + 5 ADRs + CHANGELO
+  Jason-Clark-FG/OpenMetadata-Mirror@25fda478  [maxStringLength]  fix: memory hardening to prevent OOMKill under concurrent load (#27397)
+  Jason-Clark-FG/OpenMetadata-FG@25fda478  [maxStringLength]  fix: memory hardening to prevent OOMKill under concurrent load (#27397)
+  open-metadata/OpenMetadata@25fda478  [maxStringLength]  fix: memory hardening to prevent OOMKill under concurrent load (#27397)
+  linychuo/codescope@84f34178  [maxNestingDepth]  fix: cap BFS depth at 500 to prevent Jackson StackOverflowError
+  leek-wars/leekscript@b3ea42a5  [maxNestingDepth]  fix(security): jsonDecode bounded against deeply-nested JSON DoS (#3583)
+  prestodb/presto@a31f69f6  [maxNestingDepth]  chore(deps): Update jackson version to 2.18.6 (#27293)
+  latte-java/jwt@3a92b5d1  [maxNestingDepth]  Update architecture spec from security/usability review pass 3
+  linychuo/codescope@ac34fa15  [maxNestingDepth]  docs: audit non-analysis layers for missing-caller sources
+  gazzsha/Web-Resolver-Task@f5afdd57  [maxNestingDepth]  test(security): regression coverage for differential-review findings
+  salesforce/cantor@b62de3f0  [maxNumberLength]  Upgrade Guava and Jackson for security fixes
+  ETERNA-earkiv/commons-ip@94615933  [maxNumberLength]  fix: bump jackson-core/databind to 2.21.4 (GHSA-72hv-8253-57qq)
+  firebolt-db/firebolt-kafka-connector@64071b2e  [maxNumberLength]  fix: patch jackson-core (GHSA-72hv-8253-57qq) and aircompressor (CVE-2025-67721)
+  bob29947/ray-gpu-operator-fusion@cb9c80fe  [maxNumberLength]  [Java] Upgrade jackson-databind 2.16.1 -> 2.18.6 to fix GHSA-72hv-8253-57qq (#61
+  marcusb333/delerium-paste@b73cb167  [maxNumberLength]  fix: upgrade Jackson to 2.21.1 to address GHSA-72hv-8253-57qq
+  github/copilot-sdk-java@050e8e47  [maxNumberLength]  Upgrade Jackson to 2.21.1 to fix async parser DoS vulnerability
+  copilot-community-sdk/copilot-sdk-java@050e8e47  [maxNumberLength]  Upgrade Jackson to 2.21.1 to fix async parser DoS vulnerability
+  MarkDechamps/liquibase-destructive-change-poc@df1d133f  [maxNumberLength]  Fix GHSA-72hv-8253-57qq and WS-2026-0003: upgrade jackson to 2.21.2
+  actions-marketplace-validations/github_copilot-sdk-java@050e8e47  [maxNumberLength]  Upgrade Jackson to 2.21.1 to fix async parser DoS vulnerability
+  atharvathorat164-cpu/cicd-ray@cb9c80fe  [maxNumberLength]  [Java] Upgrade jackson-databind 2.16.1 -> 2.18.6 to fix GHSA-72hv-8253-57qq (#61
+  athorat-maker/dummy@cb9c80fe  [maxNumberLength]  [Java] Upgrade jackson-databind 2.16.1 -> 2.18.6 to fix GHSA-72hv-8253-57qq (#61
+  ray-project/ray@cb9c80fe  [maxNumberLength]  [Java] Upgrade jackson-databind 2.16.1 -> 2.18.6 to fix GHSA-72hv-8253-57qq (#61
+  ModelEngine-Group/fit-framework@cf4ec573  [maxNumberLength]  fix(fit): 升级 jackson 至 2.21.1 修复异步解析器 DoS 漏洞
+  freeplayai/freeplay-jvm@8f29c8cb  [maxNumberLength]  Upgrade Jackson to 2.18.6 to fix async parser DoS (GHSA-72hv-8253-57qq)
+  databricks/databricks-sdk-java@9685e96a  [maxNumberLength]  Upgrade Jackson dependency to a safe version (#703)
+  hazelcast/hazelcast-eureka@74022b53  [maxNumberLength]  Bump com.fasterxml.jackson.core:jackson-core from 2.13.4 to 2.18.6 (#266)
+  smc4j/smc4j@b67b03b6  [maxNumberLength]  Bump com.fasterxml.jackson.core:jackson-core from 2.18.0 to 2.18.6 in the gradle
+  sagaraggarwal86/JAAR-jmeter-plugin@ba1c2e19  [maxNumberLength]  Bump the maven group across 1 directory with 3 updates (#21)
+  exeris-systems/exeris-kernel@7f6afb2e  [maxNumberLength]  Release v0.8.0 — production-correctness + HTTP body-codec SPI matrix + RBAC wiri
+  wael-slimi/DocBook-pidev@26152757  [StreamConstraintsException]  Add missing Jackson dependencies for AI features
+  quarkusio/quarkus@6a2addc5  [StreamConstraintsException]  Merge pull request #52700 from pschaub/fix/stream-constraints-exception-400
+  Ladicek/quarkus-arc@6a2addc5  [StreamConstraintsException]  Merge pull request #52700 from pschaub/fix/stream-constraints-exception-400
+  quarkusio/quarkus@6818a5ce  [StreamConstraintsException]  Catch StreamConstraintsException in Jackson message body readers
+  Ladicek/quarkus-arc@6818a5ce  [StreamConstraintsException]  Catch StreamConstraintsException in Jackson message body readers
+  qpwo/beam@fd5b1de4  [StreamConstraintsException]  Fix StreamConstraintsException introduced in jackson 2.15 (#31580)
+  axonops/axonops-schema-registry@5abc4820  [StreamConstraintsException]  fix: resolve Go formatting and Java Jackson dependency conflict
+  coconux3/beam-mirror@fd5b1de4  [StreamConstraintsException]  Fix StreamConstraintsException introduced in jackson 2.15 (#31580)
+  tamavans/kernel@46276fc2  [StreamConstraintsException]  FIX. com.fasterxml.jackson.core.exc.StreamConstraintsException: String length (2
+  apache/beam@fd5b1de4  [StreamConstraintsException]  Fix StreamConstraintsException introduced in jackson 2.15 (#31580)
+  gumuxiansheng/Baafoo@848b1e27  [StreamConstraintsException]  fix: multiple bug fixes
+  dakrone/cheshire@272bd09f  [StreamConstraintsException]  Jackson limits: have tests check more specific ex
+  VimVoyager/NewPipeExtractorAPI@ef8cd440  [StreamConstraintsException]  Configure Jackson to handle circular references
+  Guohao1020/custos@b092defb  [StreamConstraintsException]  fix(build): pin jackson via BOM + aliyun maven mirror in Dockerfile
+  camunda/camunda@2a2ed339  [StreamConstraintsException]  fix: reject deeply-nested variable documents to prevent exporter failures
+  prb/jackson-toon@f6965a6e  [StreamConstraintsException]  Migrate from Jackson 2.x to Jackson 3.1.0
+  YesHaddop/OQ@0fd66c73  [StreamConstraintsException]  fix: Jackson 순환 참조 오류 및 SSE 이벤트 파싱 수정
+  rlemke/fwh_osm@5f538c98  [StreamConstraintsException]  feat(gh-router): import-in-handler routing + deps; RouteCitiesFromPath workflow
+  apache/atlas@4bec8903  [StreamConstraintsException]  ATLAS-5336: Upgrade Kafka to 3.9.1; embedded notification broker uses KRaft (no 
+  jajjer/openmrs-module-cdshooks@35ff563b  [StreamConstraintsException]  Comprehensive test coverage round + patient-safety fix
+  Tiro-health/java-integration-harness@34905650  [StreamConstraintsException]  feat: typed SDC client for $validate / $extract (Java, R5)
+  elastic/elasticsearch@cde0e25a  [StreamConstraintsException]  ES|QL: read a declared `unsigned_long` from CSV/TSV/NDJSON (#153480)
+  Jahia/bulk-create-users@2b3921ec  [StreamConstraintsException]  test: add coverage for bulk-create-users (SUPPORT-646) (#18)
+  exeris-systems/exeris-kernel@17446220  [StreamConstraintsException]  release(0.10.0): integrate v0.10.0 milestone into main (#232)
+  TimefoldAI/timefold-solver@66882ba4  [StreamConstraintsException]  deps: bump the quarkus group with 4 updates (#2151)
+  cuioss/TokenSheriff@4c61928d  [StreamConstraintsException]  build(deps): bump version.quarkus from 3.32.0 to 3.32.1 (#270)
+  cuioss/cuioss-parent-pom@fbcd6c1e  [StreamConstraintsException]  build(deps): bump version.quarkus from 3.32.0 to 3.32.1 (#1132)
+  jbosstm/lra@7fd0658b  [StreamConstraintsException]  Bump io.quarkus:quarkus-ide-config from 3.32.0 to 3.32.1 (#271)
+  camunda/camunda@f4a21518  [StreamConstraintsException]  deps: Update mockserver.version to v6 (main) (#53892)
+  prometheus/client_java@f1b39c1b  [StreamConstraintsException]  chore(deps): update dependency org.mock-server:mockserver-netty-no-dependencies 
+  camunda/camunda@7c59c807  [StreamConstraintsException]  deps: Update dependency org.mock-server:mockserver-client-java to v6 (main) (#53
+  camunda/camunda@b6e1b77f  [StreamConstraintsException]  deps: Update dependency org.mock-server:mockserver-netty to v6 (main) (#53891)
+  camunda/camunda@89262bc8  [StreamConstraintsException]  deps: Update dependency org.mock-server:mockserver-core to v6 (main) (#53890)

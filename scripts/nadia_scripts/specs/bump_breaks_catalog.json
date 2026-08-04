@@ -923,6 +923,14 @@
      "CVE"
     ]
    },
+   "trigger": {
+    "kind": "resource_pattern",
+    "resource_suffixes": [".yml", ".yaml"],
+    "pattern": "!!\\s*[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z0-9_]+)+",
+    "description": "A GLOBAL tag naming a Java class (e.g. !!com.example.Foo). snakeyaml 2.0's default TagInspector rejects exactly these. Requiring a dot excludes the standard YAML tags (!!str, !!int, !!map), which are never rejected. LOCAL tags (single !, resolved from the constructor's own yamlConstructors map) also do NOT reach the inspector, so they must not match.",
+    "note": "A client whose YAML contains no global tag cannot experience this break, however cleanly it compiles and however real its bump. Verified on adityajoy-1902/Dashboard-V-2: root-type Constructor(Application.class) with tag-free YAML -> the adaptation was purely a compile migration.",
+    "unknown_if": "YAML is supplied at runtime rather than bundled in the repo; then the trigger is undecidable from source."
+   },
    "verify": {
     "version_property": "bbc.snakeyaml.version",
     "runnable_baseline": "1.33",

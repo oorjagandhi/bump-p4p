@@ -1,0 +1,28 @@
+[
+ {
+  "break_id": "poi-scratchpad-4.1.2-to-5.x",
+  "repo": "jadhavspeaks/file_compare_diffrent_ext",
+  "adapt_sha": "156a962453793ed5b398a5133901bf614dba678c",
+  "parent_sha": "7d6ffdd3000e705e051ba71f37a6f6789a1bbd9e",
+  "build_system": "maven",
+  "production_files": [
+   "src/main/java/com/filecomparator/parser/ExcelParser.java"
+  ],
+  "message": "Fix(parser): Increase Excel file size limit",
+  "status": "already_recorded",
+  "boundary_status": "on_or_past"
+ },
+ {
+  "break_id": "poi-scratchpad-4.1.2-to-5.x",
+  "repo": "ProgrammeVitam/sedatools",
+  "adapt_sha": "e81cded48687512271311af3776088c333029d49",
+  "parent_sha": "07ff672c2058518be2c59a882c4cdbcb50115bb3",
+  "build_system": "maven",
+  "production_files": [
+   "mailextractlib/src/main/java/fr/gouv/vitam/tools/mailextractlib/core/StoreExtractor.java"
+  ],
+  "message": "fix: bypass a POI bug in \"msg\" opening with MAPIMessage (mailextractlib)",
+  "status": "queued",
+  "boundary_status": "unconfirmed"
+ }
+]

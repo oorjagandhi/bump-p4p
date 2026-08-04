@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>jackson-streamconstraints-bbc</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- overridden per differential state: 2.14.2 (baseline) vs 2.15.0 (break boundary) -->
+        <jackson.version>2.14.2</jackson.version>
+    </properties>
+
+    <dependencies>
+        <!-- databind pulls jackson-core + annotations at the same version -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <excludes>
+                        <exclude>${bbc.test.exclude}</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <excludes>
+                        <exclude>${bbc.main.exclude}</exclude>
+                    </excludes>
+                    <testExcludes>
+                        <testExclude>${bbc.test.exclude}</testExclude>
+                    </testExcludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- STATES 1 & 2: parent code only (cross-version; the break demonstrator) -->
+        <profile>
+            <id>parent</id>
+            <activation><activeByDefault>true</activeByDefault></activation>
+            <properties>
+                <bbc.main.exclude>**/JsonLoaderAdapted.java</bbc.main.exclude>
+                <bbc.test.exclude>**/AdaptedBbcTest.java</bbc.test.exclude>
+            </properties>
+        </profile>
+        <!-- STATE 3: adapted code only (uses 2.15-only StreamReadConstraints) -->
+        <profile>
+            <id>adapted</id>
+            <properties>
+                <bbc.main.exclude>**/JsonLoaderParent.java</bbc.main.exclude>
+                <bbc.test.exclude>**/ParentBbcTest.java</bbc.test.exclude>
+            </properties>
+        </profile>
+    </profiles>
+</project>

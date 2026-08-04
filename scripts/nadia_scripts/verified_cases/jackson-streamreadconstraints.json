@@ -1,0 +1,61 @@
+{
+  "case_id": "jackson-streamreadconstraints",
+  "status": "verified_bbc",
+  "case_type": "external_changelog_break__mechanism_verified_via_harness__real_signature_confirmed_clients",
+  "verified_date": "2026-07-20",
+  "verified_by": "3-state differential (Maven 3.9.11, JDK 11) on scratchpad/jackson-streamconstraints-harness",
+
+  "provenance": "EXTERNAL_CHANGELOG_NOT_BUMP",
+  "motivation": "Second externally-sourced verified break. Discovery source = jackson-core 2.15.0 changelog/release notes (external-mining SOURCE #2), NOT BUMP and NOT the CVE advisory feed. Contrast the REJECTED jackson-databind default-typing break (see catalog): default-typing is greenfield-Redis-config + API-migration, not same-code-now-throws; StreamReadConstraints IS a clean same-code-now-throws limit break.",
+
+  "library": {
+    "group_id": "com.fasterxml.jackson.core",
+    "artifact_id": "jackson-core",
+    "from_version": "2.14.2",
+    "to_version": "2.15.0",
+    "boundary_type": "minor",
+    "dependency_scope": "compile"
+  },
+
+  "external_source": {
+    "changelog": "jackson-core 2.15.0 release notes — StreamReadConstraints (default maxNestingDepth=1000, maxNumberLength=1000, maxStringLength)",
+    "discovered_via": "domain knowledge / release notes (external-mining source #2), NOT the CVE advisory miner",
+    "not_from_bump": true,
+    "bump_breaking_commit": null
+  },
+
+  "behavioral_break": {
+    "failing_test": "com.example.ParentBbcTest#parentParsesDeeplyNestedJson",
+    "exception": "com.fasterxml.jackson.core.exc.StreamConstraintsException: Depth (1001) exceeds the maximum allowed nesting depth (1000)",
+    "affected_input": "JSON nested 1001 levels deep (one past the 2.15 default maxNestingDepth of 1000)",
+    "category": "runtime_exception",
+    "why_it_breaks": "jackson-core 2.15.0 added StreamReadConstraints default parser limits. Deeply-nested / very-long JSON that 2.14 parsed now throws StreamConstraintsException at parse time. `new ObjectMapper().readTree(json)` compiles unchanged; it throws at runtime on previously-accepted input -> behavioural break."
+  },
+
+  "adaptation": {
+    "location": "production (src/main)",
+    "adaptation_in_test_code": false,
+    "adaptation_quality": "production_usage_adaptation",
+    "the_call": "JsonFactory.builder().streamReadConstraints(StreamReadConstraints.builder().maxNestingDepth(N).maxStringLength(N).build()).build()  -> new ObjectMapper(factory)",
+    "summary": "Rebuild the ObjectMapper on a JsonFactory whose StreamReadConstraints raise the limit the 2.15 default now enforces. Analogue of json-smart's max-depth config.",
+    "artifact": "scripts/nadia_scripts/scratchpad/jackson-streamconstraints-harness"
+  },
+
+  "real_clients_signature_confirmed": [
+    { "project": "dotCMS/core", "adapt_commit": "b30dfa31", "message": "fix: raise Jackson StreamReadConstraints limit in ContentletJsonHelper (#35394)", "the_call": "StreamReadConstraints.builder().maxStringLength(...)" },
+    { "project": "cibseven/cibseven", "adapt_commit": "81a8d2b2", "message": "fix(JacksonConfigurator): add support for StreamReadConstraints in Jackson 2.15" },
+    { "project": "centiservice/mats3", "adapt_commit": "79e05ec1", "message": "Upgrade Jackson to 2.15.0, and add effectively disabling of StreamReadConstraints", "note": "explicit version-boundary-crossing adaptation" },
+    { "project": "ESSI-Lab/DAB", "adapt_commit": "9385e949", "message": "set the Jackson StreamReadConstraints maxStringLength to 50 MB" },
+    { "project": "fslev/cucumber-reporting-extended", "adapt_commit": "b4f20a9b", "message": "increase Jackson StreamReadConstraints String length" }
+  ],
+
+  "verification": {
+    "method": "3-state differential build+test with Maven on JDK 11; jackson version swapped via -Djackson.version; parent vs adapted selected via Maven profile (-Pparent / -Padapted) because adapted uses the 2.15-only StreamReadConstraints API.",
+    "states": [
+      { "name": "1_baseline",         "config": "parent code + jackson 2.14.2", "result": "PASS", "tests": "run=1 failures=0 errors=0" },
+      { "name": "2_new_lib_old_code", "config": "parent code + jackson 2.15.0", "result": "FAIL", "detail": "StreamConstraintsException: Depth (1001) exceeds the maximum allowed nesting depth (1000)", "tests": "run=1 failures=0 errors=1" },
+      { "name": "3_adapted",          "config": "adapted code + jackson 2.15.0", "result": "PASS", "tests": "run=1 failures=0 errors=0" }
+    ],
+    "conclusion": "Confirmed behavioural break with a production-side adaptation: `new ObjectMapper().readTree()` of deeply-nested JSON breaks only under jackson-core >=2.15 with otherwise-unchanged code, and raising StreamReadConstraints in production code resolves it. Break + adaptation pattern taken from the real signature_confirmed clients above."
+  }
+}

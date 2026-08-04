@@ -1,0 +1,130 @@
+{
+  "_comment": [
+    "Seed catalog for the discovery-first 'top-library recent-major-release' strategy.",
+    "Each entry is a TOP, widely-used, NON-ANDROID, comparatively SIMPLE Maven library that",
+    "shipped a RECENT MAJOR release. We mine client repos that upgraded ACROSS the",
+    "'boundary' (major.0.0) and adapted -- ideally with test failures / test fixes.",
+    "",
+    "SELECTION RULES (per the lecturer's brief):",
+    "  - not Android / not Android-only (okhttp is flagged android_adjacent=true, kept with caveat)",
+    "  - simple, general-purpose libraries -- avoid frameworks (Spring, Hibernate ORM) whose",
+    "    upgrades are giant multi-concern migrations",
+    "  - SAME group:artifact across the boundary, so a client's bump is one <version> diff the",
+    "    traversal detector (bbc_e2e.find_boundary_bump) can actually see. Major releases that",
+    "    ALSO change the Maven coordinates (jackson 3 -> tools.jackson, rxjava 2->3, httpclient5,",
+    "    axon/xstream transitive) are recorded under `coordinate_change_majors` and are NOT auto-",
+    "    detectable as a single-line bump -- listed for reference only.",
+    "",
+    "boundary       = the major.0.0 where the new behaviour lands (client must be < boundary before).",
+    "prev_major     = newest pre-boundary line (a sane differential baseline).",
+    "java_min       = minimum JDK the NEW major needs (harness hint).",
+    "why_simple     = one-line justification it fits the 'simple library' criterion."
+  ],
+
+  "libraries": [
+    {
+      "id": "mockito-core-5",
+      "group_id": "org.mockito", "artifact_id": "mockito-core",
+      "boundary": "5.0.0", "prev_major": "4.11.0", "released": "2023-01",
+      "keyword": "mockito", "java_min": "11", "android": false,
+      "why_simple": "test-doubles library; upgrade breaks are localised (inline mock maker default, JDK bump).",
+      "search_terms": ["5.0", "migrate", "upgrade", "bump"]
+    },
+    {
+      "id": "slf4j-api-2",
+      "group_id": "org.slf4j", "artifact_id": "slf4j-api",
+      "boundary": "2.0.0", "prev_major": "1.7.36", "released": "2022-08",
+      "keyword": "slf4j", "java_min": "8", "android": false,
+      "why_simple": "logging facade; single-artifact, provider-binding change at 2.0.",
+      "search_terms": ["2.0", "migrate", "upgrade", "bump"]
+    },
+    {
+      "id": "snakeyaml-2",
+      "group_id": "org.yaml", "artifact_id": "snakeyaml",
+      "boundary": "2.0", "prev_major": "1.33", "released": "2023-02",
+      "keyword": "snakeyaml", "java_min": "8", "android": false,
+      "why_simple": "YAML parser; 2.0 tightens loading defaults (no global tags / SafeConstructor).",
+      "search_terms": ["2.0", "migrate", "upgrade", "bump"]
+    },
+    {
+      "id": "flyway-core-10",
+      "group_id": "org.flywaydb", "artifact_id": "flyway-core",
+      "boundary": "10.0.0", "prev_major": "9.22.3", "released": "2023-10",
+      "keyword": "flyway", "java_min": "17", "android": false,
+      "why_simple": "DB migration tool; single concern, well-defined config surface.",
+      "search_terms": ["10", "migrate", "upgrade", "bump"]
+    },
+    {
+      "id": "jedis-5",
+      "group_id": "redis.clients", "artifact_id": "jedis",
+      "boundary": "5.0.0", "prev_major": "4.4.6", "released": "2023-09",
+      "keyword": "jedis", "java_min": "8", "android": false,
+      "why_simple": "Redis client; 5.0 removes deprecated ctors/APIs -- clean surface.",
+      "search_terms": ["5.0", "migrate", "upgrade", "bump"]
+    },
+    {
+      "id": "mongodb-driver-sync-5",
+      "group_id": "org.mongodb", "artifact_id": "mongodb-driver-sync",
+      "boundary": "5.0.0", "prev_major": "4.11.1", "released": "2024-03",
+      "keyword": "mongodb", "java_min": "8", "android": false,
+      "why_simple": "DB driver; 5.0 drops deprecated APIs -- self-contained.",
+      "search_terms": ["5.0", "migrate", "upgrade", "bump"]
+    },
+    {
+      "id": "protobuf-java-4",
+      "group_id": "com.google.protobuf", "artifact_id": "protobuf-java",
+      "boundary": "4.0.0", "prev_major": "3.25.5", "released": "2024-04",
+      "keyword": "protobuf", "java_min": "8", "android": false,
+      "why_simple": "serialization codec; single artifact, numeric 3.x -> 4.x bump.",
+      "search_terms": ["4.2", "migrate", "upgrade", "bump"]
+    },
+    {
+      "id": "kafka-clients-4",
+      "group_id": "org.apache.kafka", "artifact_id": "kafka-clients",
+      "boundary": "4.0.0", "prev_major": "3.9.0", "released": "2025-03",
+      "keyword": "kafka", "java_min": "11", "android": false,
+      "why_simple": "client library (not the broker); 4.0 removes old protocol/API surface.",
+      "search_terms": ["4.0", "migrate", "upgrade", "bump"]
+    },
+    {
+      "id": "caffeine-3",
+      "group_id": "com.github.ben-manes.caffeine", "artifact_id": "caffeine",
+      "boundary": "3.0.0", "prev_major": "2.9.3", "released": "2021-08",
+      "keyword": "caffeine", "java_min": "11", "android": false,
+      "why_simple": "in-memory cache; 3.0 just requires Java 11 + minor API cleanups.",
+      "search_terms": ["3.0", "migrate", "upgrade", "bump"]
+    },
+    {
+      "id": "hikaricp-5",
+      "group_id": "com.zaxxer", "artifact_id": "HikariCP",
+      "boundary": "5.0.0", "prev_major": "4.0.3", "released": "2021-11",
+      "keyword": "HikariCP", "java_min": "11", "android": false,
+      "why_simple": "JDBC connection pool; 5.0 = Java 11 baseline, tiny API.",
+      "search_terms": ["5.0", "migrate", "upgrade", "bump"]
+    },
+    {
+      "id": "poi-5",
+      "group_id": "org.apache.poi", "artifact_id": "poi",
+      "boundary": "5.0.0", "prev_major": "4.1.2", "released": "2021-01",
+      "keyword": "poi", "java_min": "8", "android": false,
+      "why_simple": "office-file library; already a proven break line in this repo's catalog.",
+      "search_terms": ["5.0", "migrate", "upgrade", "bump"]
+    },
+    {
+      "id": "okhttp-5",
+      "group_id": "com.squareup.okhttp3", "artifact_id": "okhttp",
+      "boundary": "5.0.0", "prev_major": "4.12.0", "released": "2024",
+      "keyword": "okhttp", "java_min": "8", "android": true,
+      "why_simple": "HTTP client; runs fine on the JVM but is ALSO an Android staple -> android_adjacent, kept with caveat.",
+      "search_terms": ["5.0", "migrate", "upgrade", "bump"]
+    }
+  ],
+
+  "coordinate_change_majors": [
+    {"note": "listed for reference; NOT auto-detectable as a single <version> bump because the major ALSO changes the Maven coordinates -- the client removes one dep and adds another."},
+    {"lib": "jackson 3", "old": "com.fasterxml.jackson.core:jackson-databind 2.x", "new": "tools.jackson.core:jackson-databind 3.x"},
+    {"lib": "rxjava 3", "old": "io.reactivex.rxjava2:rxjava 2.x", "new": "io.reactivex.rxjava3:rxjava 3.x"},
+    {"lib": "httpclient 5", "old": "org.apache.httpcomponents:httpclient 4.x", "new": "org.apache.httpcomponents.client5:httpclient5 5.x"},
+    {"lib": "commons-lang 3", "old": "commons-lang:commons-lang 2.x", "new": "org.apache.commons:commons-lang3 3.x"}
+  ]
+}

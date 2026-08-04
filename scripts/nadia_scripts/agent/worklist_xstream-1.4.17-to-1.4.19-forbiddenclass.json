@@ -1,0 +1,108 @@
+[
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "amirsnw/chainrtrade-axon-CQRS-DDD",
+  "adapt_sha": "d408d4cac7687df3677277ba9755a13515c61e20",
+  "parent_sha": "7823c47b44a43e45067a47b76404a25fb9257231",
+  "build_system": "maven",
+  "production_files": [
+   "core/src/main/java/com/chaintrade/core/model/ProductRestModel.java",
+   "core/src/main/java/com/chaintrade/core/query/FindProductByIdQuery.java",
+   "product-service/src/main/java/productservice/config/EventProcessingConfig.java",
+   "product-service/src/main/java/productservice/core/errorhandling/ProductServiceErrorHandler.java",
+   "product-service/src/main/java/productservice/core/errorhandling/ProductServiceEventsErrorHandler.java",
+   "product-service/src/main/java/productservice/mapper/ProductMapper.java",
+   "product-service/src/main/java/productservice/query/ProductsQueryHandler.java",
+   "product-service/src/main/java/productservice/query/rest/ProductsQueryController.java"
+  ],
+  "message": "fix: resolve XStream ForbiddenClassException for ProductRestModel package migrat",
+  "status": "already_recorded",
+  "boundary_status": "unconfirmed"
+ },
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "igniterealtime/Spark",
+  "adapt_sha": "c26602bf00a70d846fc2f6e75b5a3873288cf2ad",
+  "parent_sha": "3821d04ec08e84fef84f32a39fd6b2ce200166e5",
+  "build_system": "maven",
+  "production_files": [
+   "core/src/main/java/org/jivesoftware/spark/ui/status/CustomMessages.java"
+  ],
+  "message": "Merge pull request #683 from Plyha/xstream",
+  "status": "already_recorded",
+  "boundary_status": "on_or_past"
+ },
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "igniterealtime/Spark",
+  "adapt_sha": "aad38d68263ccb1121cf15415d46318377fffd65",
+  "parent_sha": "3821d04ec08e84fef84f32a39fd6b2ce200166e5",
+  "build_system": "maven",
+  "production_files": [
+   "core/src/main/java/org/jivesoftware/spark/ui/status/CustomMessages.java"
+  ],
+  "message": "SPARK-2259 XStream ForbiddenClassException in CustomStatusItem Class",
+  "status": "already_recorded",
+  "boundary_status": "on_or_past"
+ },
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "einsteinarbert/axon-saga-example",
+  "adapt_sha": "dddd794b5d0fdbf502802e9fcce664442292a408",
+  "parent_sha": "fad9b9423e7f9c5e8eb0be6931017851d4a532cf",
+  "build_system": "maven",
+  "production_files": [
+   "order-service/src/main/java/com/progressivecoder/ordermanagement/orderservice/config/SwaggerConfig.java",
+   "order-service/src/main/java/com/progressivecoder/ordermanagement/orderservice/config/XStreamAutoConfiguration.java",
+   "order-service/src/main/java/com/progressivecoder/ordermanagement/orderservice/controllers/OrderCommandController.java"
+  ],
+  "message": "axon saga Xstream ForbiddenClassException site:stackoverflow.com",
+  "status": "already_recorded",
+  "boundary_status": "unconfirmed"
+ },
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "RicBatista/drools",
+  "adapt_sha": "ce38e4095796e5674e32cc4165cdc569e848c4b7",
+  "parent_sha": "969b9b1bb91059a20b77500d9ab06d3c7594107c",
+  "build_system": "maven",
+  "production_files": [
+   "kie-ci/src/main/java/org/kie/scanner/KieURLClassLoader.java",
+   "kie-ci/src/main/java/org/kie/scanner/MavenClassLoaderResolver.java"
+  ],
+  "message": "JBPM-7999 - xstream ForbiddenClassException with data objects from dependencies ",
+  "status": "queued",
+  "boundary_status": "unconfirmed"
+ },
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "artshishkin/art-kargopolov-cqrs-saga-axon-microservices",
+  "adapt_sha": "b76d747f8d278fbee27e6e4b82355f5e660bf5f8",
+  "parent_sha": "2ccdee8ed0074d6a1bb51dea599903f6779165ef",
+  "build_system": "maven",
+  "production_files": [
+   "core/src/main/java/net/shyshkin/study/cqrs/estore/core/config/XStreamConfig.java",
+   "order-service/src/main/java/net/shyshkin/study/cqrs/estore/orderservice/OrderServiceApplication.java",
+   "payment-service/src/main/java/net/shyshkin/study/cqrs/estore/paymentservice/PaymentServiceApplication.java",
+   "product-service/src/main/java/net/shyshkin/study/cqrs/estore/productservice/ProductServiceApplication.java",
+   "user-service/src/main/java/net/shyshkin/study/cqrs/estore/userservice/UserServiceApplication.java"
+  ],
+  "message": "32.6 Fixing com.thoughtworks.xstream.security.ForbiddenClassException by providi",
+  "status": "already_recorded",
+  "boundary_status": "unconfirmed"
+ },
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "mdproctor/submarine-runtimes",
+  "adapt_sha": "4e8af6b0d1bd98595411573713ca1161c5a5ed92",
+  "parent_sha": "45fa9bec2d8fc01d8ab2dad2c128699fdff104c9",
+  "build_system": "maven",
+  "production_files": [
+   "kie-ci/src/main/java/org/kie/scanner/KieURLClassLoader.java",
+   "kie-ci/src/main/java/org/kie/scanner/MavenClassLoaderResolver.java"
+  ],
+  "message": "JBPM-7999 - xstream ForbiddenClassException with data objects from dependencies ",
+  "status": "queued",
+  "boundary_status": "unconfirmed"
+ }
+]

@@ -71,3 +71,5 @@ target/
 scripts/nadia_scripts/_runlogs/
 scripts/nadia_scripts/cmp_*.json
 scripts/nadia_scripts/_bbc_baseline.py
+scripts/nadia_scripts/scratchpad/**/target/
+*.bak
