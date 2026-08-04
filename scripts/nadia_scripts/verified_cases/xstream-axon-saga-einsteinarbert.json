@@ -13,27 +13,37 @@
     "baseline_used": "1.4.17",
     "breaking_boundary": "1.4.18 (default-deny security)",
     "boundary_type": "patch",
-    "dependency_scope": "compile (transitive via org.axonframework axon-spring-boot-starter 4.6.1; resolves xstream 1.4.19)"
+    "dependency_scope": "compile, TRANSITIVE via org.axonframework:axon-spring-boot-starter. The starter went 4.0.3 -> 4.6.1 in order-service/pom.xml, moving the resolved xstream 1.4.10 -> 1.4.19 across the 1.4.18 boundary."
   },
   "in_repo_version_transition": {
     "crossed_boundary": true,
     "mechanism": "transitive via an Axon bump (no direct xstream bump)",
     "bump_commit": "fad9b9423e7f9c5e8eb0be6931017851d4a532cf ('upgrade version of spring boot', 2022-10-25)",
     "evidence": "order-service/pom.xml (the module holding the adaptation) went axon-spring-boot-starter 4.0.3 -> 4.6.1. Axon 4.0.3 resolves xstream 1.4.10; Axon 4.6.1 resolves xstream 1.4.19. So the transitive xstream crossed the 1.4.18 boundary within the repo's own history.",
-    "corrected_2026_08_04": "This block previously read crossed_boundary: false with 'axon-spring-boot-starter 4.6.1 was set in the first commit 0fbef3c and never bumped'. That inspected the ROOT pom; the adaptation lives in order-service/, whose module pom had 4.0.3 at the first commit (0fbef3c5, 2019-04-14) and was bumped to 4.6.1 at fad9b942 (2022-10-25). Found by resolve_version.py, which resolves the version the build actually gets rather than the declared one."
+    "corrected_2026_08_04": "This block previously read crossed_boundary: false with 'axon-spring-boot-starter 4.6.1 was set in the first commit 0fbef3c and never bumped'. That inspected the ROOT pom; the adaptation lives in order-service/, whose module pom had 4.0.3 at the first commit (0fbef3c5, 2019-04-14) and was bumped to 4.6.1 at fad9b942 (2022-10-25). Found by resolve_version.py, which resolves the version the build actually gets rather than the declared one.",
+    "shape": "POST_MERGE_FIX",
+    "distance_commits": 1,
+    "bump_date": "2022-10-25T01:55:18Z",
+    "adaptation_date": "2022-10-25",
+    "resolved_via": "org.axonframework:axon-spring-boot-starter 4.0.3 -> 4.6.1",
+    "resolved_xstream": "1.4.10 -> 1.4.19"
   },
   "bump_provenance": {
-    "has_bump_commit": false,
-    "summary": "There is NO commit in this repo that bumps xstream. The boundary-crossing xstream version was never chosen or upgraded by the developer — it arrived transitively through the Axon starter, which was pinned once in the very first commit.",
-    "how_introduced_transitively": "The app never declares com.thoughtworks.xstream:xstream directly. It depends on org.axonframework:axon-spring-boot-starter 4.6.1, and Axon uses XStream as its default event/command serializer, so the starter pulls xstream in transitively. Maven resolves that transitive dependency to xstream 1.4.19 (already past the 1.4.18 default-deny boundary). So from the first build the app runs on a post-1.4.18 xstream without any explicit version being written anywhere.",
+    "has_direct_library_bump": false,
+    "has_boundary_crossing_bump": true,
+    "bump_sha": "fad9b9423e7f9c5e8eb0be6931017851d4a532cf",
+    "bump_message": "upgrade version of spring boot",
+    "buildfile": "order-service/pom.xml",
+    "summary": "No commit bumps com.thoughtworks.xstream directly — the version string never appears in any committed pom. But the boundary IS crossed in-repo: the commit immediately before the adaptation raised axon-spring-boot-starter 4.0.3 -> 4.6.1 in order-service/pom.xml, taking the transitively resolved xstream from 1.4.10 to 1.4.19. The developer did not choose the xstream version, but they did cause the transition, and adapted one commit later.",
     "evidence": [
-      "`git log -S 'xstream' -- '**/pom.xml'` over the full history returns NOTHING — the xstream version string never appears in any committed pom.",
-      "No pom declares a com.thoughtworks.xstream dependency (the only such line, order-service/pom.xml, is the explicit dep ADDED by the verification harness to pin the version for the differential — not an app commit).",
-      "axon 4.6.1 is set in the very first commit 0fbef3c ('First Commit') and never bumped afterward — so the transitive xstream version is fixed from project creation.",
-      "The adaptation commit dddd794b touches the poms only to REMOVE Swagger 3.0.0 dependencies; it does not change the xstream or axon version at all."
+      "order-service/pom.xml history: axon-spring-boot-starter 4.0.3 at the first commit 0fbef3c5 (2019-04-14), 4.6.1 at fad9b942 (2022-10-25, 'upgrade version of spring boot').",
+      "org.axonframework:axon:4.0.3 resolves xstream 1.4.10; org.axonframework:axon:4.6.1 resolves xstream 1.4.19 (Maven Central POM walk, resolve_version.py).",
+      "The adaptation dddd794b is 1 commit after the bump, same day -> POST_MERGE_FIX.",
+      "`git log -S 'xstream' -- '**/pom.xml'` still returns nothing: the crossing is invisible to any check that reads declared versions, which is why it was originally recorded as no-crossing."
     ],
-    "why_it_still_breaks": "Because the resolved xstream (1.4.19) is already on the default-deny side of the 1.4.18 boundary, the break is present at runtime the moment the app serializes its own command/event type through Axon's XStream — no upgrade event is needed to trigger it. The developer discovered it as a runtime ForbiddenClassException and responded with the adaptation commit (see `adaptation.commit`), which is the only xstream-related change in the repo.",
-    "consequence_for_the_dataset": "The 'library version transition' is implicit in the dependency tree rather than materialized as a diff. The 3-state differential recreates the transition synthetically (pinning xstream 1.4.17 -> 1.4.19 via the harness dep) to isolate the version + the adaptation as the only variables."
+    "why_it_breaks": "axon-spring-boot-starter 4.6.1 pulls xstream 1.4.19, on the default-deny side of 1.4.18. Axon uses XStream as its default command/event serializer, so the app's own domain types are rejected the first time they are serialized after the bump. The developer hit the runtime ForbiddenClassException and adapted in the next commit.",
+    "consequence_for_the_dataset": "A witnessed bump -> break -> fix pair where the bump is of a DIFFERENT artifact (the framework) than the one that broke. The transition is materialised as a diff, just not a diff of the library's own version — so it is only visible to resolved-version traversal.",
+    "corrected_2026_08_04": "This block previously read has_bump_commit: false and claimed 'axon 4.6.1 is set in the very first commit 0fbef3c and never bumped afterward'. That describes the ROOT pom; the adaptation lives in order-service/, whose module pom held 4.0.3 until fad9b942. Always resolve the module pom nearest the adaptation."
   },
   "adaptation": {
     "repo": "einsteinarbert/axon-saga-example",

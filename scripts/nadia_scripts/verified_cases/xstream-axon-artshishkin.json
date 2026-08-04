@@ -5,9 +5,7 @@
   "verified_date": "2026-07-07",
   "verified_by": "3-state differential (Maven, JDK 11) on the real production XStreamConfig; found end-to-end by bbc_e2e.py",
   "note": "First NATIVE-Maven external production case verified (TVRenamer, the other verified case, is Gradle wrapped in a Maven harness). Also the first to show a FRAMEWORK-integrated (Axon) adaptation can be verified, because the adaptation is a plain callable method.",
-
   "discovery_method": "bbc_e2e.py run xstream-... -> mine-commits q='xstream ForbiddenClassException' -> classify (native Maven, production). One of 12 *-ranked candidates.",
-
   "library": {
     "group_id": "com.thoughtworks.xstream",
     "artifact_id": "xstream",
@@ -17,17 +15,23 @@
     "boundary_type": "patch",
     "dependency_scope": "compile (transitive via org.axonframework axon-spring-boot-starter 4.5.14)"
   },
-
   "in_repo_version_transition": {
     "crossed_boundary": true,
     "mechanism": "transitive via an Axon bump (no direct xstream bump)",
     "bump_commit": "axon-spring-boot-starter 4.5(.0) -> 4.5.14 (starter first added at 6375e6a, 2021-05-17; 4.5.14 by the fix b76d747f, 2022-07)",
-    "evidence": "The repo never bumped xstream directly, but it bumped axon-spring-boot-starter from 4.5.0 (May 2021) to 4.5.14. Axon 4.5.0 predates xstream 1.4.18 (released 2021-08) and pulled xstream 1.4.17; Axon 4.5.14 declares xstream.version 1.4.19. So the transitive xstream crossed the 1.4.18 boundary WITHIN the repo's own history -> counts as an adaptation-to-a-change (via a transitive dependency)."
+    "evidence": "The repo never bumped xstream directly, but it bumped axon-spring-boot-starter from 4.5.0 (May 2021) to 4.5.14. Axon 4.5.0 predates xstream 1.4.18 (released 2021-08) and pulled xstream 1.4.17; Axon 4.5.14 declares xstream.version 1.4.19. So the transitive xstream crossed the 1.4.18 boundary WITHIN the repo's own history -> counts as an adaptation-to-a-change (via a transitive dependency).",
+    "shape": "POST_MERGE_FIX",
+    "distance_commits": 5,
+    "bump_sha": "3abca3fc6a9f7760222756543fb57c643d30a3c0",
+    "bump_message": "32.1 Updating versions [skip ci] (#32 Update dependencies versions)",
+    "bump_date": "2022-07-28T12:27:48Z",
+    "buildfile": "core/pom.xml",
+    "resolved_via": "org.axonframework:axon-spring-boot-starter 4.5 -> 4.5.14",
+    "resolved_xstream": "1.4.16 -> 1.4.19",
+    "confirmed_2026_08_04": "Mechanically confirmed by resolve_version.py: core/pom.xml (the module holding XStreamConfig) went axon-spring-boot-starter 4.5 -> 4.5.14 at 3abca3fc; axon 4.5 resolves xstream 1.4.16, axon 4.5.14 resolves 1.4.19. The bump is 5 commits before the adaptation. This block already recorded the crossing by hand; the resolved versions differ slightly from the hand note (1.4.16 vs 1.4.17 for axon 4.5), which does not affect the conclusion — both are below 1.4.18."
   },
-
   "bump_provenance": {
-    "has_bump_commit": false,
-    "summary": "There is NO commit that bumps xstream across the 1.4.18 boundary in this repo. At the adaptation commit the boundary-crossing xstream version was never chosen or upgraded by the developer — it arrived transitively through the Axon starter. A later commit made the dependency explicit but pinned it to the SAME version it already had transitively (not a bump).",
+    "summary": "No commit bumps com.thoughtworks.xstream directly. But the boundary IS crossed in-repo: commit 3abca3fc raised axon-spring-boot-starter 4.5 -> 4.5.14 in core/pom.xml, taking the transitively resolved xstream from 1.4.16 to 1.4.19. The developer did not choose the xstream version, but they caused the transition, and adapted 5 commits later.",
     "how_introduced_transitively": "At the fix/adaptation commit b76d747f, no pom declares com.thoughtworks.xstream:xstream at all. The app depends on org.axonframework:axon-spring-boot-starter 4.5.14, and Axon uses XStream as its default event/command serializer, so the starter pulls xstream in transitively. Maven resolves it to xstream 1.4.19 (already past the 1.4.18 default-deny boundary). So the app ran on a post-1.4.18 xstream with no explicit version written anywhere.",
     "evidence": [
       "`git show b76d747f:core/pom.xml` and `git show b76d747f:pom.xml` — at the adaptation commit NEITHER declares xstream; the dependency is purely transitive via Axon 4.5.14.",
@@ -37,23 +41,25 @@
     "later_explicit_declaration_note": "A LATER commit ad900c2 ('34.5 Minimize Core module dependencies') — which is NOT an ancestor of the adaptation commit b76d747f — adds a direct xstream dependency and a <xstream.version>1.4.19</xstream.version> property. This pins xstream to the SAME 1.4.19 already resolved transitively; it is a dependency-management cleanup done AFTER the break was already adapted, not a version bump and not what triggered the ForbiddenClassException.",
     "why_it_still_breaks": "Because the resolved xstream (1.4.19) is already on the default-deny side of the 1.4.18 boundary, the break is present at runtime the moment the app serializes its own domain type through Axon's XStream — no upgrade event is needed to trigger it. The developer discovered it as a runtime ForbiddenClassException and responded with the adaptation commit b76d747f (which CREATED XStreamConfig).",
     "consequence_for_the_dataset": "The 'library version transition' is implicit in the dependency tree rather than materialized as a diff. The 3-state differential recreates the transition synthetically (pinning xstream 1.4.17 -> 1.4.19 via the harness dep) to isolate the version + the adaptation as the only variables.",
-    "distinct_from_bump_source": "This is separate from `bump_source` above: bump_source records where the BEHAVIOURAL BREAK was independently confirmed in the BUMP dataset (apache/logging-chainsaw). It is not a version-bump commit in THIS adaptation repo."
+    "distinct_from_bump_source": "This is separate from `bump_source` above: bump_source records where the BEHAVIOURAL BREAK was independently confirmed in the BUMP dataset (apache/logging-chainsaw). It is not a version-bump commit in THIS adaptation repo.",
+    "has_direct_library_bump": false,
+    "has_boundary_crossing_bump": true,
+    "bump_sha": "3abca3fc6a9f7760222756543fb57c643d30a3c0",
+    "buildfile": "core/pom.xml",
+    "corrected_2026_08_04": "Previously read has_bump_commit: false with 'the boundary-crossing xstream version was never chosen or upgraded by the developer'. That is true only of xstream's own coordinate and contradicted this file's own in_repo_version_transition block, which already recorded the Axon bump. Split into has_direct_library_bump (false) and has_boundary_crossing_bump (true) so the two questions stop being conflated."
   },
-
   "bump_source": {
     "bump_project": "apache/logging-chainsaw",
     "bump_breaking_commit": "19e20b0d69cb6dadbc54313cb6c6e5f70670ac93",
     "bump_failing_test": "org.apache.log4j.chainsaw.LogPanelPreferenceModelTest#testLogPanelPreferenceModelSerialization",
     "java_version": 11
   },
-
   "behavioral_break": {
     "mechanism": "xstream 1.4.18+ default-deny: fromXML on a non-allowlisted class throws com.thoughtworks.xstream.security.ForbiddenClassException. Axon uses XStream as its default event/command serializer, so a plain XStream (no allowlist) rejects the app's own domain types under >=1.4.18.",
     "affected_class": "net.shyshkin.study.cqrs.estore.core.model.ProductIdDto",
     "observed_exception": "com.thoughtworks.xstream.security.ForbiddenClassException: net.shyshkin.study.cqrs.estore.core.model.ProductIdDto",
     "category": "runtime_exception"
   },
-
   "adaptation": {
     "repo": "artshishkin/art-kargopolov-cqrs-saga-axon-microservices",
     "repo_note": "A Kirill Kargopolov Axon/CQRS-SAGA course project (Spring Boot + Axon Framework). Multi-module Maven; the shared 'core' module holds the domain types and the XStream config.",
@@ -66,21 +72,38 @@
     "language": "java",
     "adaptation_in_test_code": false,
     "adaptation_quality": "production_usage_adaptation",
-    "production_files": ["core/src/main/java/net/shyshkin/study/cqrs/estore/core/config/XStreamConfig.java"],
+    "production_files": [
+      "core/src/main/java/net/shyshkin/study/cqrs/estore/core/config/XStreamConfig.java"
+    ],
     "xstreamconfig_was_new": "XStreamConfig did not exist at the parent commit — it was CREATED in the fix (a Spring @Configuration @Bean producing an allowlisted XStream). At the parent the app relied on Axon's default plain XStream (no allowlist).",
     "the_call": "xStream.allowTypesByWildcard(new String[]{ \"net.shyshkin.study.cqrs.estore.**\" });",
     "in_repo_causal_evidence": "Commit message names the exact exception and the fix ('providing custom XStream bean').",
     "summary": "Added a production XStreamConfig @Bean that allowlists the app's domain package on the XStream Axon uses, satisfying xstream 1.4.18 default-deny."
   },
-
   "verification": {
     "method": "3-state differential at the adapted commit (Maven, JDK 11). Because XStreamConfig is a pure method and did not exist at the parent, the differential contrasts a plain `new XStream()` (a faithful stand-in for Axon's pre-adaptation default) against the production `new XStreamConfig().xStream()`, swapping only the xstream version. This keeps 'only the library version / the adaptation' as the variables, exactly as the 3-state model requires.",
     "test": "bbc.XstreamBbcTest (authored; derived from the BUMP failing test's shape — mutate a domain object, round-trip through XStream, assert the field survives).",
     "harness_notes": "core/pom.xml edited to: (1) add an EXPLICIT xstream dependency version=${bbc.xstream.version} (a direct depth-1 dep, so the baseline override actually applies — otherwise xstream is pinned to 1.4.19 transitively by Axon); (2) add junit-vintage-engine so a JUnit4 test runs under the project's JUnit5 platform. Preserved in scratchpad/xstream-axon-artshishkin-harness/.",
     "states": [
-      { "name": "1_baseline", "config": "plain new XStream() (pre-adaptation), xstream 1.4.17", "result": "PASS", "tests": "run=1 failures=0 errors=0" },
-      { "name": "2_new_lib_old_code", "config": "plain new XStream() (pre-adaptation), xstream 1.4.19", "result": "FAIL", "detail": "ForbiddenClassException: net.shyshkin.study.cqrs.estore.core.model.ProductIdDto", "tests": "run=1 failures=0 errors=1" },
-      { "name": "3_adapted", "config": "new XStreamConfig().xStream() (production adaptation), xstream 1.4.19", "result": "PASS", "tests": "run=1 failures=0 errors=0" }
+      {
+        "name": "1_baseline",
+        "config": "plain new XStream() (pre-adaptation), xstream 1.4.17",
+        "result": "PASS",
+        "tests": "run=1 failures=0 errors=0"
+      },
+      {
+        "name": "2_new_lib_old_code",
+        "config": "plain new XStream() (pre-adaptation), xstream 1.4.19",
+        "result": "FAIL",
+        "detail": "ForbiddenClassException: net.shyshkin.study.cqrs.estore.core.model.ProductIdDto",
+        "tests": "run=1 failures=0 errors=1"
+      },
+      {
+        "name": "3_adapted",
+        "config": "new XStreamConfig().xStream() (production adaptation), xstream 1.4.19",
+        "result": "PASS",
+        "tests": "run=1 failures=0 errors=0"
+      }
     ],
     "conclusion": "Confirmed BBC with a real EXTERNAL native-Maven PRODUCTION adaptation: baseline passes, the same (plain-XStream) code breaks only under xstream >=1.4.18 with a ForbiddenClassException on the app's own domain type, and the production XStreamConfig allowlist resolves it."
   }

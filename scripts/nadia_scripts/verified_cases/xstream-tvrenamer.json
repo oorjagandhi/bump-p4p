@@ -7,7 +7,6 @@
   "verified_by": "3-state differential (Maven 3.9.11, JDK 17) via scratchpad/xstream-tvrenamer-harness on real src/main source",
   "recorded_date": "2026-07-06",
   "discovery_method": "Phase 2 external mining via GitHub commit search (q='xstream allowTypes 1.4.18' and 'xstream ForbiddenClassException'), then per-commit file/diff inspection to keep only src/main (production) adaptations.",
-
   "library": {
     "group_id": "com.thoughtworks.xstream",
     "artifact_id": "xstream",
@@ -18,14 +17,18 @@
     "dependency_scope": "compile",
     "version_provenance": "The repo's real dependency update was xstream 1.4.9 -> 1.4.20, made in commit fa98c37 'Modernize: Java 17, Gradle update, and Windows EXE workflow' (bumped the version AND rewrote build.gradle from the old ivy/compile setup). That bump crossed the 1.4.18 default-deny boundary. The differential BASELINE uses 1.4.17, not 1.4.9, because xstream 1.4.9 (c.2014) does not run on JDK 17 (ExceptionInInitializerError, unrelated to the BBC); 1.4.17 is the newest pre-1.4.18 version that runs on JDK 17, so 1.4.17 vs 1.4.20 cleanly isolates the 1.4.18 change."
   },
-
   "in_repo_version_transition": {
     "crossed_boundary": true,
-    "mechanism": "direct dependency; bump and adaptation in separate commits",
+    "mechanism": "direct dependency bump",
     "bump_commit": "fa98c37",
-    "evidence": "Commit fa98c37 bumps xstream 1.4.9 -> 1.4.20 (crossing 1.4.18); the allowlist adaptation follows at b236f68e. The break was live in-repo from fa98c37 (parent-of-fix 16803ddb already declared 1.4.20 with no allowlist) until the fix. A genuine adaptation-to-a-change."
+    "evidence": "Commit fa98c37 bumps xstream 1.4.9 -> 1.4.20 (crossing 1.4.18); the allowlist adaptation follows at b236f68e. The break was live in-repo from fa98c37 (parent-of-fix 16803ddb already declared 1.4.20 with no allowlist) until the fix. A genuine adaptation-to-a-change.",
+    "shape": "POST_MERGE_FIX",
+    "distance_commits": 15,
+    "bump_sha": "fa98c37e",
+    "buildfile": "build.gradle",
+    "resolved_xstream": "1.4.9 -> 1.4.20",
+    "confirmed_2026_08_04": "Mechanically confirmed by verify_traversal: build.gradle declares xstream directly, 1.4.9 -> 1.4.20 at fa98c37e, 15 commits before the adaptation. The only case in the set whose crossing is a direct bump of the library itself."
   },
-
   "bump_source": {
     "comment": "Break characterized from BUMP (apache/logging-chainsaw). TVRenamer is an independent client exhibiting the SAME break in production preference-persistence code.",
     "bump_project": "apache/logging-chainsaw",
@@ -33,7 +36,6 @@
     "bump_failing_test": "org.apache.log4j.chainsaw.LogPanelPreferenceModelTest#testLogPanelPreferenceModelSerialization",
     "java_version": 11
   },
-
   "behavioral_break": {
     "mechanism": "xstream 1.4.18+ default-deny: fromXML on a non-allowlisted class throws com.thoughtworks.xstream.security.ForbiddenClassException.",
     "affected_production_path": "org.tvrenamer.controller.UserPreferencesPersistence.retrieve(Path) -> xstream.fromXML(in) -> (UserPreferences). retrieve() catches only IOException, so ForbiddenClassException (a runtime exception) propagates.",
@@ -41,7 +43,6 @@
     "category": "runtime_exception",
     "live_before_fix": "The dependency bump (xstream 1.4.9 -> 1.4.20) landed at fa98c37 WITHOUT an allowlist, so the break was live in production from fa98c37 until the fix at b236f68e (multi-commit pattern: bump at fa98c37, adaptation at b236f68e). At the fix's parent commit 16803ddb the build already declared 1.4.20 with no allowlist."
   },
-
   "adaptation": {
     "repo": "The-Ant-Forge/TVRenamer",
     "repo_note": "A fork of tvrenamer/tvrenamer with active independent development; some commit messages look tool-generated and author dates are not reliably chronological — trust git ancestry, not dates.",
@@ -75,17 +76,39 @@
     "summary": "Allowlisted the deserialized preferences type (and the whole org.tvrenamer.model package by wildcard) on the PRODUCTION XStream instance used by UserPreferencesPersistence, satisfying xstream >=1.4.18 default-deny. This is the production-side fix the chainsaw case lacked.",
     "later_removal": "Commit eeba95a6 (2026-03-05) 'Replace OkHttp and XStream with JDK built-in APIs' later dropped xstream entirely — the same eventual trajectory as apache/logging-chainsaw."
   },
-
   "verification": {
     "method": "3-state differential over the REAL production source, run via a Maven harness (scratchpad/xstream-tvrenamer-harness) that compiles the repo's untouched src/main/java, parameterises the xstream version, and runs one authored test that calls the production UserPreferencesPersistence.retrieve() on a realistic preferences XML. JDK 17; XStream needs --add-opens for java.base/{util,lang,lang.reflect,text,io} and java.desktop/java.beans.",
     "test": "org.tvrenamer.controller.PreferencesBbcTest#preferencesDeserializeFromXml (authored; derived from the BUMP failing test LogPanelPreferenceModelTest#testLogPanelPreferenceModelSerialization).",
     "states": [
-      { "name": "1_baseline", "config": "parent 16803ddb (no allowlist), xstream 1.4.17", "result": "PASS", "tests": "run=1 failures=0 errors=0" },
-      { "name": "2_new_lib_old_code", "config": "parent 16803ddb (no allowlist), xstream 1.4.20", "result": "FAIL", "detail": "com.thoughtworks.xstream.security.ForbiddenClassException: org.tvrenamer.model.UserPreferences", "tests": "run=1 failures=0 errors=1" },
-      { "name": "3_adapted", "config": "adapted b236f68e (allowTypes + allowTypesByWildcard), xstream 1.4.20", "result": "PASS", "tests": "run=1 failures=0 errors=0" }
+      {
+        "name": "1_baseline",
+        "config": "parent 16803ddb (no allowlist), xstream 1.4.17",
+        "result": "PASS",
+        "tests": "run=1 failures=0 errors=0"
+      },
+      {
+        "name": "2_new_lib_old_code",
+        "config": "parent 16803ddb (no allowlist), xstream 1.4.20",
+        "result": "FAIL",
+        "detail": "com.thoughtworks.xstream.security.ForbiddenClassException: org.tvrenamer.model.UserPreferences",
+        "tests": "run=1 failures=0 errors=1"
+      },
+      {
+        "name": "3_adapted",
+        "config": "adapted b236f68e (allowTypes + allowTypesByWildcard), xstream 1.4.20",
+        "result": "PASS",
+        "tests": "run=1 failures=0 errors=0"
+      }
     ],
     "mechanism_also_proven_by": "verified_cases/xstream-mimic-production.json (authored mimic, same mechanism).",
     "harness_notes": "The test deserializes a preferences XML with no <pcs> element to isolate the target break: UserPreferences holds a non-transient java.beans.PropertyChangeSupport that is a SECOND forbidden type under 1.4.20 (TVRenamer's fix allowlists the domain types but not PropertyChangeSupport) and also has JDK-serialization fragility at 1.4.17 — an interesting partial-adaptation observation, but a confound for the domain-type differential. `mvn clean` is required between states (incremental compile skips recompilation after a git checkout).",
     "conclusion": "Confirmed BBC with a real external PRODUCTION adaptation: baseline passes, the same production code breaks only under xstream >=1.4.18 with a ForbiddenClassException on the real domain type UserPreferences, and the client's production allowTypes/allowTypesByWildcard adaptation resolves it."
+  },
+  "bump_provenance": {
+    "has_direct_library_bump": true,
+    "has_boundary_crossing_bump": true,
+    "bump_sha": "fa98c37e",
+    "buildfile": "build.gradle",
+    "summary": "The client declares xstream itself and bumped it 1.4.9 -> 1.4.20, crossing 1.4.18 directly. Gradle build, wrapped in a Maven harness for the differential."
   }
 }
