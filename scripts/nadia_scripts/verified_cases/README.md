@@ -121,16 +121,39 @@ independently confirmed. Valid crossing, test-only adaptation, not a case.
 
 ## Cases
 
-Five cases. Every other file that used to be listed here is now under `excluded/`,
+Seven cases. Every other file that used to be listed here is now under `excluded/`,
 sorted by which rule it fails — see the tables above.
 
 | case_id | transition | client | discovery | recovery attributable to production change? |
 |---|---|---|---|---|
 | [xstream-marklogic-contentpump](xstream-marklogic-contentpump.json) | 1.4.16 → 1.4.18 | marklogic/marklogic-contentpump | 32-term mine (bump axis) | ✅ **yes** — invariant driver across all 3 states |
+| [xstream-collectionspace-services](xstream-collectionspace-services.json) | 1.4.10 → 1.4.19 | collectionspace/services | 32-term mine (bump axis) | ✅ **yes** — invariant driver; classpath confirmed |
+| [xstream-voyanttools-trombone](xstream-voyanttools-trombone.json) | 1.4.16 → 1.4.18 | voyanttools/trombone | 32-term mine (bump axis) | ✅ **yes** — invariant driver; baseline reconstructed |
 | [xstream-openmrs-core](xstream-openmrs-core.json) | 1.4.17 → 1.4.20 | openmrs/openmrs-core | 32-term mine (bump axis) | ⚠️ **no** — state 4 shows this test recovers test-side; production mechanism confirmed separately by the commit's own new tests |
 | [xstream-axon-artshishkin](xstream-axon-artshishkin.json) | 1.4.16 → 1.4.19 (transitive, via Axon) | artshishkin/…axon-microservices | 3-query mine | ✅ yes |
 | [xstream-axon-saga-einsteinarbert](xstream-axon-saga-einsteinarbert.json) | 1.4.10 → 1.4.19 (transitive, via Axon) | einsteinarbert/axon-saga-example | 3-query mine | ✅ yes |
 | [xstream-tvrenamer](xstream-tvrenamer.json) | 1.4.9 → 1.4.20 | The-Ant-Forge/TVRenamer (Gradle) | Phase 2 signature search | ✅ yes |
+
+Two further exclusion categories were opened by the 2026-08-07 batch:
+
+- `excluded/wrong_cause/` — `xstream-synapse-repository-services`: every mechanical gate
+  passed (production, native Maven, real repo, confirmed crossing one commit away), but
+  the commit message says the cause is **Java 21**, not the xstream upgrade, and the
+  parent was *already* whitelisting. **Traversal confirmation is necessary but not
+  sufficient** — it proves the client crossed the boundary near the adaptation, never
+  that the crossing caused it. Deliberately not differentiated: a Java 21 toolchain
+  would likely have produced a green PASS/FAIL/PASS attributing a JDK break to xstream.
+- `excluded/not_standalone_verifiable/` — `xstream-openfire-fastpath-plugin`: causally
+  clean (the commit message names the upgrade) but the break site is a private method
+  reached only through a live Openfire server, and its exception is swallowed by a
+  `catch (Exception e) { Log.error(...) }`. It cannot fail a test even in principle.
+  Same disposition as `xstream-spark`.
+
+**Two cheap pre-differential checks, learned the hard way:** before building anything,
+read the commit message for an explicitly stated non-library cause (JDK migrations are
+the common one), and check whether the *parent* already contains adaptation-signature
+calls — a client already carrying the fix cannot be adapting to that break. Mechanical
+gates took 2288 mined rows down to 11 candidates; human reading removed 2 more.
 
 The last column is worth keeping. A 3-state differential can go green because the client
 changed its *test* rather than its production code, and only a fourth state — adapted

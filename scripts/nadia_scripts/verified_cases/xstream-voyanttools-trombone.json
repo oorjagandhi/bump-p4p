@@ -1,0 +1,85 @@
+{
+  "case_id": "xstream-voyanttools-trombone",
+  "status": "verified_bbc",
+  "case_type": "external_mined__real_production_adaptation__invariant_driver_differential",
+  "verified_date": "2026-08-07",
+  "verified_by": "3-state differential (Maven 3.9.11, JDK 11) on a clean clone of voyanttools/trombone, with an INVARIANT driver test",
+
+  "discovery": {
+    "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+    "found_by": "bbc_e2e.py run (32-term deep mine, 2026-08-06) -> classify -> verify_traversal"
+  },
+
+  "library": {
+    "group_id": "com.thoughtworks.xstream",
+    "artifact_id": "xstream",
+    "from_version": "1.4.16",
+    "to_version": "1.4.18",
+    "boundary_type": "patch (1.4.18 security boundary)",
+    "dependency_scope": "compile"
+  },
+
+  "behavioral_break": {
+    "failing_test": "org.voyanttools.trombone.util.BbcDifferentialTest#flexibleParametersRoundTripThroughXStream (authored driver)",
+    "exception": "com.thoughtworks.xstream.security.ForbiddenClassException: org.voyanttools.trombone.util.FlexibleParameters",
+    "affected_class": "org.voyanttools.trombone.util.FlexibleParameters (production)",
+    "category": "runtime_exception",
+    "why_it_breaks": "saveFlexibleParameters / loadFlexibleParameters each built a bare `new XStream()` and round-tripped the parameters object to and from a file. From 1.4.18 XStream denies all types by default, so loading a file the same code had just written refuses FlexibleParameters at run time. Compiles unchanged against 1.4.18.",
+    "driver_note": "trombone's src/test tree holds only EmbeddedWebServer and TestHelper -- no test covers this round trip. Hence an authored driver calling only the two existing public production methods."
+  },
+
+  "adaptation": {
+    "repo": "voyanttools/trombone",
+    "commit": "c84fc06c",
+    "parent": "d03c123773d1",
+    "message": "xstream: add whitelist security",
+    "location": "production (src/main)",
+    "adaptation_in_test_code": false,
+    "files_changed": [
+      "src/main/java/org/voyanttools/trombone/util/FlexibleParameters.java (+15 -3)",
+      "src/main/java/org/voyanttools/trombone/tool/util/ToolSerializer.java (+14 -0)"
+    ],
+    "the_call": "private static XStream secureXStream(XStream xs): addPermission(NoTypePermission.NONE) + NullPermission.NULL + PrimitiveTypePermission.PRIMITIVES + allowTypeHierarchy(Collection/Map) + allowTypes({FlexibleParameters.class, String.class}) + allowTypesByWildcard({\"org.voyanttools.trombone.**\"})",
+    "summary": "Introduce a secureXStream(...) helper and route both round-trip sites through it, replacing bare `new XStream()`. Explicitly resets to deny-all then re-permits primitives, collections, maps and the project's own package tree. ToolSerializer gets the equivalent allowlist inline.",
+    "shape": "POST_MERGE_FIX",
+    "distance_commits": 1
+  },
+
+  "traversal": {
+    "traversal_confirmed": true,
+    "traversal_kind": "direct",
+    "from": "1.4.16",
+    "to": "1.4.18",
+    "buildfile": "pom.xml",
+    "distance_commits": 1,
+    "note": "The bump landed one commit BEFORE the adaptation, so the parent commit already declares 1.4.18. Establishing the pre-boundary baseline therefore required explicitly downgrading the parent to 1.4.16 for state 1 -- see the verification note."
+  },
+
+  "verification": {
+    "method": "Clean clone; single driver test via -Dtest=BbcDifferentialTest. JDK 11. Local repo -Dmaven.repo.local=C:/bump-p4p/.bbc_m2.",
+    "baseline_construction_note": "IMPORTANT: unlike the bundled-bump cases, the parent here is ALREADY at 1.4.18 (post-merge-fix shape). State 1 is therefore the parent source with the pom explicitly downgraded to 1.4.16 -- a reconstructed pre-boundary baseline, not a commit that exists in the repo's history. This is legitimate for establishing that the same source passes below the boundary and fails above it, but it is a reconstruction and is recorded as such.",
+    "driver_invariance": "The same BbcDifferentialTest.java source was present unmodified in all three states, carried across the checkout by copy.",
+    "states": [
+      {
+        "name": "1_baseline",
+        "config": "parent code (d03c1237) + xstream 1.4.16 (downgraded)",
+        "result": "PASS",
+        "tests": "run=1 failures=0 errors=0"
+      },
+      {
+        "name": "2_new_lib_old_code",
+        "config": "parent code (d03c1237) + xstream 1.4.18 (as the parent declares)",
+        "result": "FAIL",
+        "detail": "ForbiddenClassException: org.voyanttools.trombone.util.FlexibleParameters",
+        "tests": "run=1 failures=0 errors=1"
+      },
+      {
+        "name": "3_adapted",
+        "config": "adapted code (c84fc06c) + xstream 1.4.18",
+        "result": "PASS",
+        "tests": "run=1 failures=0 errors=0"
+      }
+    ],
+    "conclusion": "Confirmed behavioural break with a production-side adaptation. A parameters file round trip that succeeds at 1.4.16 is refused at 1.4.18 with otherwise-unchanged code, and routing both sites through secureXStream(...) restores it. Driver invariant across all three states."
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "case_id": "xstream-openfire-fastpath-plugin",
+  "status": "signature_confirmed__not_standalone_verifiable",
+  "case_type": "external_mined_candidate__causally_clean_but_no_differential_possible",
+  "assessed_date": "2026-08-07",
+  "assessed_by": "source reading of the break site; no differential run (structurally impossible -- see below)",
+
+  "why_not_a_case": "The break site cannot fail a test, for two independent reasons. It is unreachable from a test, and even when it fires the exception is swallowed.",
+
+  "blocking_reasons": [
+    {
+      "reason": "unreachable",
+      "detail": "The adaptation is inside `private void loadWebForms()`, called only from the private FormManager() constructor, which is reached only via FormManager.getInstance(). loadWebForms() immediately calls WorkgroupManager.getInstance() and iterates its workgroups, reading each one's `jive.webform.wg` property out of the Openfire database. Standing that up means standing up an Openfire server instance, not a unit test."
+    },
+    {
+      "reason": "swallowed",
+      "detail": "The fromXML call sits inside `try { ... } catch (Exception e) { Log.error(e.getMessage(), e); }`. ForbiddenClassException is therefore logged and execution continues -- the workgroup form silently fails to load. Even with a live server, the break produces a log line and a missing form, never a test failure. There is no assertion a differential could hang on."
+    }
+  ],
+
+  "library": {
+    "group_id": "com.thoughtworks.xstream",
+    "artifact_id": "xstream",
+    "from_version": "1.4.16",
+    "to_version": "1.4.18",
+    "boundary_type": "patch (1.4.18 security boundary)",
+    "version_at_adaptation": "1.4.20",
+    "note": "The parent already declares 1.4.20; the 1.4.16 -> 1.4.18 crossing that verify_traversal confirmed is 22 commits earlier, and a later bump took it to 1.4.20."
+  },
+
+  "why_the_signature_is_causally_clean": "The commit message names the cause outright: \"FormManager,java load workgroupForm: xstream have Type limit.must set allowTypes when xstream update 1.4.20\". The fix allows exactly the two types loadWebForms deserializes (WorkgroupForm, FormElement). This is an upgrade-triggered adaptation beyond reasonable doubt -- it simply cannot be demonstrated by a build.",
+
+  "candidate": {
+    "repo": "igniterealtime/openfire-fastpath-plugin",
+    "commit": "5bbd65a4",
+    "parent": "70de8f7994b8",
+    "location": "production (src/java -- Openfire plugin layout)",
+    "the_call": "xstream.allowTypes(new Class[] { WorkgroupForm.class, FormElement.class });",
+    "shape": "POST_MERGE_FIX",
+    "distance_commits": 22
+  },
+
+  "observations_worth_recording": {
+    "bundled_unrelated_changes": "The commit carries three unrelated changes: the xstream allowTypes fix (FormManager), a dispatcher-ordering change (WorkgroupUtils, moving getBuiltInDispatcherClasses() to the end so custom dispatchers take precedence), and a null-guard on getChatBot() (Request). Only the first is the adaptation. A commit-level classifier that assumed one commit means one intent would mis-summarise this.",
+    "incomplete_fix": "The adaptation adds allowTypes to loadWebForms() but NOT to getDataForm(), 14 lines earlier in the same file, which also calls `xstream.fromXML(form)` on a bare `new XStream()`. So getDataForm remains broken at 1.4.20. Interesting as data about how clients respond under time pressure -- they fix the path that visibly hurt them, not every instance of the pattern."
+  },
+
+  "traversal": {
+    "traversal_confirmed": true,
+    "traversal_kind": "direct",
+    "from": "1.4.16",
+    "to": "1.4.18",
+    "distance_commits": 22
+  },
+
+  "rules_assessment": {
+    "1_differential_run": "FAIL -- structurally impossible, this is the rule it fails",
+    "2_production_adaptation": "PASS",
+    "3_real_external_repo": "PASS",
+    "4_client_adaptation_to_the_break": "PASS -- commit message names the upgrade explicitly",
+    "5_boundary_crossing": "PASS"
+  },
+
+  "precedent": "Filed the same way as xstream-spark: causally real, production, boundary-crossing, but not standalone-verifiable. Kept because it is evidence about the break's reach and about how clients adapt, but it is not a verified case and must not be counted as one."
+}

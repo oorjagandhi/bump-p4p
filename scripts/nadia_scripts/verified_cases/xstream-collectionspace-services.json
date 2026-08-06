@@ -1,0 +1,88 @@
+{
+  "case_id": "xstream-collectionspace-services",
+  "status": "verified_bbc",
+  "case_type": "external_mined__real_production_adaptation__invariant_driver_differential",
+  "verified_date": "2026-08-07",
+  "verified_by": "3-state differential (Maven 3.9.11, JDK 8) on a clean clone of collectionspace/services, with an INVARIANT driver test",
+
+  "discovery": {
+    "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+    "found_by": "bbc_e2e.py run (32-term deep mine, 2026-08-06) -> classify -> verify_traversal"
+  },
+
+  "library": {
+    "group_id": "com.thoughtworks.xstream",
+    "artifact_id": "xstream",
+    "from_version": "1.4.10",
+    "to_version": "1.4.19",
+    "boundary_type": "patch (1.4.18 security boundary)",
+    "dependency_scope": "compile"
+  },
+
+  "behavioral_break": {
+    "failing_test": "org.collectionspace.services.id.test.BbcDifferentialTest#testIdGeneratorRoundTripsThroughXStream (authored driver)",
+    "exception": "com.thoughtworks.xstream.security.ForbiddenClassException: org.collectionspace.services.id.SettableIDGenerator",
+    "affected_class": "org.collectionspace.services.id.IDGeneratorSerializer (production)",
+    "category": "runtime_exception",
+    "why_it_breaks": "IDGeneratorSerializer.deserialize builds `new XStream(new DomDriver())` and deserializes a SettableIDGenerator straight out of the database column it was serialized into. From 1.4.18 XStream denies all types by default, so the round trip that worked at 1.4.10 refuses the client's own generator type at run time. The source compiles unchanged against 1.4.19.",
+    "exception_surfacing_note": "deserialize() catches XStreamException and rethrows BadRequestException, so ForbiddenClassException appears as the CAUSE, not the thrown type. The driver asserts on the round trip succeeding rather than on an exception type; the cause chain is visible in the state-2 log.",
+    "driver_note": "The repo's own IDGeneratorSerializerTest does NOT cover a successful round trip -- testDeserializeIDGenerator's body is entirely commented out, and its other deserialize tests pass null or deliberately invalid XML, which are expected to throw for unrelated reasons. Hence an authored driver."
+  },
+
+  "adaptation": {
+    "repo": "collectionspace/services",
+    "commit": "6593d7fb",
+    "parent": "844efa816e9b",
+    "message": "Bump xstream from 1.4.10 to 1.4.19 in /services/id/service",
+    "location": "production (src/main)",
+    "adaptation_in_test_code": false,
+    "files_changed": [
+      "services/id/service/pom.xml (xstream 1.4.10 -> 1.4.19)",
+      "services/id/service/src/main/java/org/collectionspace/services/id/IDGeneratorSerializer.java (+18 -10)"
+    ],
+    "the_call": "xstream.allowTypeHierarchy(IDGenerator.class); xstream.allowTypeHierarchy(IDGeneratorPart.class);",
+    "summary": "Re-permit the two type hierarchies the serializer round trip needs, inside the production deserialize method. Hierarchy-based rather than exact-type, because the generator is composed of arbitrary IDGeneratorPart implementations. Most of the -10 is whitespace normalisation; the substantive change is the two allowTypeHierarchy calls plus a logger.",
+    "shape": "BUNDLED_BUMP_AND_ADAPTATION"
+  },
+
+  "traversal": {
+    "traversal_confirmed": true,
+    "traversal_kind": "direct",
+    "from": "1.4.10",
+    "to": "1.4.19",
+    "buildfile": "services/id/service/pom.xml",
+    "distance_commits": 0
+  },
+
+  "verification": {
+    "method": "Clean clone; xstream version varied by editing the module pom; single driver test via -Dtest=BbcDifferentialTest. JDK 8. Local repo -Dmaven.repo.local=C:/bump-p4p/.bbc_m2.",
+    "environment_note": "The module's antrun check-environment-vars step hard-fails unless nine environment variables are set (CSPACE_INSTANCE_ID, CSPACE_JEESERVER_HOME, DB_HOST, DB_PORT, JEE_PORT, DB_CSADMIN_PASSWORD, DB_CSPACE_PASSWORD, DB_NUXEO_PASSWORD, DB_READER_PASSWORD). Dummy values suffice -- nothing in this differential touches a database.",
+    "windows_note": "REQUIRES `git config core.longpaths true`. Without it, checking out the adaptation commit aborts on four paths under 3rdparty/nuxeo and services/IntegrationTests that exceed Windows MAX_PATH, leaving the working tree on the PARENT commit.",
+    "false_pass_caught": "The first state-3 run reported PASS and was WRONG. The checkout to 6593d7fb had aborted on the long-path errors, so HEAD was still 844efa816, the pom was back at 1.4.10 and no allowType call was present -- the run was simply the baseline again. Caught by asserting HEAD, the pom version and the presence of `allowType` in the production source before trusting the result, then re-run properly. Recorded because a vacuous PASS is the most dangerous outcome this harness can produce: it is indistinguishable from a real one in the Surefire output.",
+    "classpath_confirmation": "After the corrected run, `dependency:build-classpath` reports C:\\bump-p4p\\.bbc_m2\\com\\thoughtworks\\xstream\\xstream\\1.4.19\\xstream-1.4.19.jar -- positive proof the adapted state ran against the new library rather than a silently reverted pom.",
+    "driver_invariance": "The same BbcDifferentialTest.java source was present unmodified in all three states.",
+    "states": [
+      {
+        "name": "1_baseline",
+        "config": "parent code (844efa81) + xstream 1.4.10",
+        "result": "PASS",
+        "tests": "run=1 failures=0 errors=0"
+      },
+      {
+        "name": "2_new_lib_old_code",
+        "config": "parent code (844efa81) + xstream 1.4.19",
+        "result": "FAIL",
+        "detail": "ForbiddenClassException: org.collectionspace.services.id.SettableIDGenerator",
+        "tests": "run=1 failures=1 errors=0"
+      },
+      {
+        "name": "3_adapted",
+        "config": "adapted code (6593d7fb) + xstream 1.4.19",
+        "result": "PASS",
+        "tests": "run=1 failures=0 errors=0",
+        "verified_classpath": "xstream-1.4.19.jar"
+      }
+    ],
+    "conclusion": "Confirmed behavioural break with a production-side adaptation. An ID-generator round trip that succeeds at 1.4.10 is refused at 1.4.19 with otherwise-unchanged code, and the two allowTypeHierarchy calls added to the production deserialize method restore it. Driver invariant across all three states, so the production change is the only difference between state 2 and state 3."
+  }
+}

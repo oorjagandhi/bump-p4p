@@ -1,0 +1,60 @@
+{
+  "case_id": "xstream-synapse-repository-services",
+  "status": "excluded__adaptation_not_caused_by_the_library_bump",
+  "case_type": "external_mined_candidate__traversal_confirmed_but_wrong_cause",
+  "assessed_date": "2026-08-07",
+  "assessed_by": "commit-intent and parent-state reading; no differential run (running one would have been misleading -- see below)",
+
+  "why_excluded": "The client's own commit message states the cause, and it is not the xstream upgrade: \"Needed more cases of .allowTypesByWildcard(new String[] {org.sagebionetworks.repo.model.**}) to get Xstream to work on Java 21\". This is an adaptation to a JDK migration, not to the library crossing the 1.4.18 boundary. Under Java 21's stronger encapsulation XStream can no longer fall back on the reflective workarounds it used previously, so types that had been deserializing fine now need explicit whitelisting. Same API, same symptom class, different cause.",
+
+  "decisive_evidence": {
+    "client_was_already_adapted": "At the PARENT commit the project already ran its own UnmodifiableXStream wrapper with explicit whitelisting in place -- e.g. BulkDownloadDAOImpl already had `UnmodifiableXStream.builder().allowTypes(FileHandleAssociation.class).build()` before this commit, which merely ADDS `.allowTypesByWildcard(...)` alongside it. A client that already whitelists is a client that adapted to 1.4.18's deny-by-default long ago; it cannot be adapting to it again here.",
+    "shape_of_the_diff": "Of the 14 files touched, several are pure import removals (+0 -2, +0 -5, +0 -3, +0 -1) -- dead-import cleanup after moving whitelist configuration around. The substantive additions are one-line `.allowTypesByWildcard(new String[] {\"org.sagebionetworks.repo.model.**\"})` insertions into builders that already existed."
+  },
+
+  "library": {
+    "group_id": "com.thoughtworks.xstream",
+    "artifact_id": "xstream",
+    "from_version": "1.4.17",
+    "to_version": "1.4.21",
+    "boundary_type": "patch (1.4.18 security boundary)"
+  },
+
+  "candidate": {
+    "repo": "Sage-Bionetworks/Synapse-Repository-Services",
+    "commit": "140f09a1",
+    "parent": "ae4d13b79617",
+    "message": "Needed more cases of .allowTypesByWildcard(new String[] {org.sagebionetworks.repo.model.**}) to get Xstream to work on Java 21",
+    "production_files_changed": 11,
+    "test_files_changed": 3,
+    "location": "production (src/main) -- so it passes rule 2",
+    "shape": "POST_MERGE_FIX",
+    "distance_commits": 1
+  },
+
+  "traversal": {
+    "traversal_confirmed": true,
+    "traversal_kind": "direct",
+    "from": "1.4.17",
+    "to": "1.4.21",
+    "distance_commits": 1,
+    "note": "The crossing is REAL -- a genuine 1.4.17 -> 1.4.21 bump did land one commit earlier. Rule 5 is satisfied. The case fails on causation, not on traversal."
+  },
+
+  "rules_assessment": {
+    "1_differential_run": "not run -- deliberately; see below",
+    "2_production_adaptation": "PASS",
+    "3_real_external_repo": "PASS",
+    "4_client_adaptation_to_the_break": "FAIL -- this is the rule it fails",
+    "5_boundary_crossing": "PASS"
+  },
+
+  "why_no_differential_was_run": "A differential here would likely have gone GREEN and been misleading. Under a Java 21 toolchain the parent code would plausibly fail and the adapted code pass, producing a textbook-looking PASS/FAIL/PASS that attributes to xstream a break actually caused by the JDK. The library version is a confound, not the independent variable. Reading the commit's stated intent and the parent's already-whitelisted state settles it more reliably than a build would.",
+
+  "methodological_finding": {
+    "finding": "Traversal confirmation is NECESSARY but NOT SUFFICIENT. verify_traversal proves the client crossed the boundary near the adaptation; it cannot prove the crossing is what caused the adaptation.",
+    "why_this_one_slipped_through": "Every mechanical gate passed: production adaptation, native Maven, real external repo, confirmed direct crossing one commit away, compile screen `unknown` (no resolvable constructor usage -- the project wraps XStream in its own UnmodifiableXStream builder, so a constructor-based screen has nothing to inspect). The only signal that it is not a case is written in English in the commit message.",
+    "recommended_gate": "Before running a differential, check (a) the commit message for an explicitly stated non-library cause -- JDK migrations are the common one -- and (b) whether the PARENT already contains adaptation-signature calls. A client already carrying the fix cannot be adapting to that break. Both are cheap and neither needs a build.",
+    "corpus_implication": "This is the second distinct false-positive MODE found in the 11-candidate xstream set, after the swiftmq 'Remove XStream dependency' row. Mechanical gates narrowed 2288 rows to 11; the last filter is human reading, and it removed 2 of the 11."
+  }
+}
