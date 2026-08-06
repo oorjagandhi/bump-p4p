@@ -1,0 +1,89 @@
+{
+  "case_id": "snakeyaml-adityajoy-dashboard",
+  "status": "excluded__syntactic_breaking_change",
+  "case_type": "external_mined_candidate__compile_break_not_behavioural",
+  "verified_date": "2026-08-06",
+  "verified_by": "3-state differential compile (Maven 3.9.11, JDK 11) on a clean clone of the client repo",
+
+  "why_excluded": "The adaptation responds to a COMPILE-time (syntactic) breaking change, not a behavioural one. snakeyaml 2.0 kept an arity-1 `Constructor` but narrowed its parameter from `Class` to `LoaderOptions`, so the client's `new Constructor(ApplicationConfig.class)` does not compile against 2.0 at all. The client never observed a runtime behaviour change: the build simply stopped compiling. Syntactic BCs are out of scope for this dataset — the whole point is adaptations to breaks that survive compilation and only manifest at runtime.",
+
+  "discovery": {
+    "break_id": "snakeyaml-1.x-to-2.0-safeconstructor",
+    "found_by": "bbc_e2e.py mine-commits -> prod-only gate -> verify_traversal",
+    "was_the_last_unverified_candidate": true,
+    "note": "This was the ONLY traversal-confirmed, production, native-Maven candidate left unverified across every mined corpus as of 2026-08-06. Its exclusion empties the verification queue."
+  },
+
+  "library": {
+    "group_id": "org.yaml",
+    "artifact_id": "snakeyaml",
+    "from_version": "1.29",
+    "to_version": "2.0",
+    "boundary_type": "major",
+    "dependency_scope": "compile"
+  },
+
+  "adaptation": {
+    "repo": "adityajoy-1902/Dashboard-V-2",
+    "commit": "8c39d993d6f4062b677ca25dc527ba0f9fe64347",
+    "parent": "10a6e61be3e884ba23ca4e76c0518beabcb0863c",
+    "date": "2025-06-23",
+    "message": "Fix Windows compatibility: Update SnakeYAML to v2.0 and add LoaderOptions support",
+    "location": "production (src/main)",
+    "adaptation_in_test_code": false,
+    "files_changed": [
+      "pom.xml",
+      "src/main/java/com/example/dashboard/service/ApplicationConfigService.java",
+      "src/main/java/com/example/dashboard/service/YamlParserService.java"
+    ],
+    "the_change": "new Constructor(Foo.class) -> new Constructor(Foo.class, new LoaderOptions())",
+    "summary": "Bump snakeyaml 1.29 -> 2.0 and add the LoaderOptions argument that 2.0's Constructor requires. Bump and adaptation are in the same commit (shape: BUNDLED_BUMP_AND_ADAPTATION), which is itself a signal of a compile break: the author could not have committed the bump alone, because the tree would not build."
+  },
+
+  "traversal": {
+    "traversal_confirmed": true,
+    "kind": "direct",
+    "from": "1.29",
+    "to": "2.0",
+    "buildfile": "pom.xml",
+    "distance_commits": 0,
+    "note": "Rule 5 (boundary crossing) IS satisfied — the client genuinely crossed 1.x -> 2.0 in its own history. The case fails on the nature of the break, not on the crossing."
+  },
+
+  "verification": {
+    "method": "3-state differential using `mvn compile` (not test — the repo contains no src/test at all, so no Surefire differential is possible). Clean clone, snakeyaml version varied via pom.xml, Maven repo -Dmaven.repo.local=C:/bump-p4p/.bbc_m2, JDK 11 (pom sets java.version=11, Spring Boot 2.7.0 parent).",
+    "states": [
+      {
+        "name": "1_baseline",
+        "config": "parent code (10a6e61b) + snakeyaml 1.29",
+        "result": "PASS",
+        "detail": "BUILD SUCCESS — 11 source files compiled"
+      },
+      {
+        "name": "2_new_lib_old_code",
+        "config": "parent code (10a6e61b) + snakeyaml 2.0",
+        "result": "FAIL_TO_COMPILE",
+        "detail": "YamlParserService.java:[23,66] incompatible types: java.lang.Class<com.example.dashboard.model.Application> cannot be converted to org.yaml.snakeyaml.LoaderOptions; same error at ApplicationConfigService.java:[25,72]",
+        "decisive": true
+      },
+      {
+        "name": "3_adapted",
+        "config": "adapted code (8c39d993) + snakeyaml 2.0",
+        "result": "PASS",
+        "detail": "BUILD SUCCESS"
+      }
+    ],
+    "conclusion": "State 2 fails at javac, not at runtime. This is a syntactic breaking change and therefore NOT a BBC. The client's fix is a signature fix, not a behavioural adaptation.",
+    "no_tests_in_repo": "src/test does not exist at any commit in this repo, so even had the break been behavioural, the standard Surefire per-test differential could not have run. The compile differential was decisive on its own."
+  },
+
+  "tooling_finding": {
+    "issue": "ARTIFACT HYGIENE, not a tool defect. screen_compile_break.py was already correct and had already excluded this row; the wrong verdict survives only in a stale upstream file.",
+    "what_happened": "The row was picked up from `..._traversal_RECHECK.jsonl` (written 2026-08-04 01:15), where its compile_screen reads 'behavioural' with reason 'all 6 library constructor usage(s) in the parent source still exist at 2.0'. That verdict was inherited from the arity-only screen run of 2026-08-04 00:06 and never refreshed in that file. The type-aware re-screen at 09:53 (`..._RECHECK_SCREENED.jsonl`) had ALREADY demoted this row to compile_break, and the downstream `..._TRIGGER.jsonl` correctly drops it.",
+    "correct_verdict": "compile_break",
+    "correct_reason": "Constructor(java.lang.Class) has no matching overload at 2.0 (overloads: [['org.yaml.snakeyaml.LoaderOptions']])",
+    "screen_reconfirmed_2026_08_06": "Re-running the current screen over all 44 rows reproduces the 09:53 tally exactly — {compile_break: 10, behavioural: 33, unknown: 1} — and the per-row verdicts are byte-identical. The signature-narrowing check (`signature_mismatch_at_to_version`, which compares erased argument types against the to_version jar's overloads via javap) works as documented.",
+    "real_implication": "The `_traversal_RECHECK.jsonl` files are PRE-screen inputs that nonetheless carry a compile_screen field, so reading a candidate list from them yields verdicts that the pipeline has already superseded. The authoritative artifacts are `_SCREENED` and `_TRIGGER`. This naming trap cost a full manual verification cycle and should be fixed — either strip the stale field from RECHECK outputs or rename so the screening stage is unambiguous.",
+    "value_retained": "The javac differential above is the first EMPIRICAL confirmation of a screen_compile_break.py compile_break verdict — until now the screen's classifications were trusted on javap inspection alone. Its call here is exactly right."
+  }
+}

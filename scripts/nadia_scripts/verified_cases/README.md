@@ -44,6 +44,16 @@ client adapting:
   harness proves the library's behaviour changed, but the clients did not cross the
   boundary in-repo (see each file's audit block). Adaptation to a break's *behaviour*,
   not to a version transition they made.
+- `excluded/compile_break/` — the client crossed the boundary and adapted production
+  code, but the break it adapted to is **syntactic**, not behavioural:
+    - `snakeyaml-adityajoy-dashboard` — `adityajoy-1902/Dashboard-V-2@8c39d993`, snakeyaml
+      1.29 → 2.0. Verified 2026-08-06 by a 3-state `mvn compile` differential: parent code
+      compiles at 1.29, **fails javac** at 2.0 (`Class` cannot be converted to
+      `LoaderOptions`), and compiles again after the fix. 2.0 kept an arity-1 `Constructor`
+      but narrowed it from `Constructor(Class)` to `Constructor(LoaderOptions)`, so the old
+      call never reaches runtime. A syntactic BC is out of scope by definition — this
+      dataset is about breaks that survive compilation.
+
 - `excluded/no_boundary_crossing/` — fully verified production adaptations in real
   external repos that fail rule 5:
     - `xstream-axon-saga-einsteinarbert` — `axon-spring-boot-starter 4.6.1` set in the
