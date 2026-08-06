@@ -118,6 +118,44 @@ def count(rs, pred, requires=None):
     return sum(1 for r in rs if pred(r))
 
 
+def parse_ver(s):
+    import re
+    nums = re.findall(r"\d+", s or "")
+    return tuple(int(n) for n in nums[:4]) if nums else None
+
+
+def ver_lt(a, b):
+    n = max(len(a), len(b))
+    return a + (0,) * (n - len(a)) < b + (0,) * (n - len(b))
+
+
+def below_boundary(rs, boundary):
+    """How many rows sat BELOW the boundary at their parent commit.
+
+    This is the eligibility signal, and it is what org-json cost us to learn. A break can
+    only yield a witnessed crossing if some client was below the boundary and moved
+    above it. If every mined client is already past the boundary, the break yields zero
+    crossings BY CONSTRUCTION however many real adaptations exist -- which is exactly
+    org-json (boundary 2013-10, earliest client 2016-08, 31 production adaptations, 0
+    crossings measured over all 50 rows).
+
+    Returns (n_below, n_with_a_resolvable_version). The second number matters: a corpus
+    where nothing resolves tells you nothing either way.
+    """
+    b = parse_ver(boundary)
+    if rs is None or not b:
+        return None, None
+    below = resolvable = 0
+    for r in rs:
+        v = parse_ver(r.get("version_at_parent") or r.get("version_at_commit"))
+        if not v:
+            continue
+        resolvable += 1
+        if ver_lt(v, b):
+            below += 1
+    return below, resolvable
+
+
 def traversal_ok(r):
     return bool((r.get("traversal") or {}).get("traversal_confirmed"))
 
@@ -156,6 +194,8 @@ def _infer_break(d):
 
 def main():
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+    bpath = OUT / "boundary_dates.json"
+    bdates = json.loads(bpath.read_text(encoding="utf-8")) if bpath.exists() else {}
     verified, excluded = load_cases()
     table, provenance, notes = [], [], []
 
@@ -193,6 +233,10 @@ def main():
         n_cmpl = (count(scr, lambda r: (r.get("compile_screen") or {}).get("verdict")
                         == "compile_break") if scr is not None else None)
 
+        bd = bdates.get(bid) or {}
+        boundary = (brk.get("verify") or {}).get("break_boundary")
+        n_below, n_resolv = below_boundary(trav, boundary)
+
         v = verified.get(bid, 0)
         exc = excluded.get(bid) or Counter()
 
@@ -201,6 +245,10 @@ def main():
             "mined": n_rows, "candidates": n_cand, "prod": n_prod, "traversal": n_trav,
             "behavioural": n_behav, "compile_break": n_cmpl,
             "verified": v, "excluded": sum(exc.values()),
+            "boundary": bd.get("boundary_resolved") or boundary,
+            "boundary_date": bd.get("release_date"),
+            "boundary_exact": bd.get("exact"),
+            "below": n_below, "resolvable": n_resolv,
         })
         provenance.append({
             "break": bid,
@@ -254,6 +302,53 @@ def main():
         for r in sorted(leads, key=lambda x: -x["prod"]):
             print(f"| `{r['break']}` | **{r['prod']}** |")
         print()
+
+    print("## Boundary dates and mineability\n")
+    print("A break can only yield a *witnessed* crossing if some client was below the "
+          "boundary and moved above it. If the boundary predates the mineable client "
+          "population, the break yields zero crossings **by construction**, however "
+          "many genuine adaptations exist. That is not a finding about how clients "
+          "behave — it is a property of the boundary's date, and it is knowable before "
+          "spending a mine.\n")
+    print("`below` counts corpus rows whose version at the parent commit sits below the "
+          "boundary; `resolvable` is how many rows had a version that could be parsed "
+          "at all. `below = 0` with a healthy `resolvable` means every mined client was "
+          "born past the boundary.\n")
+    print("**Limitation, and it is not a small one:** `below` reads the version DECLARED "
+          "in the client's build file. It cannot see a version that arrives "
+          "transitively. xstream is the proof — the break with four verified crossings "
+          "in this dataset shows `resolvable = 0`, because its confirmed cases receive "
+          "xstream through `axon-spring-boot-starter` and declare nothing themselves. "
+          "So a low `below` is evidence only when `resolvable` covers most of the "
+          "corpus, and it is never evidence against a MEASURED crossing. The "
+          "`traversal` column is the ground truth; this table is a cheap pre-filter for "
+          "breaks not yet mined.\n")
+    print("| break | boundary | released | below | resolvable | traversal (measured) | "
+          "mineable for crossings? |")
+    print("|---|---|---|---:|---:|---:|---|")
+    MIN_EVIDENCE = 5
+    for r in sorted(table, key=lambda x: (x["boundary_date"] or "9999")):
+        b = r["boundary"] or MISSING
+        if r["boundary_exact"] is False:
+            b += " *(approx)*"
+        below, res, meas = r["below"], r["resolvable"], r["traversal"]
+        if meas:
+            verdict = f"**YES — {meas} measured**"
+        elif below is None or not res:
+            verdict = "unknown — no declared versions to read"
+        elif below == 0 and res >= MIN_EVIDENCE:
+            verdict = "**NO** — every mined client born past it"
+        elif below == 0:
+            verdict = f"probably not — but only {res} row(s) resolve, too few to say"
+        else:
+            verdict = "yes — clients below the boundary exist"
+        print(f"| `{r['break']}` | {b} | {r['boundary_date'] or MISSING} | "
+              f"{cell(below)} | {cell(res)} | {cell(meas)} | {verdict} |")
+    print(f"\n`below = 0` is only called decisive when at least {MIN_EVIDENCE} rows "
+          "resolve; below that the corpus is too thin to distinguish 'born past the "
+          "boundary' from 'we could not tell'.\n")
+    print("The rule this encodes, learned from org-json: **check the boundary's DATE "
+          "before mining a break, not just that a boundary exists.**\n")
 
     print(DEEP_MINE_FUNNEL)
 
