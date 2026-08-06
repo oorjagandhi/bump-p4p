@@ -1,0 +1,91 @@
+{
+  "case_id": "xstream-marklogic-contentpump",
+  "status": "verified_bbc",
+  "case_type": "external_mined__real_production_adaptation__invariant_driver_differential",
+  "verified_date": "2026-08-06",
+  "verified_by": "3-state differential (Maven 3.9.11, JDK 8) on a clean clone of marklogic/marklogic-contentpump, with an INVARIANT driver test",
+
+  "why_this_case_is_strong": "The driver test source is byte-identical in all three states. It calls only DocumentMetadata.toXML() / DocumentMetadata.fromXML(Reader) -- production APIs whose signatures are unchanged by the adaptation -- so nothing about the test differs between states and the state-3 recovery is attributable to the PRODUCTION change alone. Contrast xstream-openmrs-core, where the adaptation also edited the test and state 4 showed the production change alone did not recover that test.",
+
+  "discovery": {
+    "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+    "found_by": "bbc_e2e.py run (32-term deep mine, 2026-08-06) -> classify -> verify_traversal",
+    "note": "Surfaced only by the BUMP-axis search terms added in the 32-term mine."
+  },
+
+  "library": {
+    "group_id": "com.thoughtworks.xstream",
+    "artifact_id": "xstream",
+    "from_version": "1.4.16",
+    "to_version": "1.4.18",
+    "boundary_type": "patch (1.4.18 security boundary)",
+    "dependency_scope": "compile"
+  },
+
+  "behavioral_break": {
+    "failing_test": "com.marklogic.contentpump.BbcDifferentialTest#documentMetadataRoundTripsThroughXStream (authored driver; see note)",
+    "exception": "com.thoughtworks.xstream.security.ForbiddenClassException: com.marklogic.contentpump.DocumentMetadata",
+    "affected_class": "com.marklogic.contentpump.DocumentMetadata (production)",
+    "category": "runtime_exception",
+    "why_it_breaks": "DocumentMetadata holds `static XStream xstream = new XStream()` and deserializes itself in `fromXML(Reader)`. From 1.4.18 XStream denies all types by default, so fromXML refuses DocumentMetadata -- and its ContentPermission members -- at run time. The source compiles unchanged against 1.4.18; it throws only when deserializing. Compile screen agrees: verdict `behavioural`, all constructor usages still exist at 1.4.19.",
+    "driver_note": "The repo has a src/test tree but no test covering DocumentMetadata's XStream round trip, so the driver was authored. It is NOT an authored mimic: the client, the break and the fix are all real and external; the driver only calls existing production methods with no modification to them. It is held to the same 3-state rule as every other case."
+  },
+
+  "adaptation": {
+    "repo": "marklogic/marklogic-contentpump",
+    "commit": "3736c971",
+    "parent": "2b9ebbd57305",
+    "message": "Upgrading xstream version & whitelisting classes for deserialization",
+    "location": "production (src/main)",
+    "adaptation_in_test_code": false,
+    "files_changed": [
+      "pom.xml (xstream 1.4.16 -> 1.4.18, in two places)",
+      "src/main/java/com/marklogic/contentpump/DocumentMetadata.java (+2 -0)"
+    ],
+    "the_call": "xstream.allowTypes(new Class[] {DocumentMetadata.class}); xstream.allowTypes(new Class[] {ContentPermission.class});",
+    "summary": "Re-permit exactly the two types the metadata round trip needs, inside the production fromXML method, immediately before the fromXML call. A minimal allowlist rather than a blanket AnyTypePermission -- the client kept 1.4.18's deny-by-default posture and opened only what it needs.",
+    "shape": "BUNDLED_BUMP_AND_ADAPTATION"
+  },
+
+  "traversal": {
+    "traversal_confirmed": true,
+    "traversal_kind": "direct",
+    "from": "1.4.16",
+    "to": "1.4.18",
+    "buildfile": "pom.xml",
+    "distance_commits": 0,
+    "note": "Rule 5 satisfied: the bump lands in the adaptation commit itself and crosses the 1.4.18 boundary. Bundled shape does not imply a compile break here -- state 2 proves the parent source compiles against 1.4.18 and fails only at run time."
+  },
+
+  "verification": {
+    "method": "Clean clone; xstream version varied by editing the two hardcoded <version> declarations in pom.xml; single driver test run via -Dtest=BbcDifferentialTest. Local repo -Dmaven.repo.local=C:/bump-p4p/.bbc_m2.",
+    "java_version": "JDK 8 (C:/Users/nadia/jdk8/jdk8u492-b09). REQUIRED: the project sets <source>1.7</source> and src/main/java/com/marklogic/mapreduce/test/CustomQuery.java imports javax.xml.soap, which was removed from the JDK in 11 -- the build fails to compile on JDK 11 before the differential can even start.",
+    "build_flags_note": "-Dproject.build.sourceEncoding=ISO-8859-1 is required: resource filtering over src/main/resources/sample-data/A throws UnmappableCharacterException under UTF-8. Unrelated to the break.",
+    "settings_note": "Project-local settings.xml mirroring only `central`. The machine's global settings declares <mirrorOf>*</mirrorOf> for an unrelated project, which blocks project-declared repositories.",
+    "driver_invariance": "The SAME BbcDifferentialTest.java source was present, unmodified, in all three states -- carried across the checkout with git stash. This is the property that makes the state-3 result attributable to the production change.",
+    "states": [
+      {
+        "name": "1_baseline",
+        "config": "parent code (2b9ebbd5) + xstream 1.4.16",
+        "result": "PASS",
+        "tests": "run=1 failures=0 errors=0"
+      },
+      {
+        "name": "2_new_lib_old_code",
+        "config": "parent code (2b9ebbd5) + xstream 1.4.18",
+        "result": "FAIL",
+        "detail": "ForbiddenClassException: com.marklogic.contentpump.DocumentMetadata",
+        "tests": "run=1 failures=0 errors=1"
+      },
+      {
+        "name": "3_adapted",
+        "config": "adapted code (3736c971) + xstream 1.4.18",
+        "result": "PASS",
+        "tests": "run=1 failures=0 errors=0"
+      }
+    ],
+    "conclusion": "Confirmed behavioural break with a production-side adaptation. A metadata round trip that succeeds at 1.4.16 throws ForbiddenClassException at 1.4.18 with otherwise-unchanged code, and the two allowTypes calls added to the production fromXML method restore it. With the driver held invariant across all three states, the production change is the only thing that differs between state 2 and state 3."
+  },
+
+  "assessment": "The cleanest case in the dataset. Real external client, real maintained project, production-only adaptation, confirmed in-repo boundary crossing, minimal and legible fix, and an invariant driver that isolates the production change as the cause of recovery."
+}

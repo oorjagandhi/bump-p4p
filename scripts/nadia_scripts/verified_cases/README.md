@@ -121,16 +121,25 @@ independently confirmed. Valid crossing, test-only adaptation, not a case.
 
 ## Cases
 
-| case_id | library | transition | client | discovery | status |
-|---|---|---|---|---|---|
-| [xstream-logging-chainsaw](xstream-logging-chainsaw.json) | xstream | 1.4.17 → 1.4.19 (patch) | apache/logging-chainsaw | Phase 1 | ✅ verified_bbc (partial/test-only adaptation) |
-| [xstream-mimic-production](xstream-mimic-production.json) | xstream | 1.4.17 → 1.4.19 (patch) | authored mimic (scratchpad/xstream-mimic) | Authored | ✅ verified_bbc (**production** adaptation) |
-| [xstream-tvrenamer](xstream-tvrenamer.json) | xstream | 1.4.9 → 1.4.20 (crosses 1.4.18) | The-Ant-Forge/TVRenamer (Gradle) | Phase 2 | ✅ verified_bbc (real **external production** adaptation; full differential via Maven harness) |
-| [xstream-axon-artshishkin](xstream-axon-artshishkin.json) | xstream | 1.4.17 → 1.4.19 (crosses 1.4.18) | artshishkin/…axon-microservices (**native Maven**) | Phase 2 (**pipeline-found**) | ✅ verified_bbc (real external **production** adaptation; Axon `XStreamConfig`, native Maven) |
-| [xstream-spark](xstream-spark.json) | xstream | @1.4.18 (1.4.18 boundary) | igniterealtime/Spark (**native Maven**) | Phase 2 (**pipeline-found**) | 🟡 signature_confirmed (mature product, SPARK-2259; not standalone-verifiable — live-session coupling) |
-| [poi-jadhavspeaks](poi-jadhavspeaks.json) | poi | 4.1.2 → 5.2.5 (5.0 byte-cap) | jadhavspeaks/file_compare_diffrent_ext | Phase 2 (**pipeline-found**) | 🟡 signature_confirmed (native-Maven Java; differential RAN, break didn't trip from .xlsx) |
-| [poi-fmflatfile](poi-fmflatfile.json) | poi | @5.2.3 (5.0 byte-cap) | tpunder/fm-flatfile | Phase 2 (**pipeline-found**) | 🟡 signature_confirmed (real external **production** adaptation, Scala) |
-| [poi-impactupgrade-nucleus-engine](poi-impactupgrade-nucleus-engine.json) | poi | 4.x → 5.x (major) | impactupgrade/nucleus-engine | Phase 2 | 🟡 signature_confirmed |
-| [poi-kenzoknz-pdf-converter](poi-kenzoknz-pdf-converter.json) | poi | 4.x → 5.x (major) | kenzoknz/pdf-converter | Phase 2 | 🟡 signature_confirmed |
-| [poi-usepa-data-gathering](poi-usepa-data-gathering.json) | poi | 4.x → 5.x (major) | USEPA/data_gathering | Phase 2 | 🟡 signature_confirmed |
-| [poi-oboguev-rtss](poi-oboguev-rtss.json) | poi | 4.x → 5.x (major) | oboguev/RTSS | Phase 2 | 🟡 signature_confirmed |
+Five cases. Every other file that used to be listed here is now under `excluded/`,
+sorted by which rule it fails — see the tables above.
+
+| case_id | transition | client | discovery | recovery attributable to production change? |
+|---|---|---|---|---|
+| [xstream-marklogic-contentpump](xstream-marklogic-contentpump.json) | 1.4.16 → 1.4.18 | marklogic/marklogic-contentpump | 32-term mine (bump axis) | ✅ **yes** — invariant driver across all 3 states |
+| [xstream-openmrs-core](xstream-openmrs-core.json) | 1.4.17 → 1.4.20 | openmrs/openmrs-core | 32-term mine (bump axis) | ⚠️ **no** — state 4 shows this test recovers test-side; production mechanism confirmed separately by the commit's own new tests |
+| [xstream-axon-artshishkin](xstream-axon-artshishkin.json) | 1.4.16 → 1.4.19 (transitive, via Axon) | artshishkin/…axon-microservices | 3-query mine | ✅ yes |
+| [xstream-axon-saga-einsteinarbert](xstream-axon-saga-einsteinarbert.json) | 1.4.10 → 1.4.19 (transitive, via Axon) | einsteinarbert/axon-saga-example | 3-query mine | ✅ yes |
+| [xstream-tvrenamer](xstream-tvrenamer.json) | 1.4.9 → 1.4.20 | The-Ant-Forge/TVRenamer (Gradle) | Phase 2 signature search | ✅ yes |
+
+The last column is worth keeping. A 3-state differential can go green because the client
+changed its *test* rather than its production code, and only a fourth state — adapted
+production code against the PARENT's test — distinguishes the two. `xstream-openmrs-core`
+is the case that made this visible; it is a real production adaptation to a real break,
+but its differential does not by itself prove the production change is what recovers.
+Run state 4 whenever the adaptation commit touches test files.
+
+Authored drivers live in [`drivers/`](drivers/). A driver is not an authored mimic: the
+client, the break and the fix are all real and external, and the driver only calls
+existing production methods. It is used when the repo has no test covering the broken
+path, and it must be byte-identical across all three states.

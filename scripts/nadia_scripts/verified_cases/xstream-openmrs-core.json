@@ -1,0 +1,101 @@
+{
+  "case_id": "xstream-openmrs-core",
+  "status": "verified_bbc",
+  "case_type": "external_mined__real_production_adaptation__project_own_test_differential",
+  "verified_date": "2026-08-06",
+  "verified_by": "4-state differential (Maven 3.9.11, JDK 11) on a clean clone of openmrs/openmrs-core, using the project's OWN pre-existing test",
+
+  "discovery": {
+    "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+    "found_by": "bbc_e2e.py run (32-term deep mine, 2026-08-06) -> classify -> verify_traversal",
+    "note": "Found only by the BUMP-axis search terms added in the 32-term mine; the earlier 3-query adaptation-signature corpus never surfaced it."
+  },
+
+  "library": {
+    "group_id": "com.thoughtworks.xstream",
+    "artifact_id": "xstream",
+    "from_version": "1.4.17",
+    "to_version": "1.4.20",
+    "boundary_type": "patch (1.4.18 security boundary)",
+    "dependency_scope": "compile"
+  },
+
+  "behavioral_break": {
+    "failing_test": "org.openmrs.serialization.SimpleXStreamSerializerTest#deserialize_shouldDeserializeStringToClassInstance",
+    "exception": "com.thoughtworks.xstream.security.ForbiddenClassException: org.openmrs.serialization.Foo",
+    "affected_class": "org.openmrs.serialization.SimpleXStreamSerializer (production)",
+    "category": "runtime_exception",
+    "why_it_breaks": "From 1.4.18 XStream ships a deny-by-default type permission set. OpenMRS's SimpleXStreamSerializer constructed a plain `new XStream()` and deserialized arbitrary OpenMRS types; under 1.4.20 every such type is refused at deserialization time unless explicitly allowed. The code compiles unchanged and throws only at run time -> behavioural, not syntactic. Confirmed by the compile screen (verdict: behavioural, all 4 constructor usages still exist at 1.4.19)."
+  },
+
+  "adaptation": {
+    "repo": "openmrs/openmrs-core",
+    "commit": "f8232475",
+    "parent": "f4d8a38bc920",
+    "pr": "#4377",
+    "message": "TRUNK-6188 Upgrade xstream and migrate to whitelisting (#4377)",
+    "location": "production (src/main)",
+    "adaptation_in_test_code": false,
+    "production_files_changed": [
+      "api/src/main/java/org/openmrs/serialization/SimpleXStreamSerializer.java (+101 -21)",
+      "api/src/main/java/org/openmrs/api/impl/AdministrationServiceImpl.java (+41 -1)",
+      "api/src/main/java/org/openmrs/api/AdministrationService.java (+19 -0)",
+      "api/src/main/resources/applicationContext-service.xml"
+    ],
+    "summary": "Replace the permissive `new XStream()` with a whitelist mechanism driven by OpenMRS global properties. SimpleXStreamSerializer becomes a Spring @Component taking an AdministrationService, and setupXStreamSecurity() installs allowTypes / allowTypeHierarchy entries from AdministrationService.getSerializerWhitelistTypes(), supporting both exact types and a hierarchy-prefix form.",
+    "shape": "BUNDLED_BUMP_AND_ADAPTATION"
+  },
+
+  "traversal": {
+    "traversal_confirmed": true,
+    "traversal_kind": "direct",
+    "from": "1.4.17",
+    "to": "1.4.20",
+    "buildfile": "pom.xml",
+    "distance_commits": 0,
+    "note": "Rule 5 satisfied: the bump 1.4.17 -> 1.4.20 is in the adaptation commit itself, crossing the 1.4.18 boundary. Bundled shape is expected here and does NOT imply a compile break -- the compile screen returned `behavioural`, and state 2 below proves the parent source compiles fine against 1.4.20 and fails only at run time."
+  },
+
+  "verification": {
+    "method": "Clean clone; xstream version varied by editing the single hardcoded <version> in the parent pom's dependencyManagement; JDK 11 (pom sets javaCompilerVersion 1.8); `mvn -pl api -am test` restricted to the single pre-existing test. Local repo -Dmaven.repo.local=C:/bump-p4p/.bbc_m2.",
+    "settings_note": "Required a project-local settings.xml. The machine's global ~/.m2/settings.xml declares <mirrorOf>*</mirrorOf> (added for an unrelated ORCID project), which routes every download through Central and so blocks OpenMRS's own Nexus -- the only source of jackson-{core,mapper}-asl:1.9.14-MULE-002 and ehcache:2.10.10.4.43. Mirroring only `central` fixes it without touching global config.",
+    "states": [
+      {
+        "name": "1_baseline",
+        "config": "parent code (f4d8a38b) + xstream 1.4.17",
+        "result": "PASS",
+        "tests": "run=1 failures=0 errors=0"
+      },
+      {
+        "name": "2_new_lib_old_code",
+        "config": "parent code (f4d8a38b) + xstream 1.4.20",
+        "result": "FAIL",
+        "detail": "ForbiddenClassException: org.openmrs.serialization.Foo",
+        "tests": "run=1 failures=0 errors=1"
+      },
+      {
+        "name": "3_adapted",
+        "config": "adapted code (f8232475) + xstream 1.4.20",
+        "result": "PASS",
+        "tests": "run=1 failures=0 errors=0"
+      },
+      {
+        "name": "4_adapted_production_with_PARENT_test",
+        "config": "adapted production code (f8232475) + the PARENT's test file + xstream 1.4.20",
+        "result": "FAIL",
+        "detail": "ForbiddenClassException: org.openmrs.serialization.Foo",
+        "purpose": "Isolates whether the PRODUCTION change alone resolves this particular test.",
+        "finding": "It does not."
+      }
+    ],
+    "conclusion": "Confirmed behavioural break. A test that passed at 1.4.17 fails at 1.4.20 with otherwise-unchanged code, throwing inside the production SimpleXStreamSerializer, and passes again after the adaptation commit.",
+    "IMPORTANT_CAVEAT": "State 4 shows this specific test's recovery is TEST-SIDE. The adaptation added `serializer.getXstream().allowTypeHierarchy(Foo.class)` to the test, and without that line the adapted production code still refuses Foo -- because the production whitelist is driven by OpenMRS global properties, which are absent in a plain unit test (adminService is null). So states 1->3 prove the BREAK and prove the client adapted, but do NOT by themselves prove the production change is what resolves it.",
+    "production_mechanism_separately_confirmed": {
+      "evidence": "The full SimpleXStreamSerializerTest class on the adapted code: run=9 failures=0 errors=0.",
+      "why_it_matters": "Those 9 include the commit's new tests deserialize_shouldNotDeserializeClassesThatAreNotWhitelisted and deserialize_shouldDeserializeWhitelistedPackages, which drive the production API directly -- `new SimpleXStreamSerializer(adminService)` with a mocked getSerializerWhitelistTypes() -- and assert both that non-whitelisted types are refused and that whitelisted packages deserialize. That is the production whitelist mechanism working, independent of any test-side allowTypeHierarchy call.",
+      "limitation": "These are NEW tests, absent at the parent, so they cannot themselves form a 3-state differential (no baseline to pass)."
+    }
+  },
+
+  "assessment": "A genuine production adaptation to a genuine behavioural break, in a large maintained project, with a confirmed in-repo boundary crossing. Stronger than the existing Axon demo-repo cases on project maturity. Weaker than them on one axis: the differential's state-3 recovery is attributable to a test-side line rather than to the production change, which state 4 makes explicit. The production mechanism is confirmed working by the commit's own new tests, just not by a 3-state differential."
+}
