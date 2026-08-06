@@ -743,7 +743,20 @@
      "ParseException depth",
      "json-smart depth",
      "setMaxDepth"
-    ]
+    ],
+    "direct_bump_search_terms": [
+     "bump",
+     "upgrade",
+     "update dependency",
+     "dependency update",
+     "2.4.9",
+     "2.4.10",
+     "2.4.11",
+     "2.5.0",
+     "security update",
+     "CVE"
+    ],
+    "bump_axis_rationale": "Added 2026-08-07. json-smart is the strongest untried lead in the census: 35 of its 43 resolvable candidate rows sit BELOW the 2.4.9 boundary (released 2023-03), so unlike org-json its client population can still cross. Until now it was mined on the adaptation axis only, which found 50 rows and 0 production adaptations -- the same result xstream gave before the bump axis took it from 20 candidates to 11 confirmed crossings. Its signal_quality is 'weak' precisely because the adaptation is config-shaped (setMaxDepth / input restructuring) and has no distinctive exception-handling idiom to search for; the bump axis does not depend on the adaptation having a searchable signature, which is why it is the right tool here. CVE-2023-1370 is the driver, so 'CVE' and 'security update' are live terms."
    },
    "verify": {
     "version_property": "bbc.json-smart.version",

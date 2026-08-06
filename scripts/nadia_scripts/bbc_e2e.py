@@ -1246,9 +1246,18 @@ def mine_verify(break_id):
 def run(break_id):
     brk = get_break(break_id)
     token = _token()
-    print(f"\n=== characterize {break_id} ===")
-    sha = brk["clients"][0]["breaking_commit"]
-    characterize(sha)
+    # characterize reads a BUMP reproduction log, so it only applies to BUMP-sourced
+    # breaks. Advisory-sourced ones (snakeyaml came from the OSV feed via
+    # mine_advisories.py, CVE-2022-1471) carry no `clients`, and indexing [0] raised
+    # IndexError before mining even began -- making `run` unusable for exactly the
+    # breaks the project is expanding into. Mining does not depend on it.
+    clients = brk.get("clients") or []
+    if clients and clients[0].get("breaking_commit"):
+        print(f"\n=== characterize {break_id} ===")
+        characterize(clients[0]["breaking_commit"])
+    else:
+        print(f"\n=== characterize {break_id}: SKIPPED "
+              f"(no BUMP client/breaking_commit — advisory-sourced break) ===")
     print(f"\n=== mine-commits {break_id} ===")
     rows = mine_commits(brk, token)
     print(f"\n=== classify candidates (production adaptations first) ===")
