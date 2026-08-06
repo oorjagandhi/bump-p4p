@@ -96,7 +96,22 @@ def _gh(url, token, **params):
                "Accept": "application/vnd.github+json"}
     data = None
     for attempt in range(5):
-        r = requests.get(url, headers=headers, params=params, timeout=30)
+        # requests.get was previously UNWRAPPED, so a single transient network error
+        # propagated and killed the whole run. A deep mine makes thousands of calls
+        # over hours; a connection reset is not exceptional, it is expected. One
+        # ConnectionResetError destroyed a full 32-term xstream search this way.
+        try:
+            r = requests.get(url, headers=headers, params=params, timeout=30)
+        except requests.exceptions.RequestException as e:
+            if attempt == 4:
+                print(f"[github] network error, giving up after {attempt + 1} tries: "
+                      f"{type(e).__name__}", file=sys.stderr)
+                return None
+            wait = min(5 * (2 ** attempt), 60)
+            print(f"[github] {type(e).__name__}; retry {attempt + 1}/5 in {wait}s",
+                  file=sys.stderr)
+            time.sleep(wait)
+            continue
         try:
             data = r.json()
         except Exception:
@@ -184,23 +199,71 @@ def _dedup_by_commit(rows, token):
 
 # ── stage 2: mine-commits (COMMIT search) ───────────────────────────────────────
 
+# A deep mine is 32 queries over several hours and, before this, held every result
+# in memory until the very end. A ConnectionResetError in _dedup_by_commit — which
+# runs AFTER all searching is done — threw away a completed 32-term xstream run.
+# The retry wrapper in _gh narrows that window but cannot close it: any failure
+# downstream of the search loop still costs the whole mine. So the search loop now
+# checkpoints to disk as it goes and resumes from where it stopped.
+
+def _checkpoint_path(brk):
+    return HERE / "output" / f"{brk['break_id']}_mine_checkpoint.jsonl"
+
+
+def _load_checkpoint(path):
+    """(rows, done_terms, seeds) from an interrupted mine; empties if there is none."""
+    if not path.exists():
+        return [], set(), []
+    rows, done, seeds, seeds_done = [], set(), [], set()
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            rec = json.loads(line)
+        except Exception:
+            continue  # a torn final line from a hard kill — drop it, keep the rest
+        if "_term_done" in rec:
+            done.add(rec["_term_done"])
+        elif "_bump_seed" in rec:
+            seeds.append(rec["_bump_seed"])
+        elif "_seed_done" in rec:
+            seeds_done.add(rec["_seed_done"])
+        else:
+            rows.append(rec)
+    return rows, done, [s for s in seeds if s["sha"] not in seeds_done]
+
+
+def _ck(fh, rec):
+    fh.write(json.dumps(rec) + "\n")
+    fh.flush()
+
+
 def gh_commit_search(query, token, max_pages=None):
     """Search commit MESSAGES. This is what surfaces bump-triggered fixes
     ('Fix XStream security exception', 'resolve ForbiddenClassException', …) —
-    far better than code search for finding the ADAPTATION rather than mere usage."""
+    far better than code search for finding the ADAPTATION rather than mere usage.
+
+    Returns (items, complete). `complete` is False when the term was cut short by a
+    network or API failure rather than by running out of results, so the caller can
+    avoid checkpointing it as done and retry it on the next resume."""
     max_pages = max_pages or int(os.environ.get("BBC_SEARCH_PAGES", "3"))
     out, page = [], 1
     while page <= max_pages:
         data = _gh(f"{GH}/search/commits", token, q=query, per_page=50, page=page)
+        if not isinstance(data, dict):
+            # network died on all retries — abandon this term, keep the run alive.
+            print(f"[mine-commits] search failed for q='{query}' page {page}; "
+                  f"skipping the rest of this term", file=sys.stderr)
+            return out, False
         items = data.get("items")
         if items is None:
             print(f"[mine-commits] API: {data.get('message')}", file=sys.stderr)
-            break
+            return out, False
         out.extend(items)
         if len(items) < 50:
             break
         page += 1
-    return out
+    return out, True
 
 
 def _row_from_search_item(it, matched_term, source):
@@ -262,32 +325,72 @@ def mine_commits(brk, token):
     expand_bumps = os.environ.get("BBC_EXPAND_BUMP_SEEDS", "1").lower() not in ("0", "false", "no")
     bump_seed_limit = int(os.environ.get("BBC_BUMP_SEED_LIMIT", "25"))
     forward_limit = int(os.environ.get("BBC_FORWARD_SCAN_COMMITS", "40"))
-    bump_seeds = []
+
+    ckpt = _checkpoint_path(brk)
+    ckpt.parent.mkdir(exist_ok=True)
+    resume = os.environ.get("BBC_RESUME", "1").lower() not in ("0", "false", "no")
+    done_terms, bump_seeds = set(), []
+    if resume:
+        prior, done_terms, bump_seeds = _load_checkpoint(ckpt)
+        for r in prior:
+            key = (r["repo"], r["sha"])
+            if key not in seen:
+                seen.add(key)
+                rows.append(r)
+        if rows or done_terms:
+            print(f"[mine-commits] resuming from {ckpt.name}: {len(rows)} row(s), "
+                  f"{len(done_terms)}/{len(terms)} term(s) already searched, "
+                  f"{len(bump_seeds)} seed(s) still to expand", flush=True)
+    # The checkpoint is NEVER auto-deleted: a crash in any later stage (classify,
+    # traversal) must not cost the search again. Pass BBC_RESUME=0 to start clean.
+    ck = ckpt.open("a" if resume else "w", encoding="utf-8")
+
     for term in terms:
         q = f"{kw} {term}"
+        if term in done_terms:
+            print(f"[mine-commits] q='{q}' (checkpointed)", flush=True)
+            continue
         print(f"[mine-commits] q='{q}'", flush=True)
-        for it in gh_commit_search(q, token):
+        items, complete = gh_commit_search(q, token)
+        for it in items:
             repo = it["repository"]["full_name"]
             sha = it["sha"]
             if (repo, sha) in seen:
                 continue
             seen.add((repo, sha))
             source = "direct_bump_search" if term in bump_terms else "adaptation_search"
-            rows.append(_row_from_search_item(it, term, source))
+            row = _row_from_search_item(it, term, source)
+            rows.append(row)
+            _ck(ck, row)
             if expand_bumps and term in bump_terms and len(bump_seeds) < bump_seed_limit:
-                bump_seeds.append((it, term))
+                seed = {"repo": repo, "sha": sha, "term": term,
+                        "branch": it["repository"].get("default_branch") or "HEAD"}
+                bump_seeds.append(seed)
+                _ck(ck, {"_bump_seed": seed})
+        # Only a cleanly-finished term is checkpointed as done. A term cut short by a
+        # network failure stays unmarked so the next resume searches it again —
+        # marking it would silently bake a partial result into the corpus.
+        if complete:
+            _ck(ck, {"_term_done": term})
+        else:
+            print(f"[mine-commits] q='{q}' incomplete; will retry on resume", flush=True)
+
     if expand_bumps and bump_seeds and mode != "adaptation":
         print(f"[mine-commits] expanding {len(bump_seeds)} bump seed(s), "
               f"{forward_limit} later commit(s) each", flush=True)
-        for seed, term in bump_seeds:
-            repo = seed["repository"]["full_name"]
-            branch = seed["repository"].get("default_branch") or "HEAD"
-            for commit in _forward_commits_from_seed(repo, seed["sha"], branch, token, forward_limit):
+        for seed in bump_seeds:
+            repo, term = seed["repo"], seed["term"]
+            for commit in _forward_commits_from_seed(repo, seed["sha"], seed["branch"],
+                                                     token, forward_limit):
                 sha = commit["sha"]
                 if (repo, sha) in seen:
                     continue
                 seen.add((repo, sha))
-                rows.append(_row_from_commit(repo, commit, term, "bump_forward_scan"))
+                row = _row_from_commit(repo, commit, term, "bump_forward_scan")
+                rows.append(row)
+                _ck(ck, row)
+            _ck(ck, {"_seed_done": seed["sha"]})
+    ck.close()
     if mode == "bump":
         rank = {"bump_forward_scan": 0, "direct_bump_search": 1, "adaptation_search": 2}
     else:
@@ -486,6 +589,11 @@ def reachable_from_default(repo, sha, token):
 
 def classify_commit(repo, sha, brk, token, source=None):
     commit = _gh(f"{GH}/repos/{repo}/commits/{sha}", token)
+    # _gh returns None when the network failed on all 5 attempts. `"files" not in None`
+    # raises TypeError, which would kill a whole classify pass over hundreds of
+    # candidates for one unreachable commit. Report it as a per-candidate error.
+    if not isinstance(commit, dict):
+        return {"error": "github unreachable"}
     if "files" not in commit:
         return {"error": commit.get("message", "no files")}
     files = [f["filename"] for f in commit["files"]]

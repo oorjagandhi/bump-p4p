@@ -73,3 +73,11 @@ scripts/nadia_scripts/cmp_*.json
 scripts/nadia_scripts/_bbc_baseline.py
 scripts/nadia_scripts/scratchpad/**/target/
 *.bak
+
+### BBC verification: local Maven cache (hundreds of MB, regenerable)
+.bbc_m2/
+
+### BBC mining: search resume state. Deliberately NOT committed -- BBC_RESUME
+### defaults to on, so a committed checkpoint would make a fresh run silently
+### resume someone else's stale search instead of mining.
+scripts/nadia_scripts/output/*_mine_checkpoint.jsonl
