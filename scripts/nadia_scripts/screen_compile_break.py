@@ -111,6 +111,47 @@ def ctor_arities(jar, fqcn):
     return {len(s) for s in sigs} if sigs is not None else None
 
 
+_SUPER_CACHE = {}
+
+
+def supertypes(jar, fqcn, _depth=0):
+    """Transitive superclasses + interfaces of fqcn, read from the jar.
+
+    Needed because a declared parameter type is almost never the argument's own
+    class: `new XStream(new DomDriver())` passes a DomDriver to a constructor
+    declaring HierarchicalStreamDriver. Comparing the two names directly reports a
+    signature mismatch on code that compiles perfectly well, which is a FALSE
+    compile_break — and a false compile_break silently deletes a real candidate.
+    """
+    if not jar or _depth > 8:
+        return set()
+    key = (str(jar), fqcn)
+    if key in _SUPER_CACHE:
+        return _SUPER_CACHE[key]
+    _SUPER_CACHE[key] = set()          # guard against cycles while recursing
+    r = subprocess.run(["javap", "-cp", str(jar), fqcn],
+                       capture_output=True, text=True, errors="replace")
+    out = set()
+    if r.returncode == 0 and "Error" not in r.stdout:
+        head = ""
+        for line in r.stdout.splitlines():
+            if re.search(r"\b(class|interface)\s", line) and "{" in line:
+                head = line
+                break
+        head = re.sub(r"<[^<>]*(?:<[^<>]*>[^<>]*)*>", "", head)  # drop generics
+        names = []
+        ext = re.search(r"\bextends\s+([\w.$,\s]+?)(?:\bimplements\b|\{)", head)
+        impl = re.search(r"\bimplements\s+([\w.$,\s]+?)\{", head)
+        for grp in (ext, impl):
+            if grp:
+                names += [n.strip() for n in grp.group(1).split(",") if n.strip()]
+        for n in names:
+            out.add(n)
+            out |= supertypes(jar, n, _depth + 1)
+    _SUPER_CACHE[key] = out
+    return out
+
+
 # Argument-expression -> Java type, for the forms that can be classified without real
 # type inference. Anything else stays None (unknown) and is treated permissively, so
 # the screen never claims a compile break it cannot justify.
@@ -141,14 +182,22 @@ def classify_arg(expr, imports):
     return None
 
 
-def _type_matches(param, arg):
+def _type_matches(param, arg, jar=None):
     """Permissive erased-type comparison. Unknown args and null match anything;
-    Object accepts any reference type."""
+    Object accepts any reference type; and an argument whose class extends or
+    implements the declared parameter type matches (normal Java assignability —
+    without this, every polymorphic call reads as a signature mismatch)."""
     if arg is None or arg == "NULL":
         return True
     if param in ("java.lang.Object", "Object"):
         return True
-    return param == arg or param.split(".")[-1] == arg.split(".")[-1]
+    if param == arg or param.split(".")[-1] == arg.split(".")[-1]:
+        return True
+    if jar:
+        sup = supertypes(jar, arg)
+        if param in sup or any(param.split(".")[-1] == s.split(".")[-1] for s in sup):
+            return True
+    return False
 
 
 def _split_top_level(s):
@@ -341,7 +390,7 @@ def screen(repo, sha, brk, token, from_jar, to_jar):
                                  "arities_to": sorted(have_to)})
             else:
                 cands = [s for s in sigs_to if len(s) == arity]
-                if any(all(_type_matches(p, a) for p, a in zip(s, argtypes))
+                if any(all(_type_matches(p, a, to_jar) for p, a in zip(s, argtypes))
                        for s in cands):
                     findings.append({"file": fn, "class": fq, "arity": arity,
                                      "kind": kind, "status": "ok"})
