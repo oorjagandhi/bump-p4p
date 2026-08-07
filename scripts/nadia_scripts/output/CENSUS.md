@@ -44,9 +44,10 @@ The traversal gate reports "no crossing" both when it MEASURED a negative and wh
 |---|---:|---:|---:|---:|
 | `xstream-1.4.17-to-1.4.19-forbiddenclass` | 33 | **0** | 19 | 14 |
 | `snakeyaml-1.x-to-2.0-safeconstructor` | 27 | **1** | 17 | 9 |
-| **total** | **60** | **1** | **36** | **23** |
+| `fastjson-1.2.80-to-1.2.83-autotype` | 25 | **0** | 16 | 9 |
+| **total** | **85** | **1** | **52** | **32** |
 
-36 rejections that were GUESSES are now measured negatives. 1 turned out to be a crossing the pipeline had silently discarded. The remaining 23 are an honest floor: Maven itself cannot resolve those projects at those commits (dead repositories, unresolvable parents, broken POMs), and if the project's own build tool cannot resolve it, no static analysis will.
+52 rejections that were GUESSES are now measured negatives. 1 turned out to be a crossing the pipeline had silently discarded. The remaining 32 are an honest floor: Maven itself cannot resolve those projects at those commits (dead repositories, unresolvable parents, broken POMs), and if the project's own build tool cannot resolve it, no static analysis will.
 
 Crossings recovered this way carry `traversal_kind: "endpoint"` and no `bump_sha`: the comparison establishes that a crossing happened inside the scanned window, not which commit made it. That is weaker than a verify_traversal confirmation and is deliberately NOT merged into the traversal-confirmed column above.
 
