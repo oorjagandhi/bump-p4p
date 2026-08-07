@@ -203,14 +203,21 @@ def main():
         bid = brk["break_id"]
 
         cand_p = first_existing(bid, "candidates.jsonl")
-        # Prefer the artifact that actually carries traversal verdicts.
-        trav_p = first_existing(bid,
-                                "traversal_RECHECK_SCREENED.jsonl",
-                                "traversal_RECHECK.jsonl",
-                                "PRODONLY_SCREENED.jsonl",
-                                "PRODONLY.jsonl",
-                                "candidates_SCREENED.jsonl",
-                                "candidates.jsonl")
+        # The classify checkpoint, where one exists, is the ONLY artifact that records
+        # every decision AND its denominator: 200 classified rows with the outcome of
+        # each. Every other artifact is a filtered survivor set, so reading traversal
+        # counts from one gives a numerator whose denominator is a different number.
+        # xstream's run predates the checkpoint (added 2026-08-07), so it still falls
+        # back to the older screened corpus -- provenance below names which file was used.
+        ck_p = OUT / f"{bid}_classify_checkpoint.jsonl"
+        trav_p = (ck_p if ck_p.exists() else
+                  first_existing(bid,
+                                 "traversal_RECHECK_SCREENED.jsonl",
+                                 "traversal_RECHECK.jsonl",
+                                 "PRODONLY_SCREENED.jsonl",
+                                 "PRODONLY.jsonl",
+                                 "candidates_SCREENED.jsonl",
+                                 "candidates.jsonl"))
         # The screen verdict lives on whichever SCREENED artifact is newest in the chain.
         scr_p = first_existing(bid,
                                "traversal_RECHECK_SCREENED.jsonl",
@@ -218,6 +225,10 @@ def main():
                                "PRODONLY_SCREENED.jsonl")
 
         cand, trav, scr = rows(cand_p), rows(trav_p), rows(scr_p)
+        # Classify-checkpoint records wrap the classified row under "row"; unwrap so the
+        # same counting logic works on both artifact shapes.
+        if trav and trav_p == ck_p:
+            trav = [(x.get("row") or {"_outcome": x.get("_outcome")}) for x in trav]
 
         # "rows examined" is the row count of the SAME artifact the other columns are
         # computed from. Using the candidates file here instead would make rows
@@ -302,6 +313,51 @@ def main():
         for r in sorted(leads, key=lambda x: -x["prod"]):
             print(f"| `{r['break']}` | **{r['prod']}** |")
         print()
+
+    # ── decidability ────────────────────────────────────────────────────────────
+    # The traversal gate answers "no crossing" in two very different situations: it
+    # measured a negative, or it could not resolve a BOM/parent-managed version and gave
+    # up. Those were indistinguishable in the output, and the second is ~90% of
+    # rejections on both libraries measured. Reporting them together would present
+    # guesses as findings, so this section separates them and shows what
+    # resolve_undecided.py (mvn dependency:tree) turned them into.
+    dec_rows = []
+    for r in table:
+        bid = r["break"]
+        rp = OUT / f"{bid}_UNDECIDED_MVNRECHECK.jsonl"
+        if not rp.exists():
+            continue
+        rs = rows(rp) or []
+        c = Counter((x.get("traversal") or {}).get("mvn_recheck", {}).get("verdict")
+                    for x in rs)
+        dec_rows.append((bid, len(rs), c.get("crossed", 0),
+                         c.get("not_crossed", 0), c.get("still_undecided", 0)))
+    if dec_rows:
+        print("## Decidability audit\n")
+        print("The traversal gate reports \"no crossing\" both when it MEASURED a negative "
+              "and when it could not resolve a BOM/parent-managed version and gave up. "
+              "Those were indistinguishable in its output, and on both libraries audited "
+              "the second case was ~90% of all rejections. `resolve_undecided.py` "
+              "re-decides them with `mvn dependency:tree`, which expands BOMs and parent "
+              "POMs as an HTTP POM walk cannot.\n")
+        print("| break | undecided rows | -> crossed | -> not crossed | -> still undecided |")
+        print("|---|---:|---:|---:|---:|")
+        tc = tn = tu = tt = 0
+        for bid, n, cr, nc, su in dec_rows:
+            print(f"| `{bid}` | {n} | **{cr}** | {nc} | {su} |")
+            tt += n; tc += cr; tn += nc; tu += su
+        print(f"| **total** | **{tt}** | **{tc}** | **{tn}** | **{tu}** |")
+        print(f"\n{tn} rejections that were GUESSES are now measured negatives. "
+              f"{tc} turned out to be a crossing the pipeline had silently discarded. "
+              f"The remaining {tu} are an honest floor: Maven itself cannot resolve those "
+              "projects at those commits (dead repositories, unresolvable parents, broken "
+              "POMs), and if the project's own build tool cannot resolve it, no static "
+              "analysis will.\n")
+        print("Crossings recovered this way carry `traversal_kind: \"endpoint\"` and no "
+              "`bump_sha`: the comparison establishes that a crossing happened inside the "
+              "scanned window, not which commit made it. That is weaker than a "
+              "verify_traversal confirmation and is deliberately NOT merged into the "
+              "traversal-confirmed column above.\n")
 
     print("## Boundary dates and mineability\n")
     print("A break can only yield a *witnessed* crossing if some client was below the "
