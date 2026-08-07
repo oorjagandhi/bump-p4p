@@ -874,6 +874,15 @@
   },
   {
    "break_id": "snakeyaml-1.x-to-2.0-safeconstructor",
+   "yield_status": {
+    "assessed": "2026-08-07",
+    "can_yield_witnessed_crossings": true,
+    "can_yield_BBC_cases": "ALMOST NEVER — a COMPILE break masks the behavioural one for most clients",
+    "reason": "snakeyaml 2.0 removed EVERY constructor overload that does not take a LoaderOptions. Measured with javap: Constructor at 1.32 offers (), (LoaderOptions), (Class), (Class, LoaderOptions), (TypeDescription); at 2.0 ONLY the LoaderOptions-bearing variants survive. SafeConstructor at 1.32 offers () and (LoaderOptions); at 2.0 only (LoaderOptions). So any client that explicitly constructs a Constructor or SafeConstructor — the common 1.x idiom — fails at javac when it crosses to 2.x and NEVER REACHES the runtime tag-inspection change. The behavioural break is real but is shadowed by a syntactic one on the same classes.",
+    "who_can_still_witness_it": "Only clients that never construct a Constructor/SafeConstructor explicitly — i.e. plain `new Yaml()` — compile cleanly at 2.x and can therefore hit the deny-by-default tag behaviour at runtime. That is the snakeyaml-mongoose / KartaEmeraldCurrency idiom, and those clients were already on 2.x (born past the boundary), which is why they sit in excluded/mechanism_only/.",
+    "evidence": "All THREE traversal-confirmed candidates found across both mining axes are compile breaks: adityajoy-1902/Dashboard-V-2 (Constructor(Class) narrowed to Constructor(LoaderOptions)), snork-alt/beanszoo (no-arg super() on a Constructor subclass), GoogleCloudPlatform/appengine-plugins (no-arg SafeConstructor()). Three for three, three different removed overloads.",
+    "implication": "A break is only mineable for BBC cases if the same release does not also break compilation on the API the break lives behind. Check the boundary version for REMOVED/NARROWED signatures on the affected classes before mining — screen_compile_break.py answers this from jars alone, with no client build, and would have predicted this corpus's outcome before any of the mining was done."
+   },
    "provenance": "EXTERNAL_ADVISORY_NOT_BUMP",
    "_provenance_note": "This entry is NOT from BUMP. It was discovered by mine_advisories.py from the OSV Maven security-advisory feed (GHSA-mjmj-j48q-9wg2 / CVE-2022-1471), NOT from a BUMP TEST_FAILURE reproduction. There is no BUMP breaking_commit; 'clients' is empty until mining finds real client adaptations.",
    "library": {

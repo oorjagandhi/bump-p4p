@@ -1,0 +1,65 @@
+{
+  "case_id": "snakeyaml-appengine-plugins",
+  "status": "excluded__syntactic_breaking_change",
+  "case_type": "external_mined_candidate__pure_compile_break__client_was_immune_to_the_behavioural_break",
+  "assessed_date": "2026-08-07",
+  "assessed_by": "compile screen (subtype-aware), verified against the commit diff and javap",
+
+  "why_excluded": "A pure compile break. snakeyaml 2.0 removed the no-arg SafeConstructor(); the client's `new SafeConstructor()` does not compile against 2.0, so state 2 of a differential fails at javac and the runtime signal can never appear.",
+
+  "the_whole_commit": {
+    "files": 2,
+    "pom": "snakeyaml 1.32 -> 2.0",
+    "source_change": "Yaml yaml = new Yaml(new SafeConstructor())  ->  new Yaml(new SafeConstructor(new LoaderOptions()))",
+    "note": "The entire adaptation is supplying the argument the new signature requires. There is no behavioural component at all."
+  },
+
+  "the_interesting_part": {
+    "observation": "This client was IMMUNE to snakeyaml 2.0's behavioural break and was still forced to change production code.",
+    "why": "2.0's behavioural change is deny-by-default tag handling — arbitrary Java types can no longer be instantiated from YAML global tags. But AppYaml.java already used SafeConstructor, whose entire purpose is to refuse arbitrary types. It was already safe, so the new default could never have changed its runtime behaviour. It was forced to edit code purely by the signature removal.",
+    "why_that_matters": "A clean counterexample to the assumption that a client editing production code at a break boundary is adapting to the break. Here the client crossed the boundary, edited production code, and was never exposed to the behavioural change at all."
+  },
+
+  "library": {
+    "group_id": "org.yaml",
+    "artifact_id": "snakeyaml",
+    "from_version": "1.32",
+    "to_version": "2.0",
+    "boundary_type": "major",
+    "dependency_scope": "compile"
+  },
+
+  "candidate": {
+    "repo": "GoogleCloudPlatform/appengine-plugins",
+    "commit": "feed4c64",
+    "message": "Bump snakeyaml from 1.32 to 2.0 (#915)",
+    "production_file": "src/main/java/com/google/cloud/tools/project/AppYaml.java",
+    "build_system": "maven",
+    "evidence": "message+content",
+    "shape": "BUNDLED_BUMP_AND_ADAPTATION",
+    "discovery": "bbc_e2e.py run (snakeyaml bump-axis mine, 2026-08-07)"
+  },
+
+  "traversal": {
+    "traversal_confirmed": true,
+    "traversal_kind": "direct",
+    "from": "1.32",
+    "to": "2.0",
+    "distance_commits": 0,
+    "note": "Rule 5 satisfied — a genuine direct crossing. The case fails on the nature of the break."
+  },
+
+  "screen_verdict": {
+    "verdict": "compile_break",
+    "reason": "SafeConstructor(0 args) via new exists at 1.32 but not at 2.0 (available arities [1])",
+    "independently_confirmed": "javap on both jars: SafeConstructor at 1.32 offers () and (LoaderOptions); at 2.0 only (LoaderOptions). The client's own diff supplies exactly that argument."
+  },
+
+  "rules_assessment": {
+    "1_differential_run": "not run — state 2 fails at javac by construction",
+    "2_production_adaptation": "PASS",
+    "3_real_external_repo": "PASS",
+    "4_client_adaptation_to_the_break": "FAIL — adapted to a SIGNATURE change, and was immune to the behavioural one",
+    "5_boundary_crossing": "PASS"
+  }
+}
