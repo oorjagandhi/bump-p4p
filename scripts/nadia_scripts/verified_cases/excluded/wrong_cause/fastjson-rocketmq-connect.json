@@ -1,0 +1,42 @@
+{
+  "case_id": "fastjson-rocketmq-connect",
+  "status": "excluded__incidental_bump_in_a_feature_commit",
+  "case_type": "external_mined_candidate__sole_survivor_of_a_fully_filtered_library",
+  "assessed_date": "2026-08-07",
+  "assessed_by": "compile screen + commit reading; no differential run",
+
+  "why_this_row_matters_beyond_its_own_exclusion": "fastjson was the FIRST non-xstream library to pass every structural filter the project has: boundary released 2022-05 (recent enough that clients still cross it, unlike org-json), ZERO public API removed across the boundary per a javap diff (so no compile break shadows the behavioural change, unlike snakeyaml), directly-called library with an explicit re-permit API (unlike json-smart), and a deny-by-default deserialization break structurally identical to xstream's allowTypes -- the only shape that has ever yielded a verified case. It was mined on BOTH axes. This row is the entire yield.",
+
+  "the_candidate": {
+    "repo": "apache/rocketmq-connect",
+    "commit": "9bd9f899",
+    "message": "[ISSUE #207]RecordConverter support convert record key (#213)",
+    "files_changed": 42,
+    "evidence": "message+content",
+    "traversal": "confirmed, 1.2.80 -> 1.2.83 direct — the exact boundary transition"
+  },
+
+  "why_excluded": {
+    "finding": "A 42-file feature pull request that bumps several dependencies in passing. The fastjson move from 1.2.80 to 1.2.83 is incidental to the feature.",
+    "evidence": "The commit's substance is record-key conversion: Converters.fromSourceRecord gains key-schema handling, two value converters gain null-schema guards, openmessaging-connector goes 0.1.3 -> 0.1.4, rocketmq-openmessaging is dropped from three poms, and an import moves from jcommander Lists to Guava Lists. Nothing in the diff touches autoType, ParserConfig, addAccept or any fastjson API.",
+    "pattern": "Third instance of the same mode, after Sage-Bionetworks/Synapse (Java 21 migration) and snork-alt/beanszoo (Java 21 build modernisation). A traversal-confirmed boundary crossing inside a large commit whose purpose is something else entirely. The gate confirms the crossing correctly; only reading the commit reveals the cause.",
+    "screen_verdict": "unknown — no resolvable library constructor usage in parent source; correct, since the parent files construct no fastjson type"
+  },
+
+  "library": {
+    "group_id": "com.alibaba",
+    "artifact_id": "fastjson",
+    "from_version": "1.2.80",
+    "to_version": "1.2.83",
+    "boundary_type": "patch",
+    "dependency_scope": "compile"
+  },
+
+  "rules_assessment": {
+    "1_differential_run": "not run — no adaptation to differentiate",
+    "2_production_adaptation": "nominally PASS, but the production changes are unrelated to fastjson",
+    "3_real_external_repo": "PASS",
+    "4_client_adaptation_to_the_break": "FAIL — this is the rule it fails",
+    "5_boundary_crossing": "PASS"
+  }
+}

@@ -1078,6 +1078,60 @@
     "signal_grep": "StreamConstraintsException|exceeds the maximum allowed",
     "note": "Clean same-code-now-throws limit break (json-smart max-depth analogue). Parent uses plain new ObjectMapper() (stable across 2.14/2.15); adapted uses the 2.15-only StreamReadConstraints API (separate compile profile)."
    }
+  },
+  {
+   "break_id": "fastjson-1.2.80-to-1.2.83-autotype",
+   "provenance": "EXTERNAL_ADVISORY_NOT_BUMP",
+   "_provenance_note": "From the OSV Maven feed (GHSA-pv7h-hx5h-mgfj / CVE-2022-25845), selected by rank_candidates.py 2026-08-07 as the highest-scoring deserialize-tier library that passes BOTH structural filters: boundary released 2022-05 (recent enough that clients still cross it, unlike org-json) and ZERO public API removed between 1.2.80 and 1.2.83 (so no compile break shadows the behavioural one, unlike snakeyaml). First non-xstream library to clear every filter.",
+   "library": {
+    "group_id": "com.alibaba",
+    "artifact_id": "fastjson",
+    "from_version": "1.2.80",
+    "to_version": "1.2.83",
+    "boundary_type": "patch",
+    "search_boundary": "within 1.2.x",
+    "dependency_scope": "compile"
+   },
+   "why_it_breaks": "1.2.83 (CVE-2022-25845) tightens autoType: deserializing a JSON document carrying an @type tag into an arbitrary class is refused unless the type is explicitly permitted. Client code still COMPILES -- no signature changed, confirmed by a javap API diff showing 0 removals -- and throws at runtime on documents 1.2.80 accepted. The adaptation is an explicit re-permit: ParserConfig.getGlobalInstance().addAccept(\"com.foo.\"), setAutoTypeSupport(true), or safeMode configuration. Structurally the same shape as xstream allowTypes, which is the only shape that has yielded verified cases.",
+   "clients": [],
+   "mining": {
+    "library_keyword": "fastjson",
+    "signal_quality": "clean",
+    "commit_search_terms": [
+     "autoType is not support",
+     "addAccept",
+     "setAutoTypeSupport",
+     "autoTypeSupport",
+     "ParserConfig addAccept",
+     "fastjson autoType",
+     "fastjson safeMode",
+     "fastjson whitelist",
+     "fastjson allowlist",
+     "JSONException autoType",
+     "fastjson 1.2.83",
+     "fastjson deserialization fix",
+     "fastjson security"
+    ],
+    "direct_bump_search_terms": [
+     "bump",
+     "upgrade",
+     "update dependency",
+     "dependency update",
+     "1.2.83",
+     "1.2.76",
+     "2.0.0",
+     "security update",
+     "CVE"
+    ]
+   },
+   "verify": {
+    "version_property": "bbc.fastjson.version",
+    "runnable_baseline": "1.2.80",
+    "break_boundary": "1.2.83",
+    "java": 11,
+    "signal_grep": "autoType is not support|AutoTypeException|JSONException",
+    "note": "NOT yet verified. Break is deny-by-default autoType; adaptation is an explicit allowlist call, the cleanest mining signature after xstream."
+   }
   }
  ]
 }
