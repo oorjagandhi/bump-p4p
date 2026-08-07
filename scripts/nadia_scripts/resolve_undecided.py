@@ -159,10 +159,33 @@ def main():
         todo = todo[:args.limit]
     print(f"[resolve] {len(todo)} undecided row(s) of {len(rows)}\n")
 
+    # Append each decision as it is made. Each row costs two shallow fetches and two
+    # Maven runs -- minutes -- so accumulating in memory and writing at the end means a
+    # kill throws away the whole pass. That happened on the xstream run at row 23 of 33.
+    # This is the THIRD time the same mistake has cost a pass today (the commit search
+    # and the classify loop were both fixed for it earlier), so it is fixed here the
+    # same way rather than retried.
+    dst = src.with_name(src.stem + "_MVNRECHECK.jsonl")
+    done_keys = set()
+    if dst.exists() and os.environ.get("BBC_RESUME", "1").lower() not in ("0", "false", "no"):
+        for line in dst.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                prev = json.loads(line)
+            except Exception:
+                continue
+            done_keys.add((prev.get("repo"), prev.get("sha")))
+        if done_keys:
+            print(f"[resolve] resuming: {len(done_keys)} row(s) already decided\n")
+    fh = dst.open("a" if done_keys else "w", encoding="utf-8")
+
     tally = {"crossed": 0, "not_crossed": 0, "still_undecided": 0}
     out = []
     for i, r in enumerate(todo, 1):
         repo, sha = r["repo"], r["sha"]
+        if (repo, sha) in done_keys:
+            continue
         bfs = [f for f in (r.get("production_files") or [])]
         buildfile = "pom.xml"
         # Prefer the module pom nearest the adaptation, matching bbc_e2e's own choice.
@@ -219,14 +242,13 @@ def main():
         mark = {"crossed": "CROSS", "not_crossed": " no  ",
                 "still_undecided": "  ?  "}[verdict]
         print(f"[{i}/{len(todo)}] [{mark}] {repo}@{sha[:8]}  {detail}", flush=True)
+        fh.write(json.dumps(r) + "\n")
+        fh.flush()
         out.append(r)
 
-    dst = src.with_name(src.stem + "_MVNRECHECK.jsonl")
-    with dst.open("w", encoding="utf-8") as fh:
-        for r in out:
-            fh.write(json.dumps(r) + "\n")
-    print(f"\n[resolve] {tally}")
-    print(f"[resolve] saved -> {dst}")
+    fh.close()
+    print(f"\n[resolve] this run: {tally}")
+    print(f"[resolve] saved -> {dst} (append-per-row; may also hold resumed rows)")
 
 
 if __name__ == "__main__":
