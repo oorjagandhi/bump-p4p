@@ -1,0 +1,66 @@
+{
+  "case_id": "snakeyaml-beanszoo",
+  "status": "excluded__compile_break_AND_wrong_cause",
+  "case_type": "external_mined_candidate__disqualified_on_two_independent_grounds",
+  "assessed_date": "2026-08-07",
+  "assessed_by": "compile screen (subtype-aware) + reading the commit; no differential run — see below",
+
+  "why_excluded": "Fails on two independent grounds, either of which is sufficient. (1) The client's pre-adaptation code does not COMPILE against snakeyaml 2.x, so the 3-state differential can never show a runtime signal. (2) The commit is a wholesale build modernisation whose stated purpose is a JDK migration, not a response to the library's behavioural change.",
+
+  "ground_1_compile_break": {
+    "screen_verdict": "compile_break",
+    "screen_reason": "Constructor(0 args) via extends exists at 1.16 but not at 2.2 (available arities [1, 2, 3])",
+    "mechanism": "YamlConstructor extends org.yaml.snakeyaml.constructor.Constructor with an IMPLICIT no-arg super(). snakeyaml 2.x removed the no-arg Constructor(), leaving only arities 1, 2 and 3, so the parent source fails to compile with 'no suitable constructor found'.",
+    "confirmed_by_the_diff_itself": "The adaptation ADDS `super(buildLoaderOptions())` as the first statement of YamlConstructor's constructor. That line is only necessary because the implicit no-arg super no longer resolves — the client's own fix is the evidence for the screen's verdict, independent of javap.",
+    "note_on_the_screen": "This verdict was cross-checked against the diff rather than trusted, because the screen produced three false positives on the xstream corpus on 2026-08-06 before it was made subtype-aware. Here it is correct."
+  },
+
+  "ground_2_wrong_cause": {
+    "commit_message": "migrate build to Java 21",
+    "detail": "snakeyaml is one of EIGHT dependencies bumped in a single modernisation commit: Java 8 -> 21, hadoop 2.7.0 -> 3.4.1, zookeeper 3.4.6 -> 3.8.4, jetty 9.4.0 -> 9.4.55, lombok 1.16.6 -> 1.18.34, commons-lang3 3.4 -> 3.14.0, guava, and snakeyaml 1.16 -> 2.2. The commit also drops plexus ReflectionUtils and adds surefire --add-opens flags — the signature of a JDK upgrade, not of a client responding to a library break.",
+    "precedent": "Same disqualifier as Sage-Bionetworks/Synapse-Repository-Services (excluded/wrong_cause/), whose commit message likewise named a JDK migration — Java 21 in that case too. Two of the strongest-looking candidates from two different libraries have now failed for this identical reason, which makes it a recurring mode rather than a one-off."
+  },
+
+  "what_makes_it_genuinely_interesting": {
+    "observation": "The adaptation contains a REAL behavioural fix bundled inside the compile fix: buildLoaderOptions() sets `opts.setTagInspector(tag -> true)`, which is precisely the re-permit that snakeyaml 2.0's default-deny requires — the same idiom as the snakeyaml-mongoose mechanism_only case.",
+    "why_it_still_does_not_count": "The compile break MASKS the behavioural one. The client could not reach runtime to observe the tag-inspector failure, because the build stops first. So this client did adapt to the behavioural change, but never experienced it as a behavioural break — it experienced one compile error and pre-emptively fixed both. A differential cannot separate the two, and state 2 fails at javac either way.",
+    "research_value": "A concrete example of two breaking changes in one library version being encountered as a single compile-time event. Worth citing when discussing why compile breaks and behavioural breaks cannot be cleanly separated by version alone."
+  },
+
+  "library": {
+    "group_id": "org.yaml",
+    "artifact_id": "snakeyaml",
+    "from_version": "1.16",
+    "to_version": "2.2",
+    "boundary_type": "major",
+    "dependency_scope": "compile"
+  },
+
+  "candidate": {
+    "repo": "snork-alt/beanszoo",
+    "commit": "55d17ce2",
+    "parent": "ea2579dae247",
+    "production_file": "core/src/main/java/com/dataheaps/beanszoo/lifecycle/YamlConfigurationReader.java",
+    "shape": "BUNDLED_BUMP_AND_ADAPTATION",
+    "discovery": "bbc_e2e.py run (snakeyaml bump-axis mine, 2026-08-07) — found ONLY by the bump axis; the 98-row adaptation-signature corpus never surfaced it"
+  },
+
+  "traversal": {
+    "traversal_confirmed": true,
+    "traversal_kind": "direct",
+    "from": "1.16",
+    "to": "2.2",
+    "distance_commits": 0,
+    "note": "Rule 5 satisfied — a genuine direct crossing of the 2.0 boundary. The case fails on the nature of the break and on causation, not on traversal."
+  },
+
+  "rules_assessment": {
+    "1_differential_run": "not run — state 2 would fail at javac, so the differential cannot produce the runtime signal it exists to detect",
+    "2_production_adaptation": "PASS",
+    "3_real_external_repo": "PASS",
+    "4_client_adaptation_to_the_break": "FAIL — mass JDK-migration commit",
+    "5_boundary_crossing": "PASS"
+  },
+
+  "tooling_note": "Screening this candidate exposed a reporting bug: --from-version/--to-version correctly changed which JARS were inspected, but the reason strings quoted the CATALOGUE's versions regardless, so screening the real 1.16 -> 2.2 transition printed 'exists at 1.33 but not at 2.0'. The analysis was right and the sentence describing it was wrong — the exact way a correct tool ends up supporting a false statement in a writeup. Fixed 2026-08-07; reason strings now quote the versions actually screened."
+}

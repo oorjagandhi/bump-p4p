@@ -81,3 +81,4 @@ scripts/nadia_scripts/scratchpad/**/target/
 ### defaults to on, so a committed checkpoint would make a fresh run silently
 ### resume someone else's stale search instead of mining.
 scripts/nadia_scripts/output/*_mine_checkpoint.jsonl
+scripts/nadia_scripts/output/*_classify_checkpoint.jsonl

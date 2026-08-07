@@ -342,7 +342,8 @@ def _class_body(s, from_idx):
 
 # ── the screen ──────────────────────────────────────────────────────────────────
 
-def screen(repo, sha, brk, token, from_jar, to_jar):
+def screen(repo, sha, brk, token, from_jar, to_jar,
+           _screened_from=None, _screened_to=None):
     lib = brk["library"]
     prefixes = (brk.get("mining", {}).get("package_prefixes")
                 or [lib["group_id"], B._library_keyword(brk)])
@@ -408,7 +409,14 @@ def screen(repo, sha, brk, token, from_jar, to_jar):
                                      "arg_types": argtypes,
                                      "overloads_to": [list(s) for s in cands]})
 
-    fv, tv = lib.get("from_version"), lib.get("to_version")
+    # Report the versions actually SCREENED, not the catalogue's defaults. --from-version
+    # / --to-version override which jars are inspected, but the reason strings used to
+    # quote the catalogue regardless, so screening beanszoo's real 1.16 -> 2.2 transition
+    # emitted "exists at 1.33 but not at 2.0". The analysis was right and the sentence
+    # describing it was wrong -- which is how a correct tool ends up supporting a false
+    # claim in a writeup.
+    fv = _screened_from or lib.get("from_version")
+    tv = _screened_to or lib.get("to_version")
     gone = [f for f in findings if f["status"] == "class_removed_at_to_version"]
     if gone:
         g = gone[0]
@@ -483,7 +491,7 @@ def main():
     tally = {}
     out = []
     for i, r in enumerate(rows, 1):
-        res = screen(r["repo"], r["sha"], brk, token, from_jar, to_jar)
+        res = screen(r["repo"], r["sha"], brk, token, from_jar, to_jar, fv, tv)
         tally[res["verdict"]] = tally.get(res["verdict"], 0) + 1
         r["compile_screen"] = res
         out.append(r)

@@ -1261,21 +1261,58 @@ def run(break_id):
     print(f"\n=== mine-commits {break_id} ===")
     rows = mine_commits(brk, token)
     print(f"\n=== classify candidates (production adaptations first) ===")
-    results = []
+    # Classify is the SLOW stage -- each verifiable row walks Maven Central POMs -- and,
+    # like the search loop before it was fixed, it held everything in memory until the
+    # end. Two kills during snakeyaml's classify pass threw away the whole pass both
+    # times. Same flaw, one stage later. Now every DECISION is checkpointed, not just
+    # the survivors: a resume must not re-classify a row it already rejected, or the
+    # rejects cost as much on every restart as they did the first time.
+    ck_path = HERE / "output" / f"{break_id}_classify_checkpoint.jsonl"
+    ck_path.parent.mkdir(exist_ok=True)
+    resume = os.environ.get("BBC_RESUME", "1").lower() not in ("0", "false", "no")
+    done, results = set(), []
+    if resume and ck_path.exists():
+        for line in ck_path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                rec = json.loads(line)
+            except Exception:
+                continue          # torn final line from a hard kill
+            done.add((rec.get("repo"), rec.get("sha")))
+            if rec.get("_outcome") == "kept" and rec.get("row"):
+                results.append(rec["row"])
+        if done:
+            print(f"[classify] resuming: {len(done)} row(s) already decided, "
+                  f"{len(results)} kept", flush=True)
+    ck = ck_path.open("a" if resume else "w", encoding="utf-8")
+
+    def _decide(repo, sha, outcome, row=None):
+        ck.write(json.dumps({"repo": repo, "sha": sha,
+                             "_outcome": outcome, "row": row}) + "\n")
+        ck.flush()
+
     for r in rows[:CLASSIFY_CAP]:
+        if (r["repo"], r["sha"]) in done:
+            continue
         c = classify_commit(r["repo"], r["sha"], brk, token, source=r.get("source"))
         if c.get("error"):
+            _decide(r["repo"], r["sha"], "error")
             continue
         if MAVEN_JAVA_ONLY and not c["verifiable"]:
+            _decide(r["repo"], r["sha"], "not_verifiable")
             continue
         if REQUIRE_TRAVERSAL and c["verifiable"]:
             t = verify_traversal(r["repo"], r["sha"], brk, token)
             c["traversal"] = t
             if not t.get("traversal_confirmed"):
                 print(f"  [skip traversal] {c['repo']}@{c['sha'][:8]}  {t.get('reason')}")
+                _decide(r["repo"], r["sha"], "no_traversal", c)
                 continue
             c["shape"] = t.get("shape")
         results.append(c)
+        _decide(r["repo"], r["sha"], "kept", c)
+    ck.close()
     # verifiable Maven production adaptations first; then non-Maven prod; then rest
     # when BBC_MAVEN_JAVA_ONLY=0 is used for exploratory broad output.
     # strongest evidence first, upstream repos before forks
