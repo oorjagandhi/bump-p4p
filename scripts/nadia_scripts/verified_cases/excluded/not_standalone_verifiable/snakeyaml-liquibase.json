@@ -1,0 +1,65 @@
+{
+  "case_id": "snakeyaml-liquibase",
+  "status": "excluded__adaptation_serves_a_closed_source_consumer",
+  "case_type": "external_mined_candidate__genuine_behavioural_adaptation__no_caller_in_the_open_repo",
+  "assessed_date": "2026-08-07",
+  "assessed_by": "commit reading + GitHub code search for the added method's callers; no differential possible",
+
+  "why_this_one_is_notable": "It is the FIRST traversal-confirmed snakeyaml candidate that is NOT a compile break. liquibase already threaded LoaderOptions through its own helpers, so it never touched the removed no-arg Constructor/SafeConstructor overloads that stopped the other three at javac. It is exactly the population the snakeyaml yield_status predicted could still witness the behavioural break — a client that does not construct a Constructor/SafeConstructor directly.",
+
+  "the_adaptation": {
+    "repo": "liquibase/liquibase",
+    "commit": "febd6a51",
+    "message": "Snakeyaml 2.0 (#3893)",
+    "files": 2,
+    "pom": "snakeyaml 1.33 -> 2.0 (optional)",
+    "source_change": "SnakeYamlUtil.setDefaultTagInspector(LoaderOptions) added, wrapping loaderOptions.setTagInspector(tag -> true)",
+    "nature": "PURELY BEHAVIOURAL — the canonical re-permit for 2.0's deny-by-default tag handling. No signature fix anywhere in the commit.",
+    "location": "production (src/main)",
+    "evidence": "message+content"
+  },
+
+  "why_excluded": {
+    "finding": "The added method has NO CALLER in the open-source repository.",
+    "evidence": "GitHub code search for `setDefaultTagInspector repo:liquibase/liquibase` returns exactly 1 hit: liquibase-standard/src/main/java/liquibase/util/SnakeYamlUtil.java — its own definition. The source comment says so outright: `// pro uses this method`. The only consumer is Liquibase Pro, which is closed-source.",
+    "consequence": "No production path in this repository exercises the break, so no 3-state differential can be constructed from it. The state-2 failure the methodology requires cannot be produced from open code. Same disposition as xstream-spark and xstream-openfire-fastpath-plugin: causally real, not standalone-verifiable.",
+    "second_order_point": "It is also not clear that liquibase's OWN code was ever broken. The commit adds a capability for a downstream consumer rather than repairing a broken path of its own — liquibase changelogs are plain maps, which 2.0's default tag inspector accepts. So this may be a pre-emptive API provision, not a forced adaptation."
+  },
+
+  "a_distinct_exclusion_MODE": {
+    "mode": "adaptation authored in open source to serve a CLOSED-SOURCE downstream consumer",
+    "why_it_deserves_naming": "Every mechanical gate passes and the adaptation is genuinely behavioural — the strongest profile any snakeyaml candidate has shown. It fails only because the break's manifestation lives in code that cannot be read or built. No gate in the pipeline can detect this; it took a code search for the added method's callers.",
+    "cheap_check_to_add": "After identifying an adaptation that introduces a new production METHOD, search the repo for callers. A method with no in-repo caller cannot be exercised by a differential, whatever else is true of it. Costs one code-search API call."
+  },
+
+  "library": {
+    "group_id": "org.yaml",
+    "artifact_id": "snakeyaml",
+    "from_version": "1.33",
+    "to_version": "2.0",
+    "boundary_type": "major",
+    "dependency_scope": "compile (optional)"
+  },
+
+  "screen_verdict": {
+    "verdict": "unknown",
+    "reason": "no resolvable library constructor usage in parent source",
+    "interpretation": "Correct and honest, not a failure. The parent file takes LoaderOptions as a PARAMETER and constructs nothing, so a constructor-arity screen has nothing to inspect. Reported as unknown rather than passed — the desired behaviour."
+  },
+
+  "traversal": {
+    "traversal_confirmed": true,
+    "traversal_kind": "direct",
+    "from": "1.33",
+    "to": "2.0",
+    "distance_commits": 0
+  },
+
+  "rules_assessment": {
+    "1_differential_run": "FAIL — impossible, the only caller is closed-source",
+    "2_production_adaptation": "PASS",
+    "3_real_external_repo": "PASS",
+    "4_client_adaptation_to_the_break": "UNCERTAIN — may be a capability added for Liquibase Pro rather than a forced fix",
+    "5_boundary_crossing": "PASS"
+  }
+}
