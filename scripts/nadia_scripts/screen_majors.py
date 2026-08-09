@@ -61,7 +61,14 @@ def screen(lib):
         # record, which already happened once to the kubernetes-client recheck.
         missing = " ".join(v for v, j in ((old, old_jar), (new, new_jar)) if not j)
         return "UNAVAILABLE", None, None, [f"no jar for {missing}"]
-    removed, gone_classes, samples = R.api_removals(old_jar, new_jar)
+    diff = R.api_removals(old_jar, new_jar)
+    if diff is None:
+        # public_api returns None for a jar it cannot read: a bad zip, no .class entries
+        # at all, or javap producing nothing. okhttp 5.0.0 hits this. An unreadable jar is
+        # NOT "removed nothing", so it must never fall through to MINEABLE -- that would
+        # be the UNAVAILABLE mistake one layer down, a non-measurement dressed as a pass.
+        return "UNREADABLE", None, None, ["javap could not read one of the jars"]
+    removed, gone_classes, samples = diff
     verdict = "REJECT" if (removed or gone_classes) else "MINEABLE"
     return verdict, removed, gone_classes, samples
 
@@ -92,7 +99,8 @@ def main():
 
     mineable = [r for r in rows if r["verdict"] == "MINEABLE"]
     blocked = [r for r in rows if r["verdict"] == "REJECT"]
-    unavailable = [r for r in rows if r["verdict"] == "UNAVAILABLE"]
+    unavailable = [r for r in rows
+                   if r["verdict"] in ("UNAVAILABLE", "UNREADABLE")]
 
     lines = ["# Major-boundary screen — which majors can reach run time", "",
              "A client crossing a boundary that removed public API fails at javac and never "
@@ -113,9 +121,10 @@ def main():
         lines.append(f"| `{r['ga']}` | {r['old']} → {r['new']} | {r['released'] or '—'} "
                      f"| {rs} | {rc} | **{r['verdict']}** |")
     if unavailable:
-        lines += ["", "## Unavailable", "",
-                  "Central did not serve a jar. A 403 from rate-limiting is indistinguishable "
-                  "from a 404 here, so these are NOT verdicts — re-run them.", ""]
+        lines += ["", "## Not measured", "",
+                  "Either Central did not serve a jar (a 403 from rate-limiting is "
+                  "indistinguishable from a 404 here) or javap could not read one. Neither "
+                  "is a verdict — re-run them.", ""]
         for r in unavailable:
             lines.append(f"- `{r['ga']}` {r['old']} → {r['new']}: {r['samples'][0]}")
     if blocked:

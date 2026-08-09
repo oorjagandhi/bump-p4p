@@ -1,0 +1,153 @@
+[
+  {
+    "id": "mockito-core-5",
+    "ga": "org.mockito:mockito-core",
+    "old": "4.11.0",
+    "new": "5.0.0",
+    "released": "2023-01",
+    "verdict": "REJECT",
+    "removed_signatures": 8,
+    "removed_classes": 1,
+    "samples": [
+      "org.mockito.internal.exceptions.Reporter: public static java.lang.AssertionError argumentsAreDifferent(java.lang.String, java.util.L",
+      "org.mockito.internal.hamcrest.HamcrestArgumentMatcher: public boolean isVarargMatcher();"
+    ]
+  },
+  {
+    "id": "slf4j-api-2",
+    "ga": "org.slf4j:slf4j-api",
+    "old": "1.7.36",
+    "new": "2.0.0",
+    "released": "2022-08",
+    "verdict": "REJECT",
+    "removed_signatures": 3,
+    "removed_classes": 1,
+    "samples": [
+      "org.slf4j.event.LoggingEvent: public abstract org.slf4j.Marker getMarker();",
+      "org.slf4j.event.SubstituteLoggingEvent: public org.slf4j.Marker getMarker();"
+    ]
+  },
+  {
+    "id": "snakeyaml-2",
+    "ga": "org.yaml:snakeyaml",
+    "old": "1.33",
+    "new": "2.0",
+    "released": "2023-02",
+    "verdict": "REJECT",
+    "removed_signatures": 38,
+    "removed_classes": 0,
+    "samples": [
+      "org.yaml.snakeyaml.TypeDescription: public java.lang.Class<? extends java.lang.Object> getListPropertyType(java.lang.String);",
+      "org.yaml.snakeyaml.Yaml: public <T> T loadAs(java.io.InputStream, java.lang.Class<T>);"
+    ]
+  },
+  {
+    "id": "flyway-core-10",
+    "ga": "org.flywaydb:flyway-core",
+    "old": "9.22.3",
+    "new": "10.0.0",
+    "released": "2023-10",
+    "verdict": "REJECT",
+    "removed_signatures": 58,
+    "removed_classes": 80,
+    "samples": [
+      "org.flywaydb.core.internal.database.h2.H2Database: public final void ensureSupported();",
+      "org.flywaydb.core.internal.database.sqlite.SQLiteDatabase: public final void ensureSupported();"
+    ]
+  },
+  {
+    "id": "jedis-5",
+    "ga": "redis.clients:jedis",
+    "old": "4.4.6",
+    "new": "5.0.0",
+    "released": "2023-09",
+    "verdict": "REJECT",
+    "removed_signatures": 2177,
+    "removed_classes": 14,
+    "samples": [
+      "redis.clients.jedis.graph.RedisGraphCommands: public abstract java.util.List<java.util.List<java.lang.String>> graphSlowlog(java.lang.St",
+      "redis.clients.jedis.graph.GraphQueryParams: public redis.clients.jedis.CommandArguments getArguments(java.lang.String);"
+    ]
+  },
+  {
+    "id": "mongodb-driver-sync-5",
+    "ga": "org.mongodb:mongodb-driver-sync",
+    "old": "4.11.1",
+    "new": "5.0.0",
+    "released": "2024-03",
+    "verdict": "REJECT",
+    "removed_signatures": 11,
+    "removed_classes": 0,
+    "samples": [
+      "com.mongodb.client.FindIterable: public abstract com.mongodb.client.FindIterable<TResult> oplogReplay(boolean);",
+      "com.mongodb.client.MapReduceIterable: public abstract com.mongodb.client.MapReduceIterable<TResult> nonAtomic(boolean);"
+    ]
+  },
+  {
+    "id": "protobuf-java-4",
+    "ga": "com.google.protobuf:protobuf-java",
+    "old": "3.25.9",
+    "new": "4.26.0",
+    "released": "2024-03",
+    "verdict": "REJECT",
+    "removed_signatures": 24,
+    "removed_classes": 4,
+    "samples": [
+      "com.google.protobuf.ArrayDecoders: public static void setRecursionLimit(int);",
+      "com.google.protobuf.CodedInputStream: public void skipMessage();"
+    ]
+  },
+  {
+    "id": "kafka-clients-4",
+    "ga": "org.apache.kafka:kafka-clients",
+    "old": "3.9.0",
+    "new": "4.0.0",
+    "released": "2025-03",
+    "verdict": "REJECT",
+    "removed_signatures": 256,
+    "removed_classes": 39,
+    "samples": [
+      "org.apache.kafka.common.KafkaFuture: public abstract <R> org.apache.kafka.common.KafkaFuture<R> thenApply(org.apache.kafka.comm",
+      "org.apache.kafka.common.metrics.JmxReporter: public org.apache.kafka.common.metrics.JmxReporter(java.lang.String);"
+    ]
+  },
+  {
+    "id": "caffeine-3",
+    "ga": "com.github.ben-manes.caffeine:caffeine",
+    "old": "2.9.3",
+    "new": "3.0.0",
+    "released": "2021-08",
+    "verdict": "REJECT",
+    "removed_signatures": 78,
+    "removed_classes": 6,
+    "samples": [
+      "com.github.benmanes.caffeine.cache.AsyncCache: public abstract java.util.concurrent.CompletableFuture<V> get(K, java.util.function.BiFunc",
+      "com.github.benmanes.caffeine.cache.AsyncCacheLoader: public abstract java.util.concurrent.CompletableFuture<V> asyncLoad(K, java.util.concurren"
+    ]
+  },
+  {
+    "id": "hikaricp-5",
+    "ga": "com.zaxxer:HikariCP",
+    "old": "4.0.3",
+    "new": "5.0.0",
+    "released": "2021-11",
+    "verdict": "MINEABLE",
+    "removed_signatures": 0,
+    "removed_classes": 0,
+    "samples": []
+  },
+  {
+    "id": "poi-5",
+    "ga": "org.apache.poi:poi",
+    "old": "4.1.2",
+    "new": "5.0.0",
+    "released": "2021-01",
+    "verdict": "REJECT",
+    "removed_signatures": 706,
+    "removed_classes": 95,
+    "samples": [
+      "org.apache.poi.common.usermodel.GenericRecord: public default java.lang.Enum getGenericRecordType();",
+      "org.apache.poi.common.usermodel.Hyperlink: public abstract org.apache.poi.common.usermodel.HyperlinkType getTypeEnum();"
+    ]
+  }
+]

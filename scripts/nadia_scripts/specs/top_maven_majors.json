@@ -73,10 +73,11 @@
     {
       "id": "protobuf-java-4",
       "group_id": "com.google.protobuf", "artifact_id": "protobuf-java",
-      "boundary": "4.0.0", "prev_major": "3.25.5", "released": "2024-04",
+      "boundary": "4.26.0", "prev_major": "3.25.9", "released": "2024-03",
       "keyword": "protobuf", "java_min": "8", "android": false,
       "why_simple": "serialization codec; single artifact, numeric 3.x -> 4.x bump.",
-      "search_terms": ["4.2", "migrate", "upgrade", "bump"]
+      "search_terms": ["4.2", "migrate", "upgrade", "bump"],
+      "_corrected": "boundary was 4.0.0, which never shipped stable -- Central has only 4.0.0-rc-1/rc-2 and then jumps to 4.26.0, where protobuf aligned version numbers across languages. Corrected 2026-08-10 after screen_majors.py reported UNAVAILABLE rather than inventing a verdict."
     },
     {
       "id": "kafka-clients-4",
@@ -109,14 +110,6 @@
       "keyword": "poi", "java_min": "8", "android": false,
       "why_simple": "office-file library; already a proven break line in this repo's catalog.",
       "search_terms": ["5.0", "migrate", "upgrade", "bump"]
-    },
-    {
-      "id": "okhttp-5",
-      "group_id": "com.squareup.okhttp3", "artifact_id": "okhttp",
-      "boundary": "5.0.0", "prev_major": "4.12.0", "released": "2024",
-      "keyword": "okhttp", "java_min": "8", "android": true,
-      "why_simple": "HTTP client; runs fine on the JVM but is ALSO an Android staple -> android_adjacent, kept with caveat.",
-      "search_terms": ["5.0", "migrate", "upgrade", "bump"]
     }
   ],
 
@@ -125,6 +118,8 @@
     {"lib": "jackson 3", "old": "com.fasterxml.jackson.core:jackson-databind 2.x", "new": "tools.jackson.core:jackson-databind 3.x"},
     {"lib": "rxjava 3", "old": "io.reactivex.rxjava2:rxjava 2.x", "new": "io.reactivex.rxjava3:rxjava 3.x"},
     {"lib": "httpclient 5", "old": "org.apache.httpcomponents:httpclient 4.x", "new": "org.apache.httpcomponents.client5:httpclient5 5.x"},
-    {"lib": "commons-lang 3", "old": "commons-lang:commons-lang 2.x", "new": "org.apache.commons:commons-lang3 3.x"}
+    {"lib": "commons-lang 3", "old": "commons-lang:commons-lang 2.x", "new": "org.apache.commons:commons-lang3 3.x"},
+    {"lib": "okhttp 5", "old": "com.squareup.okhttp3:okhttp 4.x", "new": "com.squareup.okhttp3:okhttp-jvm 5.x",
+     "note": "moved out of `libraries` 2026-08-10. okhttp:5.0.0 is a Kotlin Multiplatform metadata jar -- 3 entries, ZERO .class files -- so javap reads nothing; the JVM classes are in okhttp-jvm, which has no 4.12.0 release. A Maven client crossing this major swaps the artifact id, exactly the case this file excludes by design."}
   ]
 }
