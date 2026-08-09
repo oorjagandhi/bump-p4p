@@ -1182,6 +1182,55 @@
     "signal_grep": "Unknown property|NoSuchMethodException",
     "note": "Boundary pinned empirically (see why_it_breaks). Probe: PropertyUtils.getProperty(bean,\"class\") returns on 1.9.3, throws on 1.9.4."
    }
+  },
+  {
+   "break_id": "kubernetes-client-5.0.2-to-5.0.3-safeconstructor",
+   "provenance": "EXTERNAL_ADVISORY_NOT_BUMP",
+   "_provenance_note": "From the OSV Maven feed (GHSA-98g7-rxmf-rrxm), selected 2026-08-09 by a SHAPE screen run over the 43 mineable rows of CANDIDATE_RANKING_WIDE.md rather than by rank order. rank_candidates.py only proves a boundary removes no public API, which rules out compile breaks and nothing else. Two higher-ranked candidates died to that gap on the same day: mybatis 3.5.6 RELAXES (it deletes the 3.5.5 gadget blacklist and replaces it with a log.warn, so nothing that worked stops working), and avro 1.11.3 is OPT-IN (it adds SystemLimitException but defaults every limit to Integer.MAX_VALUE-8, unreachable unless the client sets the system property itself). The discriminator that survives is: is the new restriction ACTIVE BY DEFAULT? This one is.",
+   "library": {
+    "group_id": "io.fabric8",
+    "artifact_id": "kubernetes-client",
+    "from_version": "5.0.2",
+    "to_version": "5.0.3",
+    "boundary_type": "patch",
+    "search_boundary": "within 5.0.x",
+    "dependency_scope": "compile"
+   },
+   "why_it_breaks": "The ENTIRE source diff 5.0.2 -> 5.0.3 is Version.java plus one line of Serialization.unmarshalYaml: `new Yaml()` becomes `new Yaml(new SafeConstructor())`. BOUNDARY PINNED EMPIRICALLY 2026-08-09 on JDK 11 by running Serialization.unmarshal over six YAML inputs against both jars. Custom tags flip verdict: `!!java.util.HashMap` constructs on 5.0.2 and throws ConstructorException (\"could not determine a constructor for the tag\") on 5.0.3. Everything else is UNCHANGED -- plain manifests, !!binary, !!timestamp and !!set all parse on both, so the blast radius is narrow and measured, not assumed. Deny-by-default with no configuration knob, the xstream allowTypes shape. Serialization's signatures are untouched (0 removed public API per javap), so unlike snakeyaml 1.x->2.0 -- whose own boundary dropped a constructor and stopped clients at javac -- a client crossing this one compiles unchanged and fails at run time.",
+   "clients": [],
+   "mining": {
+    "library_keyword": "kubernetes-client",
+    "signal_quality": "clean",
+    "commit_search_terms": [
+     "SafeConstructor",
+     "could not determine a constructor for the tag",
+     "Serialization.unmarshal",
+     "unmarshal yaml",
+     "yaml SafeConstructor",
+     "ConstructorException",
+     "fabric8 yaml",
+     "kubernetes-client yaml",
+     "custom tag yaml",
+     "kubernetes-client 5.0.3"
+    ],
+    "direct_bump_search_terms": [
+     "bump",
+     "upgrade",
+     "update dependency",
+     "dependency update",
+     "5.0.3",
+     "security update",
+     "CVE"
+    ]
+   },
+   "verify": {
+    "version_property": "bbc.kubernetes-client.version",
+    "runnable_baseline": "5.0.2",
+    "break_boundary": "5.0.3",
+    "java": 11,
+    "signal_grep": "could not determine a constructor for the tag|ConstructorException",
+    "note": "Boundary pinned empirically (see why_it_breaks). Probe: Serialization.unmarshal of YAML containing !!java.util.HashMap returns a Map on 5.0.2 and throws ConstructorException on 5.0.3."
+   }
   }
  ]
 }
