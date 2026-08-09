@@ -263,7 +263,16 @@ def main():
     # discards the whole run -- which happened at row 73 of 120. This is the FOURTH time
     # today the same mistake has cost a pass (commit search, classify loop, and the
     # undecided resolver were each fixed for it), so it is fixed here the same way.
-    prog = OUT / "candidate_ranking_progress.jsonl"
+    #
+    # The progress file is PER TIER. It was not, and that was a reporting bug waiting to
+    # fire: `results` is preloaded from it and then written straight into the report, so
+    # running --tier validate after --tier deserialize would have published the 82
+    # deserialize verdicts under a validate heading. A tier's report must contain that
+    # tier's measurements and nothing else.
+    prog = OUT / f"candidate_ranking_progress_{args.tier}.jsonl"
+    legacy = OUT / "candidate_ranking_progress.jsonl"
+    if args.tier == "deserialize" and legacy.exists() and not prog.exists():
+        legacy.rename(prog)          # the pre-tier run was a deserialize run
     results, done_pkgs = [], set()
     if prog.exists():
         for line in prog.read_text(encoding="utf-8").splitlines():
@@ -278,7 +287,11 @@ def main():
         if done_pkgs:
             print(f"[rank] resuming: {len(done_pkgs)} package(s) already verdicted\n")
     pf = prog.open("a", encoding="utf-8")
-    checked = 0
+    # Resumed rows count against --limit. They did not, so a resumed run spent the FULL
+    # budget again on new libraries -- `checked` started at 0 while the already-done ones
+    # were skipped before it incremented. --limit means "stage-2 checks for this tier",
+    # not "stage-2 checks since the last kill".
+    checked = len(done_pkgs)
     for r in sorted(stage1, key=lambda x: -(x.get("score") or 0)):
         if checked >= args.limit:
             break
@@ -365,7 +378,11 @@ def main():
 
     dest = HERE / args.out
     dest.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    (OUT / "candidate_ranking.json").write_text(
+    # Per tier, for the same reason the progress file is: a validate run must not
+    # overwrite the deserialize measurements with a different tier's verdicts.
+    ranking_json = (OUT / "candidate_ranking.json" if args.tier == "deserialize"
+                    else OUT / f"candidate_ranking_{args.tier}.json")
+    ranking_json.write_text(
         json.dumps({"mineable": mineable, "blocked": blocked}, indent=2),
         encoding="utf-8")
     print(f"\n[rank] mineable={len(mineable)} blocked={len(blocked)} "
