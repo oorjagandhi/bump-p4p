@@ -124,5 +124,12 @@
     "release_date": "2019-07",
     "epoch_ms": 1564352214000,
     "exact": true
+  },
+  "kubernetes-client-5.0.2-to-5.0.3-safeconstructor": {
+    "boundary_declared": "5.0.3",
+    "boundary_resolved": "5.0.3",
+    "release_date": "2022-01",
+    "epoch_ms": 1641379753000,
+    "exact": true
   }
 }
