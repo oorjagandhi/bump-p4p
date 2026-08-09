@@ -110,5 +110,19 @@
     "release_date": "2023-04",
     "epoch_ms": 1682284869000,
     "exact": true
+  },
+  "fastjson-1.2.80-to-1.2.83-autotype": {
+    "boundary_declared": "1.2.83",
+    "boundary_resolved": "1.2.83",
+    "release_date": "2022-05",
+    "epoch_ms": 1653238917000,
+    "exact": true
+  },
+  "commons-beanutils-1.9.3-to-1.9.4-classproperty": {
+    "boundary_declared": "1.9.4",
+    "boundary_resolved": "1.9.4",
+    "release_date": "2019-07",
+    "epoch_ms": 1564352214000,
+    "exact": true
   }
 }
