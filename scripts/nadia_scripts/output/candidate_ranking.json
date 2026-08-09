@@ -175,6 +175,522 @@
       "removed_classes": 0,
       "samples": [],
       "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.karaf.decanter.collector:org.apache.karaf.decanter.collector.log.socket",
+      "boundary": "2.12.0",
+      "predecessor": "2.11.0",
+      "released": "2025-11",
+      "score": 15,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-jmw5-58c7-587h",
+      "summary": "Apache Karaf Decanter has Deserialization of Untrusted Data in its Log Socket Collector",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.mina:mina-core",
+      "boundary": "2.0.28",
+      "predecessor": "2.0.27",
+      "released": "2026-04",
+      "score": 15,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-8297-v2rf-2p32",
+      "summary": "Apache MINA vulnerable to Deserialization of Untrusted Data",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.tomcat:tomcat-catalina",
+      "boundary": "11.0.3",
+      "predecessor": "11.0.2",
+      "released": "2025-02",
+      "score": 15,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-83qj-6fr2-vhqg",
+      "summary": "Apache Tomcat: Potential RCE and/or information disclosure and/or information corruption with partial PUT",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.clojure:clojure",
+      "boundary": "1.11.2",
+      "predecessor": "1.11.1",
+      "released": "2024-03",
+      "score": 15,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-vr64-r9qj-h27f",
+      "summary": "Reading specially crafted serializable objects from an untrusted source may cause an infinite loop and denial ",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.springframework.kafka:spring-kafka",
+      "boundary": "2.9.11",
+      "predecessor": "2.9.10",
+      "released": "2023-08",
+      "score": 15,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-crqf-q9fp-hwjw",
+      "summary": "Spring-Kafka has Java Deserialization vulnerability When Improperly Configured",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "com.alipay.sofa:hessian",
+      "boundary": "3.5.5",
+      "predecessor": "3.5.4",
+      "released": "2024-09",
+      "score": 14,
+      "cwes": [
+        "CWE-502",
+        "CWE-74"
+      ],
+      "ghsa": "GHSA-c459-2m73-67hj",
+      "summary": "SOFA Hessian Remote Command Execution (RCE) Vulnerability",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "com.datadoghq:dd-java-agent",
+      "boundary": "1.60.3",
+      "predecessor": "1.60.2",
+      "released": null,
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-579q-h82j-r5v2",
+      "summary": "dd-trace-java: Unsafe deserialization in RMI instrumentation may lead to remote code execution",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "com.powsybl:powsybl-math",
+      "boundary": "6.7.2",
+      "predecessor": "6.7.1",
+      "released": "2025-06",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-f5cx-h789-j959",
+      "summary": "PowSyBl Core allows deserialization of untrusted SparseMatrix data",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "com.rabbitmq.jms:rabbitmq-jms",
+      "boundary": "2.2.0",
+      "predecessor": "2.1.1",
+      "released": "2020-11",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-v525-c3g5-cg9p",
+      "summary": "Unsafe Deserialization that can Result in Code Execution",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "com.splunk:splunk-otel-javaagent",
+      "boundary": "2.26.1",
+      "predecessor": "2.26.0",
+      "released": null,
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-h8w2-rv57-vc6f",
+      "summary": "splunk-otel-javaagent: Unsafe deserialization in RMI instrumentation may lead to Remote Code Execution",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "commons-beanutils:commons-beanutils",
+      "boundary": "1.9.4",
+      "predecessor": "1.9.3",
+      "released": "2019-07",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-6phf-73q6-gh87",
+      "summary": "Insecure Deserialization in Apache Commons Beanutils",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.jooby:jooby-pac4j",
+      "boundary": "2.17.0",
+      "predecessor": "2.16.4",
+      "released": "2025-03",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-7c5v-895v-w4q5",
+      "summary": "jooby-pac4j: deserialization of untrusted data",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.opentelemetry.javaagent:opentelemetry-javaagent",
+      "boundary": "2.26.1",
+      "predecessor": "2.26.0",
+      "released": null,
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-xw7x-h9fj-p2c7",
+      "summary": "OpenTelemetry: Unsafe Deserialization in RMI Instrumentation may Lead to Remote Code Execution",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.spinnaker.rosco:rosco-core",
+      "boundary": "2025.3.3",
+      "predecessor": "2025.3.2",
+      "released": null,
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-c8q4-9h32-2ww8",
+      "summary": "Spinnaker has uon-safe yaml deserialization, allowing RCE when using specific types",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.avro:avro",
+      "boundary": "1.11.3",
+      "predecessor": "1.11.2",
+      "released": "2023-09",
+      "score": 14,
+      "cwes": [
+        "CWE-20",
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-rhrv-645h-fjfh",
+      "summary": "Apache Avro Java SDK vulnerable to Improper Input Validation",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.camel:camel-consul",
+      "boundary": "4.14.6",
+      "predecessor": "4.14.5",
+      "released": "2026-04",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-5rc6-9qfp-8vwg",
+      "summary": "Apache Camel-Consul component vulnerable to Deserialization of Untrusted Data",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.cayenne:cayenne-server",
+      "boundary": "4.1.1",
+      "predecessor": "4.1",
+      "released": "2021-12",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-c58c-w527-h77p",
+      "summary": "Deserialization of untrusted data in Apache Cayenne",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.jmeter:ApacheJMeter",
+      "boundary": "5.1",
+      "predecessor": "5.0",
+      "released": "2019-02",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-wg37-7mrv-cfwm",
+      "summary": "Unauthenticated Remote Code Execution in Apache JMeter",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.lucene:lucene-replicator",
+      "boundary": "9.12.0",
+      "predecessor": "9.11.1",
+      "released": "2024-09",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-g643-xq6w-r67c",
+      "summary": "Deserialization of Untrusted Data vulnerability in Apache Lucene Replicator.",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.olingo:odata-client-proxy",
+      "boundary": "4.7.0",
+      "predecessor": "4.6.0",
+      "released": "2019-12",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-gj76-429m-56wc",
+      "summary": "Deserialization of Untrusted Data in Apache Olingo",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.seata:seata-config-core",
+      "boundary": "2.2.0",
+      "predecessor": "2.1.0",
+      "released": "2024-09",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-2r4x-667f-mpfh",
+      "summary": "Apache Seata Vulnerable to Deserialization of Untrusted Data",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.seata:seata-serializer-fury",
+      "boundary": "2.5.0",
+      "predecessor": "2.4.0",
+      "released": "2025-07",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-g358-g2pq-c46j",
+      "summary": "Apache Seata: Deserialization of untrusted Data in Apache Seata Server",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.storm:storm-kafka",
+      "boundary": "1.2.3",
+      "predecessor": "1.2.2",
+      "released": "2019-05",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-25pc-85qf-6j69",
+      "summary": "Deserialization of Untrusted Data in Apache Storm",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "ru.yandex.clickhouse:clickhouse-jdbc-bridge",
+      "boundary": "2.0.7",
+      "predecessor": "2.0.6",
+      "released": "2021-12",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-3w6p-8f82-gw8r",
+      "summary": "Using JMSAppender in log4j configuration may lead to deserialization of untrusted data",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "com.alibaba:hessian-lite",
+      "boundary": "3.2.13",
+      "predecessor": "3.2.12",
+      "released": "2022-09",
+      "score": 13,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-5qwq-g2hx-r6f7",
+      "summary": "Hessian Lite for Apache Dubbo deserialization vulnerability",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.quarkus.resteasy.reactive:resteasy-reactive",
+      "boundary": "2.13.9.Final",
+      "predecessor": "2.13.8.Final",
+      "released": "2023-11",
+      "score": 13,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-8j3x-w35r-rw4r",
+      "summary": "Quarkus Improper Handling of Insufficient Permissions or Privileges and Improper Handling of Exceptional Condi",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.mybatis:mybatis",
+      "boundary": "3.5.6",
+      "predecessor": "3.5.5",
+      "released": "2020-10",
+      "score": 13,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-qq48-m4jx-xqh8",
+      "summary": "\"Deserialization errors in MyBatis\"",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.fabric8:kubernetes-client",
+      "boundary": "5.0.3",
+      "predecessor": "5.0.2",
+      "released": "2022-01",
+      "score": 12,
+      "cwes": [
+        "CWE-502",
+        "CWE-94"
+      ],
+      "ghsa": "GHSA-98g7-rxmf-rrxm",
+      "summary": "fabric8 kubernetes-client vulnerable",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.kubernetes:client-java",
+      "boundary": "11.0.1",
+      "predecessor": "11.0.0",
+      "released": "2021-03",
+      "score": 12,
+      "cwes": [
+        "CWE-20",
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-m8wh-mqgf-rr8g",
+      "summary": "Code injection in Kubernetes Java Client",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.activemq:activemq-client",
+      "boundary": "5.15.16",
+      "predecessor": "5.15.15",
+      "released": "2023-10",
+      "score": 12,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-crg9-44h2-xw35",
+      "summary": "Apache ActiveMQ is vulnerable to Remote Code Execution",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.camel:camel-mail",
+      "boundary": "4.14.6",
+      "predecessor": "4.14.5",
+      "released": "2026-04",
+      "score": 12,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-2vqf-x7g4-7c2g",
+      "summary": "Apache Camel's Camel-Mail component is vulnerable to Camel message header injection",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.parquet:parquet-avro",
+      "boundary": "1.15.1",
+      "predecessor": "1.15.0",
+      "released": "2025-03",
+      "score": 12,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-2c59-37c4-qrx5",
+      "summary": "Apache Parquet Avro Module Vulnerable to Arbitrary Code Execution",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
     }
   ],
   "blocked": [
@@ -417,6 +933,549 @@
         "org.apache.dubbo.config.ReferenceConfigBase: public java.lang.String getGroup();",
         "org.apache.dubbo.config.ServiceConfigBase: public java.lang.String getGroup();"
       ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.fory:fory-core",
+      "boundary": "1.1.0",
+      "predecessor": "1.0.0",
+      "released": "2026-05",
+      "score": 15,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-8f39-v287-78jf",
+      "summary": "Apache Fory Java SDK Has Deserialization of Untrusted Data in the Java replace-resolve path",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.fory.serializer.UnionSerializer: public static void writeUnknownCaseValue(org.apache.fory.context.WriteContext, java.lang.O"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.hive:hive-exec",
+      "boundary": "4.0.0-alpha-2",
+      "predecessor": "4.0.0-alpha-1",
+      "released": "2022-11",
+      "score": 15,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-6hqr-c69m-r76q",
+      "summary": "Apache Hive: Deserialization of untrusted data when fetching partitions from the Metastore",
+      "removed_signatures": 2533,
+      "removed_classes": 140,
+      "samples": [
+        "org.apache.hadoop.hive.ql.Driver: public org.apache.hadoop.hive.ql.Driver(org.apache.hadoop.hive.ql.QueryState, org.apache.h",
+        "org.apache.hadoop.hive.ql.DriverUtils: public static void runOnDriver(org.apache.hadoop.hive.conf.HiveConf, java.lang.String, org",
+        "org.apache.hadoop.hive.ql.QueryInfo: public org.apache.hadoop.hive.ql.QueryInfo(java.lang.String, java.lang.String, java.lang.S",
+        "org.apache.hadoop.hive.ql.ddl.process.show.compactions.ShowCompactionsDesc: public org.apache.hadoop.hive.ql.ddl.process.show.compactions.ShowCompactionsDesc(org.apac",
+        "org.apache.hadoop.hive.ql.ddl.table.create.CreateTableDesc: public java.lang.Long getInitialMmWriteId();",
+        "org.apache.hadoop.hive.ql.ddl.table.storage.compact.AlterTableCompactDesc: public org.apache.hadoop.hive.ql.ddl.table.storage.compact.AlterTableCompactDesc(org.apach"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.hugegraph:hg-pd-core",
+      "boundary": "1.7.0",
+      "predecessor": "1.5.0",
+      "released": "2025-11",
+      "score": 15,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-q37j-3367-fwv7",
+      "summary": "Apache HugeGraph-Server: RAFT and deserialization vulnerability",
+      "removed_signatures": 2,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.hugegraph.pd.raft.RaftEngine: public boolean init(org.apache.hugegraph.pd.config.PDConfig$Raft);",
+        "org.apache.hugegraph.pd.raft.ZipUtils: public static void decompress(java.lang.String, java.io.File, java.util.zip.Checksum);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.logging.log4j:log4j-core",
+      "boundary": "2.15.0",
+      "predecessor": "2.14.1",
+      "released": "2021-12",
+      "score": 15,
+      "cwes": [
+        "CWE-20",
+        "CWE-400",
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-jfh8-c2jp-5v3q",
+      "summary": "Remote code injection in Log4j",
+      "removed_signatures": 3,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.logging.log4j.core.appender.MemoryMappedFileAppender: public void append(org.apache.logging.log4j.core.LogEvent);",
+        "org.apache.logging.log4j.core.appender.RandomAccessFileAppender: public void append(org.apache.logging.log4j.core.LogEvent);",
+        "org.apache.logging.log4j.core.net.JndiManager: public <T> T lookup(java.lang.String);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.storm:storm-client",
+      "boundary": "2.8.6",
+      "predecessor": "2.8.5",
+      "released": "2026-04",
+      "score": 15,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-jf89-3q6q-vcgr",
+      "summary": "Apache Storm: Deserialization of Untrusted Data vulnerability",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.storm.serialization.IKryoDecorator: public abstract void decorate(com.esotericsoftware.kryo.Kryo);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.springframework:spring-web",
+      "boundary": "6.0.0",
+      "predecessor": "5.3.39",
+      "released": "2022-11",
+      "score": 15,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-4wrc-f8pq-fpqp",
+      "summary": "Pivotal Spring Framework contains unsafe Java deserialization methods",
+      "removed_signatures": 386,
+      "removed_classes": 68,
+      "samples": [
+        "org.springframework.web.jsf.DecoratingNavigationHandler: public abstract void handleNavigation(javax.faces.context.FacesContext, java.lang.String, ",
+        "org.springframework.web.jsf.el.SpringBeanFacesELResolver: public boolean isReadOnly(javax.el.ELContext, java.lang.Object, java.lang.Object);",
+        "org.springframework.web.jsf.el.WebApplicationContextFacesELResolver: public boolean isReadOnly(javax.el.ELContext, java.lang.Object, java.lang.Object);",
+        "org.springframework.web.jsf.DelegatingPhaseListenerMulticaster: public javax.faces.event.PhaseId getPhaseId();",
+        "org.springframework.web.jsf.DelegatingNavigationHandlerProxy: public org.springframework.web.jsf.DelegatingNavigationHandlerProxy(javax.faces.applicatio",
+        "org.springframework.web.jsf.FacesContextUtils: public static java.lang.Object getSessionMutex(javax.faces.context.FacesContext);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.yaml:snakeyaml",
+      "boundary": "2.0",
+      "predecessor": "1.33",
+      "released": "2023-02",
+      "score": 15,
+      "cwes": [
+        "CWE-20",
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-mjmj-j48q-9wg2",
+      "summary": "SnakeYaml Constructor Deserialization Remote Code Execution",
+      "removed_signatures": 38,
+      "removed_classes": 0,
+      "samples": [
+        "org.yaml.snakeyaml.TypeDescription: public java.lang.Class<? extends java.lang.Object> getListPropertyType(java.lang.String);",
+        "org.yaml.snakeyaml.Yaml: public <T> T loadAs(java.io.InputStream, java.lang.Class<T>);",
+        "org.yaml.snakeyaml.composer.Composer: public org.yaml.snakeyaml.composer.Composer(org.yaml.snakeyaml.parser.Parser, org.yaml.sna",
+        "org.yaml.snakeyaml.constructor.BaseConstructor: public org.yaml.snakeyaml.constructor.BaseConstructor();",
+        "org.yaml.snakeyaml.constructor.Constructor: public org.yaml.snakeyaml.constructor.Constructor();",
+        "org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor: public org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor(java.lang.Class<? exten"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "ai.h2o:h2o-core",
+      "boundary": "3.46.0.6",
+      "predecessor": "3.46.0.5",
+      "released": "2024-11",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-h7xg-cmpp-48hf",
+      "summary": "H2O Deserialization of Untrusted Data Vulnerability",
+      "removed_signatures": 8,
+      "removed_classes": 8,
+      "samples": [
+        "water.parser.BinaryFormatExporter: public abstract water.H2O$H2OCountedCompleter export(water.fvec.Frame, java.lang.String, b",
+        "water.parser.ParseSetup: public water.parser.ParseSetup(water.parser.ParserInfo, byte, boolean, int, int, java.lang",
+        "water.fvec.Frame: public static water.Job exportParquet(water.fvec.Frame, java.lang.String, boolean, java.la"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "com.google.code.gson:gson",
+      "boundary": "2.8.9",
+      "predecessor": "2.8.8",
+      "released": "2021-10",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-4jrv-ppp4-jm57",
+      "summary": "Deserialization of Untrusted Data in Gson",
+      "removed_signatures": 4,
+      "removed_classes": 3,
+      "samples": [
+        "com.google.gson.internal.bind.ObjectTypeAdapter: public static final com.google.gson.TypeAdapterFactory FACTORY;",
+        "com.google.gson.internal.bind.TypeAdapters: public static final com.google.gson.TypeAdapter<java.lang.Number> NUMBER;"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "com.h2database:h2",
+      "boundary": "2.0.206",
+      "predecessor": "2.0.204",
+      "released": "2022-01",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-h376-j262-vhq6",
+      "summary": "RCE in H2 Console",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "org.h2.command.Prepared: public org.h2.engine.SessionLocal getSession();"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.camel:camel-netty",
+      "boundary": "3.2.0",
+      "predecessor": "3.1.0",
+      "released": "2020-04",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-h79p-32mx-fjj9",
+      "summary": "Apache Camel Netty enables Java deserialization by default",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.camel.component.netty.NettyComponent: public void setSslContextParameters(org.apache.camel.support.jsse.SSLContextParameters);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.camel:camel-sql",
+      "boundary": "3.21.4",
+      "predecessor": "3.21.3",
+      "released": "2024-01",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-36xr-4x2f-cfj9",
+      "summary": "Deserialization of Untrusted Data in Apache Camel SQL",
+      "removed_signatures": 2,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.camel.processor.aggregate.jdbc.JdbcCamelCodec: public org.apache.camel.Exchange unmarshallExchange(org.apache.camel.CamelContext, byte[])"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.geode:geode-core",
+      "boundary": "1.15.0",
+      "predecessor": "1.14.4",
+      "released": "2022-06",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-72x9-48mc-phh6",
+      "summary": "Apache Geode versions prior to 1.15.0 are vulnerable to a deserialization of untrusted data",
+      "removed_signatures": 779,
+      "removed_classes": 26,
+      "samples": [
+        "org.apache.geode.internal.tcp.MsgStreamer: public java.util.List<?> getSentConnections();",
+        "org.apache.geode.internal.tcp.MsgStreamerList: public java.util.List<?> getSentConnections();",
+        "org.apache.geode.internal.tcp.ConnectionTable: public static int getNumSenderSharedConnections();",
+        "org.apache.geode.internal.tcp.Connection: public void setInUse(boolean, long, long, long, java.util.List);",
+        "org.apache.geode.internal.tcp.BaseMsgStreamer: public abstract java.util.List<?> getSentConnections();",
+        "org.apache.geode.internal.size.ObjectTraverser: public static void breadthFirstSearch(java.lang.Object, org.apache.geode.internal.size.Obj"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.heron:heron-simulator",
+      "boundary": "0.20.3-incubating",
+      "predecessor": "0.20.1-incubating",
+      "released": "2021-01",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-hjgm-f7vx-m5g7",
+      "summary": "Deserialization of Untrusted Data in Apache Heron",
+      "removed_signatures": 31,
+      "removed_classes": 3,
+      "samples": [
+        "org.apache.commons.lang3.ObjectUtils: public java.lang.String toString();",
+        "org.apache.commons.lang3.builder.IDKey: public org.apache.commons.lang3.builder.IDKey(java.lang.Object);",
+        "org.apache.commons.lang3.math.IEEE754rUtils: public static double max(double[]);",
+        "org.apache.commons.lang3.math.NumberUtils: public static byte max(byte[]);",
+        "org.apache.heron.common.config.SystemConfig: public java.time.Duration getTmasterMetricsCollectorMaximumInterval();",
+        "org.apache.heron.common.config.SystemConfigKey: public static final org.apache.heron.common.config.SystemConfigKey TMASTER_METRICS_COLLECT"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.spark:spark-core_2.13",
+      "boundary": "4.0.1",
+      "predecessor": "4.0.0",
+      "released": "2025-09",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-jwp6-cvj8-fw65",
+      "summary": "Apache Spark: Spark History Server Code Execution Vulnerability",
+      "removed_signatures": 3,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.spark.util.Utils: public static org.apache.spark.internal.MessageWithContext createFailedToGetTokenMessage(j",
+        "org.apache.spark.deploy.security.HBaseDelegationTokenProvider: public static final org.apache.spark.internal.MessageWithContext $anonfun$obtainDelegation"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.sshd:sshd-common",
+      "boundary": "2.9.2",
+      "predecessor": "2.9.1",
+      "released": "2022-11",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-fhw8-8j55-vwgq",
+      "summary": "Unsafe deserialization in Apache MINA SSHD",
+      "removed_signatures": 11,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.sshd.client.auth.hostbased.HostKeyIdentityProvider: public static org.apache.sshd.client.auth.hostbased.HostKeyIdentityProvider wrap(java.lang",
+        "org.apache.sshd.client.config.keys.ClientIdentityProvider: public static java.lang.Iterable<java.security.KeyPair> lazyKeysLoader(java.lang.Iterable<",
+        "org.apache.sshd.client.config.keys.LazyClientIdentityIterator: public java.util.function.Function<? super org.apache.sshd.client.config.keys.ClientIdenti",
+        "org.apache.sshd.common.file.util.BaseFileSystem: public org.apache.sshd.common.file.util.BaseFileSystem(java.nio.file.spi.FileSystemProvide",
+        "org.apache.sshd.common.file.util.BasePath: public org.apache.sshd.common.file.util.BasePath(FS, java.lang.String, java.util.List<java",
+        "org.apache.sshd.common.keyprovider.KeyIdentityProvider: public static java.security.KeyPair exhaustCurrentIdentities(java.util.Iterator<? extends "
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.elasticsearch:elasticsearch-hadoop",
+      "boundary": "7.17.11",
+      "predecessor": "7.17.10",
+      "released": "2023-06",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-rv74-m283-5j95",
+      "summary": "Elasticsearch-hadoop Unsafe Deserialization",
+      "removed_signatures": 2,
+      "removed_classes": 0,
+      "samples": [
+        "org.elasticsearch.hadoop.util.IOUtils: public static <T extends java.io.Serializable> T deserializeFromBase64(java.lang.String);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.ngrinder:ngrinder-core",
+      "boundary": "3.5.9",
+      "predecessor": "3.5.8",
+      "released": "2024-02",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-j7jm-8gf5-frcm",
+      "summary": "nGrinder vulnerable to unsafe Java objects deserialization",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "org.ngrinder.common.util.SystemInfoUtils: public static java.lang.String getJDKVersion();"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.noear:solon",
+      "boundary": "2.3.3",
+      "predecessor": "2.3.2",
+      "released": "2023-06",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-7q8c-49f4-4c8q",
+      "summary": "Solon vulnerable to deserialization of untrusted data",
+      "removed_signatures": 4,
+      "removed_classes": 0,
+      "samples": [
+        "org.noear.solon.core.handle.ContextEmpty: public <T> T session(java.lang.String, T);",
+        "org.noear.solon.core.handle.Context: public abstract <T> T session(java.lang.String, T);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.pac4j:pac4j-core",
+      "boundary": "4.0.0",
+      "predecessor": "3.9.0",
+      "released": "2020-04",
+      "score": 14,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-76mw-6p95-x9x5",
+      "summary": "pac4j-core affected by a Java deserialization vulnerability",
+      "removed_signatures": 157,
+      "removed_classes": 32,
+      "samples": [
+        "org.pac4j.core.profile.Pac4JPrincipal: public org.pac4j.core.profile.Pac4JPrincipal(org.pac4j.core.profile.CommonProfile);",
+        "org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer: public static <U extends org.pac4j.core.profile.CommonProfile> org.pac4j.core.authorizatio",
+        "org.pac4j.core.credentials.extractor.ParameterExtractor: public org.pac4j.core.credentials.Credentials extract(org.pac4j.core.context.WebContext);",
+        "org.pac4j.core.credentials.extractor.HeaderExtractor: public org.pac4j.core.credentials.Credentials extract(org.pac4j.core.context.WebContext);",
+        "org.pac4j.core.credentials.extractor.CredentialsExtractor: public abstract C extract(org.pac4j.core.context.WebContext);",
+        "org.pac4j.core.credentials.extractor.BasicAuthExtractor: public org.pac4j.core.credentials.Credentials extract(org.pac4j.core.context.WebContext);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "net.sf.jasperreports:jasperreports",
+      "boundary": "7.0.4",
+      "predecessor": "7.0.3",
+      "released": null,
+      "score": 13,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-7c3f-cg9x-f3gr",
+      "summary": "JasperReports has a Java deserialisation vulnerability",
+      "removed_signatures": 10,
+      "removed_classes": 0,
+      "samples": [
+        "net.sf.jasperreports.compilers.ReportClassFilter: public boolean isClassVisible(java.lang.String);",
+        "net.sf.jasperreports.compilers.StandardReportClassWhitelist: public boolean includesClass(java.lang.String);",
+        "net.sf.jasperreports.engine.base.ElementStore: public abstract int deepSize();",
+        "net.sf.jasperreports.engine.export.ooxml.DocxDocumentHelper: public void exportSection(net.sf.jasperreports.engine.PrintPageFormat, net.sf.jasperreport"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.causeway.commons:causeway-commons",
+      "boundary": "3.5.0",
+      "predecessor": "3.4.0",
+      "released": "2025-11",
+      "score": 13,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-wq4c-57mh-5f7g",
+      "summary": "Apache Causeway vulnerable to deserialization in Java",
+      "removed_signatures": 1,
+      "removed_classes": 3,
+      "samples": [
+        "org.apache.causeway.commons.internal.resources._Serializables: public org.apache.causeway.commons.internal.resources._Serializables();"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.helix:helix-core",
+      "boundary": "1.3.0",
+      "predecessor": "1.2.0",
+      "released": "2023-07",
+      "score": 13,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-jhcr-hph9-g7wm",
+      "summary": "Deserialization vulnerability in Helix workflow and REST",
+      "removed_signatures": 2,
+      "removed_classes": 1,
+      "samples": [
+        "org.apache.helix.zookeeper.zkclient.util.ExponentialBackoffStrategy: public long getNextWaitInterval(int);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.ignite:ignite-core",
+      "boundary": "2.17.0",
+      "predecessor": "2.16.0",
+      "released": "2025-02",
+      "score": 13,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-8355-xj3p-hv6q",
+      "summary": "Apache Ignite: Possible RCE when deserializing incoming messages by the server node",
+      "removed_signatures": 615,
+      "removed_classes": 139,
+      "samples": [
+        "org.apache.ignite.IgniteSystemProperties: public static final java.lang.String IGNITE_MVCC_TX_SIZE_CACHING_THRESHOLD;",
+        "org.apache.ignite.cdc.CdcConsumer: public abstract void start(org.apache.ignite.internal.processors.metric.MetricRegistry);",
+        "org.apache.ignite.configuration.IgniteConfiguration: public int getMvccVacuumThreadCount();",
+        "org.apache.ignite.dump.DumpReaderConfiguration: public org.apache.ignite.dump.DumpReaderConfiguration(java.io.File, org.apache.ignite.dump",
+        "org.apache.ignite.internal.GridKernalContext: public abstract org.apache.ignite.internal.processors.cache.mvcc.MvccProcessor coordinator",
+        "org.apache.ignite.internal.GridKernalContextImpl: public org.apache.ignite.internal.processors.cache.mvcc.MvccProcessor coordinators();"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.scala-lang:scala-library",
+      "boundary": "2.13.9",
+      "predecessor": "2.13.8",
+      "released": "2022-09",
+      "score": 13,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-8qv5-68g4-248j",
+      "summary": "Scala subject to file deletion, code execution due to Java deserialization chain with LazyList object deserial",
+      "removed_signatures": 101,
+      "removed_classes": 0,
+      "samples": [
+        "scala.Some: public scala.collection.Iterator<java.lang.Object> productIterator();",
+        "scala.collection.AbstractIterable: public final java.lang.Object coll();",
+        "scala.collection.AbstractSet: public final java.lang.Object apply(java.lang.Object);",
+        "scala.collection.IterableOnceOps: public static boolean $anonfun$splitAt$1(scala.runtime.IntRef, int, java.lang.Object);",
+        "scala.collection.IterableOps: public static java.lang.Object $anonfun$groupMap$3$adapted(scala.runtime.ObjectRef, scala.",
+        "scala.collection.JavaConverters: public static <A, B> scala.collection.concurrent.Map<A, B> asScala(java.util.concurrent.Co"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.hadoop:hadoop-yarn-server-common",
+      "boundary": "2.10.2",
+      "predecessor": "2.10.1",
+      "released": "2022-05",
+      "score": 12,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-58jx-f5rf-qgqf",
+      "summary": "User account escalation in Apache Hadoop",
+      "removed_signatures": 2,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.hadoop.yarn.server.utils.BuilderUtils: public static org.apache.hadoop.yarn.api.records.NodeReport newNodeReport(org.apache.hadoo"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.tomcat.embed:tomcat-embed-core",
+      "boundary": "10.0.2",
+      "predecessor": "10.0.0",
+      "released": "2021-01",
+      "score": 12,
+      "cwes": [
+        "CWE-502"
+      ],
+      "ghsa": "GHSA-jgwr-3qm3-26f3",
+      "summary": "Potential remote code execution in Apache Tomcat",
+      "removed_signatures": 0,
+      "removed_classes": 1,
+      "samples": [],
       "verdict": "REJECT"
     }
   ]

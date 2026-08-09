@@ -1132,6 +1132,56 @@
     "signal_grep": "autoType is not support|AutoTypeException|JSONException",
     "note": "NOT yet verified. Break is deny-by-default autoType; adaptation is an explicit allowlist call, the cleanest mining signature after xstream."
    }
+  },
+  {
+   "break_id": "commons-beanutils-1.9.3-to-1.9.4-classproperty",
+   "provenance": "EXTERNAL_ADVISORY_NOT_BUMP",
+   "_provenance_note": "From the OSV Maven feed (GHSA-6phf-73q6-gh87 / CVE-2019-10086), selected by rank_candidates.py 2026-08-09. Passes every structural filter: boundary 2019-07 (old enough that clients have genuinely crossed, unlike the 2026 Camel entries), ZERO public API removed 1.9.3 -> 1.9.4 per javap diff (no compile break to shadow the behaviour, unlike snakeyaml), and it is ordinary infrastructure coded against directly by thousands of applications (unlike json-smart, which is transitive, and unlike fastjson, whose corpus is dominated by exploit demos).",
+   "library": {
+    "group_id": "commons-beanutils",
+    "artifact_id": "commons-beanutils",
+    "from_version": "1.9.3",
+    "to_version": "1.9.4",
+    "boundary_type": "patch",
+    "search_boundary": "within 1.9.x",
+    "dependency_scope": "compile"
+   },
+   "why_it_breaks": "1.9.4 (CVE-2019-10086) registers SuppressPropertiesBeanIntrospector.SUPPRESS_CLASS by DEFAULT, so the bean property named \"class\" is no longer introspectable. BOUNDARY PINNED EMPIRICALLY 2026-08-09 by running PropertyUtils.getProperty(bean, \"class\") against both jars on JDK 11: 1.9.3 returns the Class object; 1.9.4 throws NoSuchMethodException (\"Unknown property class on class ...\"). The class SuppressPropertiesBeanIntrospector exists in BOTH jars -- only the default registration changed -- so client code COMPILES unchanged and fails at run time. Deny-by-default with an explicit re-permit, structurally the same as xstream allowTypes: PropertyUtils.getPropertyUtils().removeBeanIntrospector(SuppressPropertiesBeanIntrospector.SUPPRESS_CLASS).",
+   "clients": [],
+   "mining": {
+    "library_keyword": "beanutils",
+    "signal_quality": "clean",
+    "commit_search_terms": [
+     "removeBeanIntrospector",
+     "SuppressPropertiesBeanIntrospector",
+     "SUPPRESS_CLASS",
+     "Unknown property class",
+     "beanutils class property",
+     "beanutils 1.9.4",
+     "addBeanIntrospector",
+     "resetBeanIntrospectors",
+     "beanutils NoSuchMethodException",
+     "PropertyUtils class property",
+     "beanutils CVE-2019-10086"
+    ],
+    "direct_bump_search_terms": [
+     "bump",
+     "upgrade",
+     "update dependency",
+     "dependency update",
+     "1.9.4",
+     "security update",
+     "CVE"
+    ]
+   },
+   "verify": {
+    "version_property": "bbc.commons-beanutils.version",
+    "runnable_baseline": "1.9.3",
+    "break_boundary": "1.9.4",
+    "java": 11,
+    "signal_grep": "Unknown property|NoSuchMethodException",
+    "note": "Boundary pinned empirically (see why_it_breaks). Probe: PropertyUtils.getProperty(bean,\"class\") returns on 1.9.3, throws on 1.9.4."
+   }
   }
  ]
 }

@@ -258,12 +258,33 @@ def main():
     print(f"[stage1] {len(stage1)} libraries in tier '{args.tier}' "
           f"(deduped to the highest-scoring advisory each)\n")
 
-    results = []
+    # Append each verdict as it is computed. Stage 2 costs two jar downloads and a full
+    # javap pass per candidate, so holding results in memory until the end means a kill
+    # discards the whole run -- which happened at row 73 of 120. This is the FOURTH time
+    # today the same mistake has cost a pass (commit search, classify loop, and the
+    # undecided resolver were each fixed for it), so it is fixed here the same way.
+    prog = OUT / "candidate_ranking_progress.jsonl"
+    results, done_pkgs = [], set()
+    if prog.exists():
+        for line in prog.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                prev = json.loads(line)
+            except Exception:
+                continue
+            results.append(prev)
+            done_pkgs.add(prev.get("package"))
+        if done_pkgs:
+            print(f"[rank] resuming: {len(done_pkgs)} package(s) already verdicted\n")
+    pf = prog.open("a", encoding="utf-8")
     checked = 0
     for r in sorted(stage1, key=lambda x: -(x.get("score") or 0)):
         if checked >= args.limit:
             break
         pkg, boundary = r["package"], r["break_boundary_fixed"]
+        if pkg in done_pkgs:
+            continue
         g, a = pkg.split(":", 1)
         vs = versions_with_dates(g, a)
         # maven-metadata.xml gives order but no dates, so the release date comes from an
@@ -296,16 +317,19 @@ def main():
             continue
         removed, gone_classes, samples = diff
         verdict = ("REJECT" if (removed or gone_classes) else "MINEABLE")
-        results.append({
+        rec = {
             "package": pkg, "boundary": boundary, "predecessor": prev,
             "released": date, "score": r.get("score"), "cwes": r.get("cwes"),
             "ghsa": r.get("ghsa"), "summary": (r.get("summary") or "")[:110],
             "removed_signatures": removed, "removed_classes": gone_classes,
             "samples": samples, "verdict": verdict,
-        })
+        }
+        results.append(rec)
+        pf.write(json.dumps(rec) + chr(10)); pf.flush()
         print(f"      {verdict}: {removed} removed signature(s), "
               f"{gone_classes} removed class(es)", flush=True)
 
+    pf.close()
     mineable = [x for x in results if x["verdict"] == "MINEABLE"]
     blocked = [x for x in results if x["verdict"] == "REJECT"]
 
