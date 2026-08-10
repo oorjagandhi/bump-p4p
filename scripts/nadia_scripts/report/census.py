@@ -328,8 +328,23 @@ def main():
         if not rp.exists():
             continue
         rs = rows(rp) or []
-        c = Counter((x.get("traversal") or {}).get("mvn_recheck", {}).get("verdict")
-                    for x in rs)
+        verdicts = {}
+        for x in rs:
+            key = (x.get("repo"), x.get("sha"))
+            verdicts[key] = (x.get("traversal") or {}).get("mvn_recheck", {}).get("verdict")
+        # closeout_traversal.py re-runs the rows that failed with "artifact absent from the
+        # resolved tree", at the REACTOR ROOT instead of the module guessed from the
+        # adaptation's file path. On kubernetes-client that turned 5 of those into measured
+        # negatives -- the artifact was in the project, just not in the module we pointed
+        # Maven at. Its verdicts supersede the recheck's for the rows it decided; ignoring
+        # this file would report those 5 as still-undecided and understate what was measured.
+        cp = OUT / f"{bid}_TRAVERSAL_CLOSEOUT.jsonl"
+        if cp.exists():
+            for x in rows(cp) or []:
+                v = (x.get("traversal") or {}).get("closeout", {}).get("verdict")
+                if v and v != "still_undecided":
+                    verdicts[(x.get("repo"), x.get("sha"))] = v
+        c = Counter(verdicts.values())
         dec_rows.append((bid, len(rs), c.get("crossed", 0),
                          c.get("not_crossed", 0), c.get("still_undecided", 0)))
     if dec_rows:

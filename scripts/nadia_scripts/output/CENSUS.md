@@ -49,11 +49,11 @@ The traversal gate reports "no crossing" both when it MEASURED a negative and wh
 | `snakeyaml-1.x-to-2.0-safeconstructor` | 27 | **1** | 17 | 9 |
 | `fastjson-1.2.80-to-1.2.83-autotype` | 25 | **0** | 16 | 9 |
 | `commons-beanutils-1.9.3-to-1.9.4-classproperty` | 19 | **0** | 2 | 17 |
-| `kubernetes-client-5.0.2-to-5.0.3-safeconstructor` | 22 | **0** | 6 | 16 |
+| `kubernetes-client-5.0.2-to-5.0.3-safeconstructor` | 22 | **0** | 11 | 11 |
 | `commons-net-3.8.0-to-3.9.0-pasv-host` | 6 | **0** | 1 | 5 |
-| **total** | **132** | **1** | **61** | **70** |
+| **total** | **132** | **1** | **66** | **65** |
 
-61 rejections that were GUESSES are now measured negatives. 1 turned out to be a crossing the pipeline had silently discarded. The remaining 70 are an honest floor: Maven itself cannot resolve those projects at those commits (dead repositories, unresolvable parents, broken POMs), and if the project's own build tool cannot resolve it, no static analysis will.
+66 rejections that were GUESSES are now measured negatives. 1 turned out to be a crossing the pipeline had silently discarded. The remaining 65 are an honest floor: Maven itself cannot resolve those projects at those commits (dead repositories, unresolvable parents, broken POMs), and if the project's own build tool cannot resolve it, no static analysis will.
 
 Crossings recovered this way carry `traversal_kind: "endpoint"` and no `bump_sha`: the comparison establishes that a crossing happened inside the scanned window, not which commit made it. That is weaker than a verify_traversal confirmation and is deliberately NOT merged into the traversal-confirmed column above.
 

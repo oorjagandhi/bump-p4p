@@ -83,3 +83,6 @@ scripts/nadia_scripts/scratchpad/**/target/
 scripts/nadia_scripts/output/*_mine_checkpoint.jsonl
 scripts/nadia_scripts/output/*_classify_checkpoint.jsonl
 scripts/nadia_scripts/output/candidate_ranking_progress*.jsonl
+
+# population probe resume state — same reason as the other checkpoints
+scripts/nadia_scripts/output/population_probe_progress_*.jsonl
