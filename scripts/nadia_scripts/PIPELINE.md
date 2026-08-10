@@ -1,12 +1,31 @@
 # BBC → external-production-adaptation pipeline
 
+**Stage mechanics reference.** For what the project is, the current findings, and the
+screening rules that decide which libraries are worth mining at all, start with
+[`README.md`](README.md) — this document assumes a target has already been chosen and
+describes how the stages work.
+
 End-to-end workflow for finding, and verifying, real client **adaptations** to a
-dependency's **behavioural breaking change (BBC)** — starting from BUMP, scaling
-across the whole break catalog. Codifies the flow we validated by hand on
+dependency's **behavioural breaking change (BBC)**. Codifies the flow validated by hand on
 xstream/TVRenamer (`verified_cases/xstream-tvrenamer.json`).
 
-Driver: `specs/bump_breaks_catalog.json` (9 BUMP-confirmed breaks, each with its
-`characterization`, `mining`, and `verify` blocks). Entry point: `bbc_e2e.py`.
+Driver: `specs/bump_breaks_catalog.json`, each break carrying its `characterization`,
+`mining`, and `verify` blocks. Entry point: `bbc_e2e.py`.
+
+Breaks now come from two sources, and the catalog records which via `provenance`:
+
+- **BUMP** — breaks confirmed from the BUMP corpus, which carry a `characterization`
+  block naming the failing test. `characterize` (stage 1) applies only to these.
+- **EXTERNAL_ADVISORY_NOT_BUMP / EXTERNAL_CHANGELOG_NOT_BUMP** — breaks found by mining
+  the OSV Maven feed and screening it (`mine_advisories.py` → `rank_candidates.py` → a
+  shape check). These have no BUMP client, so `run` skips stage 1 for them. Their
+  boundary is **pinned empirically** — old and new jars run side by side until the
+  behaviour flips — before any mining is spent.
+
+Two stages now run *before* this pipeline, and cost minutes rather than the day a mine
+costs: `rank_candidates.py` / `screen_majors.py` reject boundaries that remove public API
+(a compile break shadows the behavioural one), and a manual sources-jar diff confirms the
+new restriction is active by default rather than relaxed or opt-in. See `README.md`.
 
 ## Scope
 
@@ -78,8 +97,10 @@ code, never the test.
 ### 5. Build + differential  *(deterministic)*
 `--reuse-pom` (native-Maven): reuses the repo's own `pom.xml` (no hand-written
 dependency list), injects the test, and runs the 3-state differential. Only the
-**baseline** version is overridden (`set_baseline_version.py`), because the repo is
-already on the new version at both the parent-of-fix and the fix. A confirmed BBC:
+**baseline** version is overridden (by `set_baseline_version.py`, which `gen-harness`
+writes into each harness directory — it is generated, not a top-level script), because
+the repo is already on the new version at both the parent-of-fix and the fix.
+A confirmed BBC:
 
 ```
 1) parent code + baseline version  -> PASS
@@ -107,18 +128,38 @@ already on the new version at both the parent-of-fix and the fix. A confirmed BB
 
 ## Per-break readiness
 
-| Break | signal | verify status |
-|---|---|---|
-| xstream 1.4.18 | clean | ✅ proven (TVRenamer) |
-| poi 5.0 byte-cap | clean | 🟡 signature cases; parser-internal break (needs real build + crafted doc) |
-| mockito 5 inline | medium | not yet attempted |
-| slf4j/logback/httpclient/jsoup | weak | low priority (noisy commit search) |
+**See [`output/CENSUS.md`](output/CENSUS.md)** — it is generated from the artifacts by
+`report/census.py`, so unlike a table here it cannot drift out of date. It gives, per
+break: rows examined, production adaptations, traversal-confirmed, behavioural vs compile
+break, verified, and excluded — plus an undecided-resolution table and a decidability
+audit.
+
+Read `--` there as "this stage never ran", **not** as zero. A measured zero is a finding;
+an absent measurement is not, and the whole rarity claim depends on telling them apart.
+
+## Traversal outcomes are three-valued
+
+`run` records a traversal rejection as one of three things, and collapsing them loses the
+distinction the census depends on:
+
+- **confirmed** — a boundary-crossing bump in the adaptation's ancestry
+- **genuine negative** — versions resolved, no crossing; the client was born past the
+  boundary
+- **undecided** — the version is BOM- or parent-managed and the HTTP POM walk cannot
+  resolve it. An *unknown*. Extract with `extract_undecided.py` and decide with
+  `resolve_undecided.py`, which asks `mvn dependency:tree` directly.
+
+The undecided share varies enormously by ecosystem: beanutils gave 19 undecided against 3
+genuine negatives; kubernetes-client gave 22 against 0, because every fabric8 client takes
+its version from a BOM. When that happens the Maven recheck is not a cleanup pass — it is
+the entire traversal answer.
 
 ## Files
 
 - `bbc_e2e.py` — orchestrator (this pipeline)
 - `bbc_pipeline.py` — original stages; `characterize` reused here
-- `specs/bump_breaks_catalog.json` — the 9 breaks + characterization/mining/verify
-- `specs/BUMP_BREAKS.md` — human-readable catalog
+- `specs/bump_breaks_catalog.json` — the break catalog + characterization/mining/verify
+- `specs/BUMP_BREAKS.md` — human-readable catalog of the BUMP-sourced breaks
 - `verified_cases/` — the output dataset (one JSON per case + README)
+- `output/README.md` — what every artifact in `output/` is, and which are measurements
 - `scratchpad/*-harness/` — generated differential harnesses
