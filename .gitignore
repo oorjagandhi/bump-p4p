@@ -82,4 +82,4 @@ scripts/nadia_scripts/scratchpad/**/target/
 ### resume someone else's stale search instead of mining.
 scripts/nadia_scripts/output/*_mine_checkpoint.jsonl
 scripts/nadia_scripts/output/*_classify_checkpoint.jsonl
-scripts/nadia_scripts/output/candidate_ranking_progress.jsonl
+scripts/nadia_scripts/output/candidate_ranking_progress*.jsonl
