@@ -1231,6 +1231,55 @@
     "signal_grep": "could not determine a constructor for the tag|ConstructorException",
     "note": "Boundary pinned empirically (see why_it_breaks). Probe: Serialization.unmarshal of YAML containing !!java.util.HashMap returns a Map on 5.0.2 and throws ConstructorException on 5.0.3."
    }
+  },
+  {
+   "break_id": "commons-net-3.8.0-to-3.9.0-pasv-host",
+   "provenance": "EXTERNAL_ADVISORY_NOT_BUMP",
+   "_provenance_note": "From the OSV Maven feed (GHSA-cgp8-4m63-fhh5 / CVE-2021-37533), selected 2026-08-10 from the VALIDATE tier -- the first target from outside the deserialize tier. Ranked MINEABLE (0 removed public API) and then SHAPE-checked, which is the step that matters: mybatis 3.5.6 and avro 1.11.3 both passed the API check and were still dead ends, one because it RELAXES a restriction and one because its new restriction is OPT-IN. This boundary is neither -- the restriction is ACTIVE BY DEFAULT and the library ships a purpose-built method to opt back out of it, which is the strongest available evidence that real clients broke.",
+   "library": {
+    "group_id": "commons-net",
+    "artifact_id": "commons-net",
+    "from_version": "3.8.0",
+    "to_version": "3.9.0",
+    "boundary_type": "minor",
+    "search_boundary": "within 3.x",
+    "dependency_scope": "compile"
+   },
+   "why_it_breaks": "Before 3.9.0, FTPClient took the data-connection host from whatever the server put in its PASV reply, so a malicious server could redirect the data connection anywhere (CVE-2021-37533). 3.9.0 DISCARDS that host by default and uses the control connection's address instead: _parsePassiveModeReply now gates the old path behind isIpAddressFromPasvResponse(), whose backing field defaults to Boolean.parseBoolean(System.getProperty(FTP_IP_ADDRESS_FROM_PASV_RESPONSE)) -- false when unset. The library's own comment labels the gated branch \"Pre-3.9.0 behavior\". BOUNDARY PINNED EMPIRICALLY 2026-08-10 on JDK 11, no FTP server needed: feed the SAME reply '227 Entering Passive Mode (192,168,1,50,4,1)' to both jars via the protected _parsePassiveModeReply and read getPassiveHost(). 3.8.0 -> 192.168.1.50 (trusts the reply). 3.9.0 -> the reply host is discarded. 3.9.0 with setIpAddressFromPasvResponse(true) -> 192.168.1.50 again. A clean three-state differential: baseline, break, adaptation. setIpAddressFromPasvResponse does NOT EXIST in 3.8.0 -- it was added at the boundary FOR the clients this broke, which is both the adaptation to mine for and the reason to believe the population exists. Deny-by-default with an explicit re-permit: the xstream allowTypes shape. Zero public API removed, so clients compile unchanged and fail at run time. Blast radius is narrower than xstream's -- it bites clients whose FTP server reports a different host in PASV, typically behind NAT -- so expect a small population rather than a dense one.",
+   "clients": [],
+   "mining": {
+    "library_keyword": "commons-net",
+    "signal_quality": "clean",
+    "commit_search_terms": [
+     "setIpAddressFromPasvResponse",
+     "ipAddressFromPasvResponse",
+     "FTP_IP_ADDRESS_FROM_PASV_RESPONSE",
+     "passive mode host",
+     "PASV response",
+     "ftp passive",
+     "commons-net 3.9.0",
+     "CVE-2021-37533",
+     "ftp data connection",
+     "passive nat"
+    ],
+    "direct_bump_search_terms": [
+     "bump",
+     "upgrade",
+     "update dependency",
+     "dependency update",
+     "3.9.0",
+     "security update",
+     "CVE"
+    ]
+   },
+   "verify": {
+    "version_property": "bbc.commons-net.version",
+    "runnable_baseline": "3.8.0",
+    "break_boundary": "3.9.0",
+    "java": 11,
+    "signal_grep": "setIpAddressFromPasvResponse|passive|PASV",
+    "note": "Boundary pinned empirically (see why_it_breaks). Probe subclasses FTPClient, calls the protected _parsePassiveModeReply on a fixed PASV reply, and reads getPassiveHost() -- no server required."
+   }
   }
  ]
 }

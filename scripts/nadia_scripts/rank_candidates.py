@@ -146,6 +146,21 @@ def predecessor(versions, boundary):
     return below[-1] if below else None
 
 
+# Central answers 403 when it is rate-limiting, and download_jar cannot report that
+# through its None return -- so a throttled run silently converts every library into
+# "jar unavailable on Central", a pre-rejection that looks exactly like a genuine 404.
+# That is how a whole ranking pass could be published as measurement when it measured
+# nothing. The status of the last attempt is recorded here so the caller can tell the two
+# apart, and consecutive 403s abort the run instead of filling a report with pseudo-verdicts.
+LAST_HTTP = {"status": None}
+CONSECUTIVE_403 = {"n": 0}
+MAX_CONSECUTIVE_403 = 5
+
+
+class CentralThrottled(RuntimeError):
+    """Central is refusing downloads; the run cannot produce verdicts."""
+
+
 def download_jar(group, artifact, version):
     JARS.mkdir(parents=True, exist_ok=True)
     dest = JARS / f"{artifact}-{version}.jar"
@@ -154,11 +169,25 @@ def download_jar(group, artifact, version):
     url = f"{CENTRAL}/{group.replace('.', '/')}/{artifact}/{version}/{artifact}-{version}.jar"
     try:
         r = requests.get(url, timeout=120)
+        LAST_HTTP["status"] = r.status_code
+        if r.status_code == 403:
+            CONSECUTIVE_403["n"] += 1
+            if CONSECUTIVE_403["n"] >= MAX_CONSECUTIVE_403:
+                raise CentralThrottled(
+                    f"{MAX_CONSECUTIVE_403} consecutive 403s from Central — throttled. "
+                    f"Stopping: every further row would be recorded as 'jar unavailable', "
+                    f"which is not a verdict. Wait for the throttle to clear and resume "
+                    f"(the progress file keeps what was already measured).")
+            return None
+        CONSECUTIVE_403["n"] = 0
         if r.status_code != 200 or not r.content:
             return None
         dest.write_bytes(r.content)
         return dest
+    except CentralThrottled:
+        raise
     except Exception:
+        LAST_HTTP["status"] = None
         return None
 
 
@@ -322,7 +351,11 @@ def main():
               flush=True)
         oj, nj = download_jar(g, a, prev), download_jar(g, a, boundary)
         if not oj or not nj:
-            rejected.append((pkg, boundary, "jar unavailable on Central"))
+            # 403 is a throttle, not a 404. Recording it as "unavailable" would put a
+            # non-measurement in the report under the same wording as a real one.
+            why = ("Central returned 403 (rate-limited) — NOT a verdict, re-run"
+                   if LAST_HTTP["status"] == 403 else "jar unavailable on Central")
+            rejected.append((pkg, boundary, why))
             continue
         diff = api_removals(oj, nj)
         if diff is None:
