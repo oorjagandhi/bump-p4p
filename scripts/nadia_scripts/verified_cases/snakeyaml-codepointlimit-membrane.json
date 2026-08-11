@@ -1,0 +1,92 @@
+{
+ "case_id": "snakeyaml-codepointlimit-membrane",
+ "status": "verified_adaptation_only",
+ "_status_note": "NOT verified_bbc, deliberately. States 2 and 3 were demonstrated inside the project's own Maven build with the project's own test, which is stronger evidence than any other case in this set. State 1 -- that the code worked BEFORE the boundary -- could not be run in this project at all (see verification.state_1_is_impossible_here), so the pass/fail/pass chain is incomplete and the case must not be counted as a three-state verification.",
+ "case_type": "external_production_adaptation",
+ "verified_date": "2026-08-11",
+ "verified_by": "mvn -pl core -am test on the fix commit at snakeyaml 2.6, JDK 21, running the project's OWN OpenAPIYamlLimitsTest. 4 tests, 0 failures, BUILD SUCCESS.",
+ "note": "Found by searching for the ADAPTATION identifier (setCodePointLimit) and reading diffs, NOT by the bump-axis mine. That contrast is the methodological point: the mine checked 94 rows of this break and produced 4 candidates, all false; one targeted commit search produced roughly six genuine ones, of which this is the strongest.",
+ "discovery_method": "GitHub commit search for setCodePointLimit across three query forms, then reading every diff to separate projects that RAISED the limit (recovery) from those that lowered it (hardening) or merely exposed a knob at the same 3 MB default (no recovery).",
+
+ "discovery": {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit"
+ },
+
+ "library": {
+  "group_id": "org.yaml",
+  "artifact_id": "snakeyaml",
+  "at_version": "2.6",
+  "baseline_used": "none — see verification.state_1_is_impossible_here",
+  "breaking_boundary": "1.32 (3 MiB code-point limit imposed by default)",
+  "boundary_type": "minor",
+  "dependency_scope": "compile, TRANSITIVE via io.swagger.parser.v3:swagger-parser:2.1.45"
+ },
+
+ "in_repo_version_transition": {
+  "crossed_boundary": "not established at this commit",
+  "mechanism": "transitive via swagger-parser; snakeyaml is never declared directly in their poms",
+  "note": "The fix is dated 2026-08-10 and snakeyaml 1.32 shipped in 2022, so the crossing is years upstream of the adaptation, as with infoarchive. It was not traced here because the version is transitive and undeclared; `mvn dependency:tree` at the fix commit resolves org.yaml:snakeyaml:2.6 via swagger-parser 2.1.45."
+ },
+
+ "bump_provenance": "EXTERNAL_CHANGELOG_NOT_BUMP (snakeyaml-1.31-to-1.32-codepointlimit)",
+ "bump_source": "snakeyaml 1.32 release; DoS hardening (CVE-2022-38749..38752 family).",
+
+ "behavioral_break": {
+  "mechanism": "snakeyaml 1.32+ caps incoming documents at 3 MiB (3145728 code points) BY DEFAULT. Membrane read OpenAPI documents through swagger-parser's ObjectMapperFactory.createYaml(), which builds a jackson YAMLFactory with no LoaderOptions, so snakeyaml's default applies. Real OpenAPI documents pass 3 MiB once their $refs are inlined, and they simply stopped being readable.",
+  "why_it_breaks": "Same as `mechanism`; recorded under both names because the older cases in this directory use `why_it_breaks` and the newer ones use `mechanism`, and nothing yet normalises them.",
+  "affected_class": "com.predic8.membrane.core.openapi.util.OpenAPIUtil and com.predic8.membrane.core.openapi.serviceproxy.OpenAPIRecordFactory (both held `ObjectMapperFactory.createYaml()`)",
+  "observed_exception": "org.yaml.snakeyaml.error.YAMLException: The incoming YAML document exceeds the limit: 3145728 code points.",
+  "category": "runtime_exception",
+  "blast_radius": "Clients reading YAML above 3 MiB. Membrane's own javadoc notes the limit is enforced in THREE independent places, of which only one honours swagger-parser's system property — see swagger-parser#2059."
+ },
+
+ "adaptation": {
+  "repo": "membrane/api-gateway",
+  "repo_note": "Membrane API Gateway (predic8). Multi-module Maven; the `core` module reads OpenAPI documents.",
+  "commit": "f2947f12d720c23d387e99fd02a6fbfd5d4a8804",
+  "parent_commit": "035d24d0cd76bbf4f443a3eb3bf7e7f4b11819d4",
+  "date": "2026-08-10",
+  "commit_message": "Lift the 3 MiB size limit on OpenAPI documents (#3122)",
+  "build_system": "maven",
+  "module": "core",
+  "language": "java",
+  "adaptation_in_test_code": false,
+  "adaptation_quality": "production_usage_adaptation",
+  "production_files": [
+   "core/src/main/java/com/predic8/membrane/core/openapi/util/OpenAPIYamlLimits.java",
+   "core/src/main/java/com/predic8/membrane/core/openapi/util/OpenAPIUtil.java",
+   "core/src/main/java/com/predic8/membrane/core/openapi/serviceproxy/OpenAPIRecordFactory.java"
+  ],
+  "the_call": "new OpenAPIYamlLimits: LoaderOptions.setCodePointLimit(Integer.MAX_VALUE by default), wired into a YAMLFactory, and substituted for ObjectMapperFactory.createYaml() at both production call sites.",
+  "restores_previous_behaviour": true,
+  "why_that_matters": "The default is Integer.MAX_VALUE, so the limit is genuinely lifted. Contrast swagger-parser@93d1f495 and bspfsystems/YamlConfiguration@b0eb7bbc, which added the same knob but kept the default at 3 MB: those are configurability changes, not recoveries, and cannot produce a pass/fail/pass differential for ANY input size."
+ },
+
+ "verification": {
+  "method": "Ran the project's OWN test class through its own Maven build: mvn -pl core -am test with surefire pointed at OpenAPIYamlLimitsTest (the project pins <test>**/UnitTests.java</test>, so that element had to be redirected; nothing else was modified). JDK 21, snakeyaml 2.6 as resolved.",
+  "test": "com.predic8.membrane.core.openapi.util.OpenAPIYamlLimitsTest — THEIRS, added in the fix commit. Its fixture is generated rather than committed, and their comment says why: 'so the repository stays free of a multi megabyte fixture'. That is exactly why no project in this study had a test that could catch this break before adapting to it.",
+  "result": "Tests run: 4, Failures: 0, Errors: 0. BUILD SUCCESS.",
+  "states_demonstrated": [
+   {
+    "name": "2_broken",
+    "config": "pre-fix production path (ObjectMapperFactory.createYaml()) + snakeyaml 2.6",
+    "evidence": "their test defaultMapperRejectsDocumentAboveThreeMebibytes PASSES, i.e. that path throws on a >3 MiB document",
+    "expected": "fail"
+   },
+   {
+    "name": "3_adapted",
+    "config": "post-fix production path (OpenAPIYamlLimits.createYamlMapper()) + snakeyaml 2.6",
+    "evidence": "their tests readsDocumentAboveThreeMebibytes and parserReadsDocumentAboveThreeMebibytes PASS",
+    "expected": "pass"
+   }
+  ],
+  "state_1_is_impossible_here": "Attempted and abandoned with evidence. Downgrading to snakeyaml 1.31 (the last version without the limit) breaks the project outright: jackson-dataformat-yaml calls org.yaml.snakeyaml.parser.ParserImpl.<init>(StreamReader, LoaderOptions), which does not exist there, and the suite produced 703 errors from NoSuchMethodError rather than from the break. There is NO snakeyaml version that both satisfies their jackson and lacks the code-point limit, so a passing baseline cannot exist inside this project. The baseline is instead established at the LIBRARY level, independently: a plain `new Yaml()` loads a 4 MB document on 1.31 and throws on 1.32 (see the break's catalog entry, pinned empirically 2026-08-10).",
+  "isolation": "Within the demonstrated pair the only variable is Membrane's own change: both states run on the same snakeyaml 2.6, in the same build, in the same test class.",
+  "threats_to_validity": [
+   "THE PASS/FAIL/PASS CHAIN IS INCOMPLETE. Only states 2 and 3 were run in the project. This is why the status is verified_adaptation_only rather than verified_bbc.",
+   "THE CROSSING IS NOT TRACED. snakeyaml is transitive and undeclared here, so no bump commit was identified, unlike infoarchive where gradle.properties gave the whole timeline.",
+   "A GENERAL LIMIT ON THE METHOD, worth recording beyond this case: for a project that crossed a boundary years ago, the surrounding ecosystem may have moved on far enough that the 'before' state is no longer constructible. Here jackson forces snakeyaml 2.x. The older the break, the more often this will bite."
+  ],
+  "reproduce": "git fetch --depth 1 f2947f12; in core/pom.xml replace <test>**/UnitTests.java</test> with <test>**/OpenAPIYamlLimitsTest.java</test>; JAVA_HOME=<jdk-21> mvn -B -pl core -am test"
+ }
+}

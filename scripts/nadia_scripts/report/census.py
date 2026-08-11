@@ -165,8 +165,8 @@ def prod_ok(r):
 
 
 def load_cases():
-    """Map break_id -> (verified, excluded-by-reason) from verified_cases/."""
-    verified, excluded = Counter(), {}
+    """Map break_id -> (verified, adaptation_only, excluded-by-reason) from verified_cases/."""
+    verified, excluded, adapt_only = Counter(), {}, Counter()
     for p in CASES.glob("*.json"):
         try:
             d = json.loads(p.read_text(encoding="utf-8"))
@@ -175,6 +175,13 @@ def load_cases():
         bid = (d.get("discovery") or {}).get("break_id") or _infer_break(d)
         if d.get("status") == "verified_bbc":
             verified[bid] += 1
+        # verified_adaptation_only: the adaptation was demonstrated in the project's own
+        # build, but the pass/fail/pass chain is incomplete -- typically because the
+        # "before" state cannot be constructed any more (membrane: jackson forces
+        # snakeyaml 2.x, and every 2.x has the limit). It must NOT be counted as a
+        # three-state verification, and it must not silently vanish either.
+        elif d.get("status") == "verified_adaptation_only":
+            adapt_only[bid] += 1
     for p in CASES.glob("excluded/*/*.json"):
         try:
             d = json.loads(p.read_text(encoding="utf-8"))
@@ -182,7 +189,7 @@ def load_cases():
             continue
         bid = (d.get("discovery") or {}).get("break_id") or _infer_break(d)
         excluded.setdefault(bid, Counter())[p.parent.name] += 1
-    return verified, excluded
+    return verified, excluded, adapt_only
 
 
 def _infer_break(d):
@@ -196,7 +203,7 @@ def main():
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
     bpath = OUT / "boundary_dates.json"
     bdates = json.loads(bpath.read_text(encoding="utf-8")) if bpath.exists() else {}
-    verified, excluded = load_cases()
+    verified, excluded, adapt_only = load_cases()
     table, provenance, notes = [], [], []
 
     for brk in catalog["breaks"]:
@@ -281,20 +288,22 @@ def main():
           "zero.** A measured zero is a finding; an absent measurement is not, and the "
           "rarity claim depends entirely on telling them apart.\n")
     print("| break | rows examined | production | traversal-confirmed | behavioural | "
-          "compile break | VERIFIED | excluded |")
-    print("|---|---:|---:|---:|---:|---:|---:|---:|")
+          "compile break | VERIFIED | adapt-only | excluded |")
+    print("|---|---:|---:|---:|---:|---:|---:|---:|---:|")
     tot = Counter()
     for r in table:
         print(f"| `{r['break']}` | {cell(r['mined'])} | {cell(r['prod'])} | "
               f"{cell(r['traversal'])} | {cell(r['behavioural'])} | "
-              f"{cell(r['compile_break'])} | **{r['verified']}** | {r['excluded']} |")
+              f"{cell(r['compile_break'])} | **{r['verified']}** | "
+              f"{adapt_only.get(r['break'], 0) or ''} | {r['excluded']} |")
         for k in ("prod", "traversal"):
             if r[k]:
                 tot[k] += r[k]
         tot["verified"] += r["verified"]
         tot["excluded"] += r["excluded"]
     print(f"| **total** | *not summable* | **{tot['prod']}** | "
-          f"**{tot['traversal']}** | | | **{tot['verified']}** | **{tot['excluded']}** |")
+          f"**{tot['traversal']}** | | | **{tot['verified']}** | "
+          f"**{sum(adapt_only.values())}** | **{tot['excluded']}** |")
     print("\n`rows examined` is deliberately NOT totalled: the corpora were produced by "
           "different pipeline configurations and the column does not mean the same "
           "thing in every row (see caveats).\n")
@@ -435,6 +444,13 @@ def main():
           "meaningful for constructor-mediated breaks; POI and h2 return all-unknown "
           "because their breaks are a static config call and SQL semantics respectively.")
     print("- **VERIFIED** — a 3-state differential was actually run and passed.")
+    print("- **adapt-only** — status `verified_adaptation_only`: the adaptation was "
+          "demonstrated in the client's OWN build and test, but the pass/fail/pass chain "
+          "is incomplete because the pre-boundary state could not be reconstructed. "
+          "membrane/api-gateway is the example: its jackson-dataformat-yaml requires "
+          "snakeyaml 2.x and every 2.x carries the code-point limit, so no version both "
+          "satisfies the project and lacks the break. Counted separately, never folded "
+          "into VERIFIED.")
 
     print("\n## Provenance\n")
     print("| break | candidates file | traversal source | screen source |")
