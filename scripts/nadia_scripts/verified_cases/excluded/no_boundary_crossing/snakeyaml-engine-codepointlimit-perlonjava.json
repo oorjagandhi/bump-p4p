@@ -1,0 +1,56 @@
+{
+ "case_id": "snakeyaml-engine-codepointlimit-perlonjava",
+ "status": "excluded",
+ "exclusion_reason": "no_boundary_crossing",
+ "case_type": "external_production_adaptation",
+ "assessed_date": "2026-08-12",
+
+ "_status_note": "A REAL adaptation to a REAL restriction, and still not a behavioural breaking change. PerlOnJava adopted snakeyaml-engine at 2.9 — four releases AFTER the 3 MiB code-point limit landed in 2.5 — so the cap applied from their very first commit using the library. When they raised it to 50 MB they were removing a limit that had always been there, not recovering from a change that happened underneath them. There is no 'before' state for this client, so no pass/fail/pass chain can exist.",
+
+ "discovery": {
+  "break_id": "snakeyaml-engine-2.4-to-2.5-codepointlimit"
+ },
+ "discovery_method": "find_adaptations.py --identifier setCodePointLimit --other-group org.yaml. It was the ONLY `raise` attributed to the engine artifact (4 of 36 rows attributed; 14 correctly rejected as org.yaml:snakeyaml).",
+
+ "library": {
+  "group_id": "org.snakeyaml",
+  "artifact_id": "snakeyaml-engine",
+  "at_version": "3.0.1",
+  "breaking_boundary": "2.5 (3 MiB code-point limit imposed by default)",
+  "dependency_scope": "compile, declared directly in pom.xml"
+ },
+
+ "in_repo_version_transition": {
+  "crossed_boundary": false,
+  "mechanism": "born past the boundary",
+  "evidence": "Walking pom.xml's history gives the whole timeline: snakeyaml-engine first appears at 2.9 @c89a6cf6 (2025-01-22, 'add YAML::PP'), then 2.9 -> 2.10 (2025-07-17), 2.10 -> 3.0.1 (2025-11-27), 3.0.1 -> 3.1.1 (2026-08-10). The 2.4 -> 2.5 boundary never occurs in this repository.",
+  "earliest_version_used": "2.9",
+  "boundary": "2.5"
+ },
+
+ "adaptation": {
+  "repo": "fglock/PerlOnJava",
+  "repo_note": "An implementation of Perl that runs on the JVM. The fix is in its Storable module, which reads CPAN metadata as YAML.",
+  "commit": "f4bc5594e2df0c1bca66acb330b8e480b16ca3be",
+  "parent_commit": "9188c3d76a133a1d39164fb3811f4d0b7ff60b61",
+  "date": "2026-03-14",
+  "commit_message": "Fix Storable YAML codePointLimit for large CPAN metadata",
+  "build_system": "maven",
+  "language": "java",
+  "production_files": ["src/main/java/org/perlonjava/runtime/perlmodule/Storable.java"],
+  "the_call": ".setCodePointLimit(50 * 1024 * 1024)  // 50MB limit for large CPAN metadata files",
+  "raises_the_limit": true,
+  "adaptation_is_genuine": "Yes — an application raising the ceiling to fit real data, the same shape as the two verified cases. Only the crossing is missing."
+ },
+
+ "behavioral_break": {
+  "mechanism": "snakeyaml-engine 2.5+ caps incoming documents at 3 MiB (3145728 code points) by default, and adds LoadSettingsBuilder.setCodePointLimit to raise it. Pinned empirically: a 4 MB document loads with default LoadSettings on 2.3 and 2.4, and throws YamlEngineException on 2.5.",
+  "why_it_breaks": "Same as `mechanism`.",
+  "observed_exception": "org.snakeyaml.engine.v2.exceptions.YamlEngineException: The incoming YAML document exceeds the limit: 3145728 code points.",
+  "category": "runtime_exception"
+ },
+
+ "why_this_matters": "The org-json pattern, met for the first time in the snakeyaml family. A break only produces a case if some client was BELOW the boundary and moved above it; a client born past it can hit the restriction, be genuinely inconvenienced by it, and adapt in production code — and still not constitute a behavioural breaking change, because nothing changed for them. Distinguishing the two is the whole point of the traversal gate, and here one walk of pom.xml's history settled it before any build was attempted.",
+
+ "note_on_the_sibling_libraries": "This was nearly attributed to the wrong break. setCodePointLimit is spelled identically in org.yaml:snakeyaml and org.snakeyaml:snakeyaml-engine, two artifacts with the same 3 MiB restriction at different boundaries. PerlOnJava uses the engine (org.snakeyaml.engine.v2), and the diff alone could not tell — the import predated the commit — so attribution had to come from the changed file's imports."
+}
