@@ -139,17 +139,39 @@ def classify(added_lines, identifier, default_value):
 
 
 def library_in_diff(added_lines, group_id):
-    """Confirm the diff touches THIS library.
-
-    PerlOnJava calls setCodePointLimit too -- on org.snakeyaml:snakeyaml-engine, a
-    different artifact with an analogous break. Without this check it reads as a case for
-    a break it has nothing to do with.
-    """
+    """Confirm from the DIFF alone. Weak: only sees added lines."""
     root = group_id.split(".")[0] + "." + group_id.split(".")[-1] if "." in group_id else group_id
     hay = "\n".join(added_lines)
     if group_id.replace(":", ".") in hay or root in hay:
         return True
-    return None  # unknown: the call may be in a file whose imports are unchanged
+    return None
+
+
+def library_in_file(repo, sha, path, group_id, other_group, token):
+    """Confirm from the FILE'S IMPORTS which library the call belongs to.
+
+    The diff is not enough. `setCodePointLimit` is spelled identically in
+    org.yaml:snakeyaml and org.snakeyaml:snakeyaml-engine -- two different artifacts with
+    the same 3 MiB break -- and a commit that only adds the call, leaving an import that
+    was already there, gives the diff nothing to match on. fglock/PerlOnJava is exactly
+    that: a genuine engine adaptation that the diff-only check cannot attribute, and which
+    would otherwise be counted against the wrong break.
+
+    Returns True (this library), False (the other one), or None (could not tell).
+    """
+    text = B._gh_file(repo, path, sha, token)
+    if text is None:
+        return None
+    mine = group_id.replace(":", ".")
+    theirs = (other_group or "").replace(":", ".")
+    # engine classes live under org.snakeyaml.engine, snakeyaml's under org.yaml.snakeyaml
+    has_mine = mine in text
+    has_theirs = bool(theirs) and theirs in text
+    if has_mine and not has_theirs:
+        return True
+    if has_theirs and not has_mine:
+        return False
+    return None
 
 
 def main():
@@ -160,6 +182,10 @@ def main():
     ap.add_argument("--default-value", type=int, default=3 * 1024 * 1024,
                     help="the library's own default; a call setting exactly this is a knob")
     ap.add_argument("--pages", type=int, default=3, help="search pages per query (50 each)")
+    ap.add_argument("--other-group", default="",
+                    help="sibling library whose API is spelled the same, e.g. org.yaml "
+                         "when mining org.snakeyaml. Used to ATTRIBUTE a commit to one "
+                         "break or the other from the changed file's imports.")
     ap.add_argument("--out")
     args = ap.parse_args()
 
@@ -240,7 +266,11 @@ def main():
                "message": (c["commit"]["message"] or "").splitlines()[0][:90],
                "verdict": verdict, "value": value, "evidence": evidence,
                "files": files[:3], "forks": len(repos) - 1,
-               "library_confirmed": library_in_diff(added, gid),
+               "library_confirmed": (
+                   library_in_diff(added, gid)
+                   if library_in_diff(added, gid) is not None else
+                   (library_in_file(repo, sha, files[0], gid, args.other_group, token)
+                    if files else None)),
                "files_changed": len(c.get("files", []))}
         fh.write(json.dumps(rec) + "\n"); fh.flush()
         results.append(rec)

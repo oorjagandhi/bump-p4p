@@ -231,8 +231,13 @@ def public_api(jar):
                 # behavioural change is measured and real. A client calling
                 # isAllowDuplicateKeys() compiles identically either way, so the keyword
                 # must not count as an API removal.
-                sig = re.sub(r"public\s+(?:final|synchronized|native|strictfp)\s+",
-                             "public ", sig)
+                #
+                # Anywhere in the modifier list, not just straight after `public`:
+                # snakeyaml-engine 2.5 turned `public static final ... builder()` into
+                # `public static ... builder()`, which the narrower rule read as the removal
+                # of the builder entry point every client uses. static/abstract/default are
+                # KEPT -- those do change how a caller may invoke the member.
+                sig = re.sub(r"\b(?:final|synchronized|native|strictfp)\s+", "", sig)
                 api[cur].add(sig)
     for n in names:
         batch.append(n)

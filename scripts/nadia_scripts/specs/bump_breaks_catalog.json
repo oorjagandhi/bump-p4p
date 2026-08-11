@@ -1330,6 +1330,53 @@
     "signal_grep": "exceeds the limit|code points|YAMLException",
     "note": "Boundary pinned empirically (see why_it_breaks). Probe: plain `new Yaml()` loading a 4 MB scalar document returns on 1.31 and throws on 1.32."
    }
+  },
+  {
+   "break_id": "snakeyaml-engine-2.4-to-2.5-codepointlimit",
+   "provenance": "EXTERNAL_CHANGELOG_NOT_BUMP",
+   "_provenance_note": "Sibling of snakeyaml-1.31-to-1.32-codepointlimit in a DIFFERENT artifact. Found 2026-08-12 via a near-miss: fglock/PerlOnJava raises the code-point limit to 50 MB and looked like a case for the org.yaml:snakeyaml break, but it uses org.snakeyaml.engine.v2 -- the YAML 1.2 engine, a separate artifact with its own version line and an analogous limit. The adaptation identifier `setCodePointLimit` is spelled identically in both, so any search keyed on the identifier alone will mix them; find_adaptations.py confirms the library from the diff for exactly this reason.",
+   "library": {
+    "group_id": "org.snakeyaml",
+    "artifact_id": "snakeyaml-engine",
+    "from_version": "2.4",
+    "to_version": "2.5",
+    "boundary_type": "minor",
+    "search_boundary": "within 2.x",
+    "dependency_scope": "compile"
+   },
+   "why_it_breaks": "2.5 imposes the same 3 MiB (3145728 code point) ceiling snakeyaml 1.32 introduced, BY DEFAULT, and adds LoadSettingsBuilder.setCodePointLimit to raise it. BOUNDARY PINNED EMPIRICALLY 2026-08-12 on JDK 11 with plain default settings -- `new Load(LoadSettings.builder().build()).loadFromString(doc)`:\n  2.3  4 MB -> OK\n  2.4  4 MB -> OK\n  2.5  4 MB -> THROWS YamlEngineException 'The incoming YAML document exceeds the limit: 3145728 code points.'\nSo the boundary is 2.4 -> 2.5, not 2.3 -> 2.4. Deny-by-default with an explicit re-permit, the xstream allowTypes shape.\n\nSCREEN CAVEAT, recorded rather than silently overridden: javap reports 7 removed public signatures across this boundary, so rank_candidates would REJECT it. All seven are raw generic types being parameterised (LoadSettings.getDefaultList: IntFunction<List> -> IntFunction<List<Object>>, and the matching setters, plus MappingNode.setValue). Those are source-compatible for ordinary lambda call sites though not for an explicitly-typed variable, and NONE is on the code-point-limit path, which is LoadSettings.builder().setCodePointLimit(n).build(). An eighth apparent removal, `public static final ... builder()` losing `final`, was a normalisation gap and is fixed.",
+   "clients": [],
+   "mining": {
+    "library_keyword": "snakeyaml-engine",
+    "signal_quality": "clean",
+    "commit_search_terms": [
+     "setCodePointLimit",
+     "codePointLimit",
+     "LoadSettings",
+     "LoadSettingsBuilder",
+     "YamlEngineException",
+     "exceeds the limit",
+     "code points",
+     "snakeyaml-engine 2.5",
+     "snakeyaml engine limit"
+    ],
+    "direct_bump_search_terms": [
+     "bump",
+     "upgrade",
+     "update dependency",
+     "dependency update",
+     "2.5",
+     "security update"
+    ]
+   },
+   "verify": {
+    "version_property": "bbc.snakeyaml-engine.version",
+    "runnable_baseline": "2.4",
+    "break_boundary": "2.5",
+    "java": 11,
+    "signal_grep": "exceeds the limit|code points|YamlEngineException",
+    "note": "Boundary pinned empirically (see why_it_breaks). Probe: new Load(LoadSettings.builder().build()).loadFromString(4 MB doc) returns on 2.4 and throws on 2.5."
+   }
   }
  ]
 }
