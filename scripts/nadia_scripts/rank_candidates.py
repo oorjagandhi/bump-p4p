@@ -225,6 +225,14 @@ def public_api(jar):
             if cur and s.startswith("public ") and s.endswith(";"):
                 # normalise: drop throws clauses and parameter names
                 sig = re.sub(r"\s+throws\s+.*;$", ";", s)
+                # Modifiers that cannot break a CALLER's source. snakeyaml 1.32 made seven
+                # LoaderOptions getters `final`, which this comparison read as seven
+                # removals and rejected the boundary as a compile break -- a boundary whose
+                # behavioural change is measured and real. A client calling
+                # isAllowDuplicateKeys() compiles identically either way, so the keyword
+                # must not count as an API removal.
+                sig = re.sub(r"public\s+(?:final|synchronized|native|strictfp)\s+",
+                             "public ", sig)
                 api[cur].add(sig)
     for n in names:
         batch.append(n)

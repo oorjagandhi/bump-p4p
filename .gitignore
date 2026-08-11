@@ -86,3 +86,6 @@ scripts/nadia_scripts/output/candidate_ranking_progress*.jsonl
 
 # population probe resume state — same reason as the other checkpoints
 scripts/nadia_scripts/output/population_probe_progress_*.jsonl
+
+# hand-run verification workspace (shallow clones + build output)
+.bbc_work/

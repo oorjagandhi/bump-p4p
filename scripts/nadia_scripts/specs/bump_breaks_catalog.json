@@ -1280,6 +1280,56 @@
     "signal_grep": "setIpAddressFromPasvResponse|passive|PASV",
     "note": "Boundary pinned empirically (see why_it_breaks). Probe subclasses FTPClient, calls the protected _parsePassiveModeReply on a fixed PASV reply, and reads getPassiveHost() -- no server required."
    }
+  },
+  {
+   "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+   "provenance": "EXTERNAL_CHANGELOG_NOT_BUMP",
+   "_provenance_note": "Found 2026-08-10 by asking whether a BBC can hide UNDER a syntactic break. snakeyaml was already in the catalog as `snakeyaml-1.x-to-2.0-safeconstructor` and mined to a zero -- but every one of that entry's search terms targets the TAG/DESERIALIZATION break (TagInspector, SafeConstructor, 'Global tag is not allowed', CVE-2022-1471), whose adaptations are constructor-arity fixes forced by javac. The RESOURCE LIMITS are a separate behavioural break in the same library, at a different boundary, and were never searched for. Confirmed instance already in hand: Enterprise-Content-Management/infoarchive-sip-sdk@4b617cd8 raises codePointLimit in a commit whose PARENT already had `new SafeConstructor(new LoaderOptions())` -- the compile break was fixed earlier, and this commit is a PURE behavioural adaptation. Population probe: 41 client commits across setCodePointLimit (15), setMaxAliasesForCollections (16) and setAllowDuplicateKeys (10).",
+   "library": {
+    "group_id": "org.yaml",
+    "artifact_id": "snakeyaml",
+    "from_version": "1.31",
+    "to_version": "1.32",
+    "boundary_type": "minor",
+    "search_boundary": "within 1.3x",
+    "dependency_scope": "compile"
+   },
+   "why_it_breaks": "1.32 imposes a 3 MB (3145728 code point) limit on incoming YAML BY DEFAULT and adds LoaderOptions.setCodePointLimit to raise it. BOUNDARY PINNED EMPIRICALLY 2026-08-10 on JDK 11 with a PLAIN `new Yaml()` -- no configuration, i.e. what an unsuspecting client has:\n  1.31  2 MB -> OK   4 MB -> OK    setCodePointLimit ABSENT\n  1.32  2 MB -> OK   4 MB -> THROWS YAMLException 'The incoming YAML document exceeds the limit: 3145728 code points.'\n  1.32 + setCodePointLimit(10MB)  4 MB -> OK\nA clean three-state differential. Deny-by-default with an explicit re-permit, the xstream allowTypes shape, and UNLIKE the 1.x->2.0 boundary there is no constructor removal to shadow it: after normalising modifiers that cannot break a caller's source, 1.31->1.32 removes exactly ONE signature, setProcessComments(boolean), whose return type widened from void to LoaderOptions -- source-compatible for statement calls. So a client compiles unchanged and fails at run time. Blast radius: clients parsing YAML documents over 3 MB. Narrower than xstream, but the population is measured rather than assumed.",
+   "clients": [],
+   "mining": {
+    "library_keyword": "snakeyaml",
+    "signal_quality": "clean",
+    "commit_search_terms": [
+     "setCodePointLimit",
+     "codePointLimit",
+     "code points",
+     "exceeds the limit",
+     "setMaxAliasesForCollections",
+     "setNestingDepthLimit",
+     "setAllowDuplicateKeys",
+     "snakeyaml limit",
+     "snakeyaml 1.32",
+     "YAMLException limit",
+     "snakeyaml DoS"
+    ],
+    "direct_bump_search_terms": [
+     "bump",
+     "upgrade",
+     "update dependency",
+     "dependency update",
+     "1.32",
+     "security update",
+     "CVE"
+    ]
+   },
+   "verify": {
+    "version_property": "bbc.snakeyaml.version",
+    "runnable_baseline": "1.31",
+    "break_boundary": "1.32",
+    "java": 11,
+    "signal_grep": "exceeds the limit|code points|YAMLException",
+    "note": "Boundary pinned empirically (see why_it_breaks). Probe: plain `new Yaml()` loading a 4 MB scalar document returns on 1.31 and throws on 1.32."
+   }
   }
  ]
 }
