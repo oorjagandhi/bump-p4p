@@ -71,7 +71,7 @@
         "config": "parent code (d03c1237) + xstream 1.4.18 (as the parent declares)",
         "result": "FAIL",
         "detail": "ForbiddenClassException: org.voyanttools.trombone.util.FlexibleParameters",
-        "tests": "run=1 failures=0 errors=1"
+        "tests": "run=1 failures=0 errors=1"  
       },
       {
         "name": "3_adapted",
