@@ -73,7 +73,11 @@ def _boundary_status(version_at_commit, to_version):
 
 def recorded_repos():
     repos = set()
-    for f in glob.glob(os.path.join(VERIFIED, "*.json")):
+    # verified_cases/<library>/*.json since the 2026-08 reorg
+    for f in glob.glob(os.path.join(VERIFIED, "*", "*.json")):
+        if os.path.basename(os.path.dirname(f)) in (
+                "excluded", "pending_differential", "drivers"):
+            continue
         try:
             d = json.load(open(f, encoding="utf-8"))
             r = d.get("adaptation", {}).get("repo", "")

@@ -940,7 +940,12 @@ def summarize():
     cat = load_catalog()
     cases = {}
     cdir = HERE / "verified_cases"
-    for cf in cdir.glob("*.json"):
+    # verified_cases/<library>/*.json since the 2026-08 reorg. excluded/,
+    # pending_differential/ and drivers/ are siblings, not libraries, and
+    # were never part of this table.
+    for cf in sorted(cdir.glob("*/*.json")):
+        if cf.parent.name in ("excluded", "pending_differential", "drivers"):
+            continue
         try:
             d = json.loads(cf.read_text(encoding="utf-8"))
         except Exception:

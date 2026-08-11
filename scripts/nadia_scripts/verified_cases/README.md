@@ -8,6 +8,27 @@ Each case is anchored in a BUMP-confirmed behavioural break and independently
 verified with a **3-state differential** build+test, so every entry here is
 evidence-backed, not inferred.
 
+## Layout
+
+Cases are nested **one folder per library** (since 2026-08):
+
+```
+verified_cases/
+  xstream/                  7 cases + XSTREAM_SUMMARY.md
+  snakeyaml/                2 cases (the 1.32 code-point limit)
+  excluded/<reason>/        rejected candidates, one folder per reason
+  pending_differential/     found but not yet run
+  drivers/                  generated test drivers
+```
+
+**The folder is the authority on what counts as verified, not the `status` field.**
+Six files under `excluded/` still read `status: verified_bbc` — they were verified and
+then excluded as authored mimics, mechanism-only, or no-boundary-crossing, and their
+status was never rewritten. Anything globbing `**/*.json` and filtering on status will
+count them and overstate the verified total. `report/census.py`, `bbc_e2e.py summarize()`
+and `agent/fanout.py` all glob `*/*.json` and skip `excluded`, `pending_differential`
+and `drivers` by name.
+
 ## What belongs in this folder
 
 A file here is a **client production adaptation to a behavioural break, verified by a

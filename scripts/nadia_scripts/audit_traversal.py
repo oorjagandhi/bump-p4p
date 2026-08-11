@@ -62,7 +62,11 @@ def main():
     today = datetime.date.today().isoformat()
 
     for fname, break_id, repo, sha in TARGETS:
+        # TARGETS carries bare filenames; cases are nested per library since
+        # the 2026-08 reorg, so resolve by search rather than by join.
         path = CASES / fname
+        if not path.exists():
+            path = next(iter(CASES.glob(f"*/{fname}")), path)
         if not path.exists():
             print(f"  SKIP {fname} (missing)")
             continue

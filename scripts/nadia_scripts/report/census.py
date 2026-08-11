@@ -167,7 +167,14 @@ def prod_ok(r):
 def load_cases():
     """Map break_id -> (verified, excluded-by-reason) from verified_cases/."""
     verified, excluded = Counter(), {}
-    for p in CASES.glob("*.json"):
+    # Cases are nested per library (verified_cases/<library>/*.json) since 2026-08.
+    # Do NOT glob recursively and lean on the status filter: SIX files under excluded/
+    # still carry status "verified_bbc" (they were verified, then excluded as authored
+    # mimics / mechanism-only / no-boundary-crossing, and their status was never
+    # rewritten). A recursive glob counts them and inflates VERIFIED from 9 to 12.
+    # The directory is the authority on what counts, not the status field.
+    for p in (q for q in CASES.glob("*/*.json")
+              if q.parent.name not in ("excluded", "pending_differential", "drivers")):
         try:
             d = json.loads(p.read_text(encoding="utf-8"))
         except Exception:
