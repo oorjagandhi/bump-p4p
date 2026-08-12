@@ -44,7 +44,11 @@ import argparse
 import json
 import re
 import sys
+import time
+from collections import Counter
 from pathlib import Path
+
+import requests
 
 import bbc_e2e as B
 from probe_population import is_library_repo, keyword_for
@@ -174,6 +178,90 @@ def library_in_file(repo, sha, path, group_id, other_group, token):
     return None
 
 
+def code_search_files(query, token, pages=3):
+    """(repo, path) for every file whose CURRENT content matches. Keeps the PATH.
+
+    A different index from commit search, and the difference is not cosmetic. Commit
+    search could not see AthenZ/athenz at all -- a repo-scoped commit search for
+    setStreamReadConstraints returns zero, because GitHub does not index that repository's
+    commit history -- while code search returned it immediately. On jackson-core, code
+    search found 241 repos of which 238 were unseen by commit search; on snakeyaml, 160 of
+    which 155 were unseen.
+
+    bbc_pipeline.gh_code_search exists but keeps only repo names, and the path is exactly
+    what the history walk below needs, so this is its own function.
+
+    Code search is rate-limited to ~10 requests/minute and capped at 1000 results.
+    """
+    out, page = [], 1
+    while page <= pages:
+        r = requests.get("https://api.github.com/search/code",
+                         headers={"Authorization": f"Bearer {token}",
+                                  "Accept": "application/vnd.github+json"},
+                         params={"q": query, "per_page": 100, "page": page}, timeout=30)
+        try:
+            d = r.json()
+        except Exception:
+            print(f"[code] non-JSON response on page {page}", file=sys.stderr)
+            break
+        if "items" not in d:
+            print(f"[code] API: {d.get('message')}", file=sys.stderr)
+            break
+        out += [(it["repository"]["full_name"], it["path"]) for it in d["items"]]
+        if len(d["items"]) < 100:
+            break
+        page += 1
+        time.sleep(7)          # ~10 req/min
+    return out
+
+
+def introducing_commit(repo, path, identifier, token):
+    """The oldest commit at `path` whose content contains `identifier`, or None.
+
+    Code search says a file contains the call TODAY; this dates it. The commits API is
+    complete per path and carries none of commit search's recency bias, which is the whole
+    point of routing through it.
+
+    Renames end the walk early -- git follows content, this follows a path -- so a commit
+    returned here is the introduction WITHIN THIS PATH'S history, not necessarily the
+    library-wide first use. karatelabs/karate hits exactly that: its oldest hit is the
+    commit that renamed the file.
+    """
+    commits = B._gh(f"{B.GH}/repos/{repo}/commits", token, path=path, per_page=100)
+    if not isinstance(commits, list) or not commits:
+        return None
+    for c in reversed(commits):            # oldest first
+        text = B._gh_file(repo, path, c["sha"], token)
+        if text and identifier in text:
+            return c
+    return None
+
+
+def report_date_distribution(rows, boundary_year=None):
+    """Print adaptations per year, and warn when the crossing window looks under-sampled.
+
+    On jackson-core the distribution was 2021:1, 2023:2, 2025:13, 2026:83 -- 83 of 99 from
+    the current year, three years after the boundary. That is an index artefact, not
+    behaviour, and it cost 99 rows of triage to notice. Cases cluster NEAR the boundary, so
+    a distribution skewed away from it means the search is looking in the wrong place.
+    """
+    years = Counter((r.get("date") or "?")[:4] for r in rows if r.get("date"))
+    if not years:
+        return
+    print("\n[dates] adaptations by year: "
+          + ", ".join(f"{y}:{n}" for y, n in sorted(years.items())))
+    if boundary_year:
+        near = sum(n for y, n in years.items()
+                   if y.isdigit() and 0 <= int(y) - int(boundary_year) <= 1)
+        total = sum(years.values())
+        pct = 100 * near // max(total, 1)
+        print(f"[dates] within a year of the {boundary_year} boundary: {near}/{total} ({pct}%)")
+        if pct < 25:
+            print("[dates] WARNING: the crossing window is under-sampled. Commit search "
+                  "skews recent and cannot index some repositories at all -- try "
+                  "--via code-search before concluding there are no cases.")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("break_id")
@@ -182,6 +270,13 @@ def main():
     ap.add_argument("--default-value", type=int, default=3 * 1024 * 1024,
                     help="the library's own default; a call setting exactly this is a knob")
     ap.add_argument("--pages", type=int, default=3, help="search pages per query (50 each)")
+    ap.add_argument("--via", choices=["commit-search", "code-search"],
+                    default="commit-search",
+                    help="commit-search (default) reads commit messages and diffs; it is "
+                         "recency-biased and cannot index some repositories at all. "
+                         "code-search finds files containing the identifier TODAY and dates "
+                         "each by walking that file's history -- slower, ~10 req/min, but it "
+                         "reaches repos commit search cannot see. AthenZ was found this way.")
     ap.add_argument("--other-group", default="",
                     help="sibling library whose API is spelled the same, e.g. org.yaml "
                          "when mining org.snakeyaml. Used to ATTRIBUTE a commit to one "
@@ -210,13 +305,40 @@ def main():
                stem]
     queries = list(dict.fromkeys(q for q in queries if q.strip()))
     seen = {}
-    for q in queries:
-        items, complete = B.gh_commit_search(q, token, max_pages=args.pages)
-        for it in items:
-            seen[(it["repository"]["full_name"], it["sha"])] = it
-        print(f"[search] q='{q}' -> {len(items)} hit(s)"
-              f"{'' if complete else '  (cut short)'}", flush=True)
-    print(f"[search] {len(seen)} distinct commit(s)\n")
+    if args.via == "commit-search":
+        for q in queries:
+            items, complete = B.gh_commit_search(q, token, max_pages=args.pages)
+            for it in items:
+                seen[(it["repository"]["full_name"], it["sha"])] = it
+            print(f"[search] q='{q}' -> {len(items)} hit(s)"
+                  f"{'' if complete else '  (cut short)'}", flush=True)
+        print(f"[search] {len(seen)} distinct commit(s)\n")
+    else:
+        # Code search finds files containing the identifier TODAY; the introducing commit
+        # then comes from walking that file's history. Slower and rate-limited, but it
+        # reaches repositories commit search cannot index at all -- which is how AthenZ was
+        # found after a repo-scoped commit search for the identifier returned zero.
+        hits = []
+        for q in (f'"{args.identifier}" language:java',
+                  f'"{args.identifier}" "{gid}" language:java'):
+            got = code_search_files(q, token, pages=args.pages)
+            print(f"[code] q={q[:52]!r} -> {len(got)} file hit(s)", flush=True)
+            hits += got
+            time.sleep(7)
+        by_repo = {}
+        for repo, path in hits:
+            if is_library_repo(repo, gid, aid):
+                continue
+            by_repo.setdefault(repo, path)      # one file per repo is enough to date it
+        print(f"[code] {len(by_repo)} candidate repo(s); dating each by file history\n")
+        for i, (repo, path) in enumerate(sorted(by_repo.items()), 1):
+            c = introducing_commit(repo, path, args.identifier, token)
+            if c is None:
+                continue
+            seen[(repo, c["sha"])] = c
+            print(f"  [{i}/{len(by_repo)}] {repo[:44]:46} "
+                  f"{c['commit']['author']['date'][:10]}  {c['sha'][:8]}", flush=True)
+        print(f"\n[code] dated {len(seen)} introducing commit(s)\n")
 
     # Checkpoint per commit: each row is a diff fetch, and a kill must not discard the
     # pass. Same lesson as the mine, the classify loop and the undecided resolver.
@@ -276,6 +398,17 @@ def main():
         results.append(rec)
         print(f"  [{verdict:15}] {repo[:40]:40} {rec['message'][:44]}", flush=True)
     fh.close()
+
+    # Surface the date skew before the shortlist, not after 99 rows of triage.
+    boundary_year = None
+    bdate = (brk.get("verify") or {}).get("boundary_released") or ""
+    if not bdate:
+        import re as _re
+        m = _re.search(r"(20\d\d)", str((brk.get("library") or {}).get("to_version", "")))
+        bdate = m.group(1) if m else ""
+    if bdate[:4].isdigit():
+        boundary_year = bdate[:4]
+    report_date_distribution(results, boundary_year)
 
     order = {"raise": 0, "needs_reading": 1, "knob_at_default": 2, "lower": 3,
              "no_call": 4, "unreadable": 5}
