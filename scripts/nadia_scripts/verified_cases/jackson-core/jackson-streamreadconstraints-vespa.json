@@ -1,0 +1,116 @@
+{
+ "case_id": "jackson-streamreadconstraints-vespa",
+ "status": "verified_bbc",
+ "case_type": "external_production_adaptation",
+ "verified_date": "2026-08-13",
+ "verified_by": "3-state differential driving the project's OWN document-feed reader, JsonFeedReader, built from their own Maven build (jackson moved through their own jackson2.version property) and run on JDK 17.",
+
+ "note": "The sixth case for this break and by far the largest client: vespa-engine/vespa is Yahoo's open-source search engine, 7,046 stars, ~119 Maven modules. It is also the most SELECTIVE adaptation in the corpus. Nine files across five modules, and the commit body states the policy explicitly: 'Disable restriction only for parsers/generators which is likely to handle literals exceeding 5M.' Not a global mapper fix and not a blanket disable -- a judgement applied per call site about which parsers see big documents.",
+
+ "discovery": {
+  "break_id": "jackson-core-2.15-streamreadconstraints"
+ },
+ "discovery_method": "CODE SEARCH, then dating by file history -- discover/date_hits.py -> discover/screen_dated.py over the cached /search/code hits. The value screen classified it `raise` automatically (Integer.MAX_VALUE on maxStringLength).",
+
+ "why_the_discovery_method_matters": "Commit search is recency-biased; dating by file history is what surfaces the 2023 window. Note also what the search hit and what was actually verifiable -- see verification.why_jsonfeedreader_and_not_jsonwriter. The hit file was not the file where the break can be demonstrated, and only reading the commit revealed that.",
+
+ "library": {
+  "group_id": "com.fasterxml.jackson.core",
+  "artifact_id": "jackson-core",
+  "at_version": "2.15.0",
+  "baseline_used": "2.14.2",
+  "_baseline_note": "Their ACTUAL previous version, read from the same property they bumped -- not a stand-in.",
+  "breaking_boundary": "2.15.0 (StreamReadConstraints imposed by default)",
+  "boundary_type": "minor",
+  "dependency_scope": "provided, via their own <jackson2.version> property in container-dependency-versions/pom.xml",
+  "_scope_note": "jackson-core is `provided` in the document module because at runtime vespa supplies it through its OSGi container bundle rather than the module's own classpath. That does not change the break: the same jar is loaded, and the differential puts it on the classpath explicitly."
+ },
+
+ "in_repo_version_transition": {
+  "crossed_boundary": true,
+  "mechanism": "direct bump of their own <jackson2.version> property in container-dependency-versions/pom.xml",
+  "bump_commit": "dd2a716ef9480e3b673955fcded3573dd6b5f633",
+  "bump_transition": "2.14.2 -> 2.15.0",
+  "bump_date": "2023-05-03",
+  "bump_commit_message": "Bump jackson from 2.14.2 to 2.15.0",
+  "evidence": "Walking container-dependency-versions/pom.xml gives an unbroken timeline on <jackson2.version>: 2.13.3 through 2022, 2.13.4 from 2022-09, 2.14.2 from 2023-02-28 (5359b14f7b6, 'Fresh jackson 2.14.2'), then 2.14.2 -> 2.15.0 at dd2a716ef94 on 2023-05-03, CROSSING the boundary, and 2.15.0 at the adaptation six days later.",
+  "elapsed": "6 days from crossing (2023-05-03) to fix (2023-05-09); 17 days from jackson's 2023-04-22 release",
+  "shape": "POST_MERGE_FIX",
+  "_earlier_jackson_caution": "Worth noting as context, not as evidence: they had tried jackson 2.14.0 once before, at 8a1d1048122 on 2022-11-12, and reverted it two days later at 5aa396a4428 ('Revert \"Jackson 2.14\"'). The reason for that revert is not recorded here and is NOT claimed to be related to this break -- 2.14 is below the boundary. It is mentioned only because it shows jackson upgrades in this repository are landed and rolled back deliberately.",
+  "traversal_confirmed_by_pipeline": false,
+  "confirmed_by": "manual walk of <jackson2.version> through container-dependency-versions/pom.xml history",
+  "why_the_pipeline_did_not_confirm_it": "Only because it was not run. The property is declared in a build file and moves monotonically, so find_crossing.py's bisect would handle it -- with the caveat that it would have to be pointed at container-dependency-versions/pom.xml rather than the root pom, since vespa declares the version three POMs away from the module that uses it."
+ },
+
+ "bump_provenance": "EXTERNAL_CHANGELOG_NOT_BUMP (jackson-core-2.15-streamreadconstraints)",
+ "bump_source": "jackson-core 2.15.0 release notes; StreamReadConstraints. Their commit title names the version and the mechanism directly: 'Disable string length restriction introduced in Jackson 2.15'.",
+
+ "behavioral_break": {
+  "mechanism": "jackson-core 2.15.0 introduced StreamReadConstraints with parser limits applied BY DEFAULT: maxStringLength 5,000,000 (raised to 20,000,000 in 2.15.1), maxNestingDepth 1000, maxNumberLength 1000. JSON that 2.14 parsed fine now throws StreamConstraintsException at parse time. No signature on the client's path changes, so the client compiles unchanged and fails at run time.",
+  "why_it_breaks": "Same as `mechanism`; recorded under both names because older cases in this directory use `why_it_breaks` and newer ones use `mechanism`.",
+  "affected_class": "com.yahoo.document.json.JsonFeedReader (and eight other parser/generator sites across container-core, container-search, document and vespa-feed-client)",
+  "observed_exception": "java.lang.IllegalArgumentException wrapping com.fasterxml.jackson.core.exc.StreamConstraintsException: String length (5042038) exceeds the maximum length (5000000)",
+  "_exception_shape_note": "vespa's reader wraps the jackson failure in IllegalArgumentException, so downstream the break presents as INVALID INPUT rather than as a library constraint. A document that fed successfully for years would start being reported as a malformed feed -- a materially more confusing failure than the raw jackson exception, and worth recording because it changes how the break would be diagnosed in the field.",
+  "category": "runtime_exception",
+  "blast_radius": "Document feeding and JSON rendering across the engine. vespa is a search engine whose stored documents are user content -- the exact place a single field above 5 MB is unremarkable -- and the affected paths include the feed reader, the feed client, the search result renderer and the document V1 API handler. This is the widest blast radius of any client in the corpus, which is presumably why the fix touches nine call sites rather than one."
+ },
+
+ "adaptation": {
+  "repo": "vespa-engine/vespa",
+  "repo_note": "Yahoo's open-source big-data serving/search engine. 7,046 stars, upstream, not a fork, not archived. ~119 Maven modules plus a large C++ tree.",
+  "commit": "ad7aed9bb7b529cc98acf46763cd869523296fbc",
+  "parent_commit": "9904aaf25710c6affca4140c22fa99501eb325fd",
+  "date": "2023-05-09",
+  "author": "Bjørn Christian Seime",
+  "commit_message": "Disable string length restriction introduced in Jackson 2.15",
+  "commit_body": "Disable restriction only for parsers/generators which is likely to handle literals exceeding 5M",
+  "build_system": "maven",
+  "module": "document, container-core, container-search, vespa-feed-client, vespaclient-container-plugin",
+  "language": "java",
+  "adaptation_in_test_code": false,
+  "adaptation_quality": "production_usage_adaptation",
+  "production_files": [
+   "document/src/main/java/com/yahoo/document/json/JsonFeedReader.java",
+   "document/src/main/java/com/yahoo/document/json/JsonWriter.java",
+   "document/src/main/java/com/yahoo/document/json/DocumentUpdateJsonSerializer.java",
+   "container-core/src/main/java/com/yahoo/restapi/JacksonJsonMapper.java",
+   "container-search/src/main/java/com/yahoo/search/handler/Json2SingleLevelMap.java",
+   "container-search/src/main/java/com/yahoo/search/rendering/JsonRenderer.java",
+   "vespa-feed-client/src/main/java/ai/vespa/feed/client/JsonFeeder.java",
+   "vespa-feed-client/src/main/java/ai/vespa/feed/client/impl/HttpFeedClient.java",
+   "vespaclient-container-plugin/src/main/java/com/yahoo/document/restapi/resource/DocumentV1ApiHandler.java"
+  ],
+  "the_call": "new JsonFactoryBuilder().streamReadConstraints(StreamReadConstraints.builder().maxStringLength(Integer.MAX_VALUE).build()).build()",
+  "restores_previous_behaviour": true,
+  "_restores_previous_behaviour_note": "Integer.MAX_VALUE on maxStringLength restores pre-2.15 behaviour FOR THE SITES IT IS APPLIED TO -- and only those. maxNestingDepth and maxNumberLength are left at jackson's new defaults everywhere, and parsers not judged likely to see huge literals are left entirely alone.",
+  "why_that_matters": "A FOURTH distinct posture for one break. json-compare disabled all three limits globally (full restoration); datashare raised one and tightened two (re-parameterisation); couchbase raised one to a finite ceiling (bounded raise); vespa raises one limit to unlimited but only at hand-picked call sites (selective restoration). The commit body is an explicit statement of that policy, which makes vespa the only client in the corpus that documents a RULE for where the fix belongs rather than just applying one.",
+  "evidence_of_diagnosis": "Nine call sites across five modules in a single commit, chosen by a stated criterion ('likely to handle literals exceeding 5M') rather than by what happened to fail. The commit title names the library and version that caused it.",
+  "scope": "9 production files; the whole commit is this adaptation and nothing else.",
+  "no_test_added": "The commit adds no test."
+ },
+
+ "verification": {
+  "method": "Their own Maven build at both commits (mvn -DskipTests install -pl document -am), with the jackson version supplied through THEIR OWN property (-Djackson2.version), so no build file was edited. A driver in the default package constructs a DocumentTypeManager with one registered type -- following their own JsonReaderTestCase idioms -- and feeds a one-operation JSON document whose single string field is 10,000,000 characters through new JsonFeedReader(stream, docMan).read(). Each state prints the classpath location of the loaded jackson-core jar and the maxStringLength actually in force, read off JsonFeedReader's own static factory by reflection.",
+  "why_jsonfeedreader_and_not_jsonwriter": "THE FILE THE CODE SEARCH HIT IS NOT THE FILE THE BREAK CAN BE SHOWN IN, and this is worth recording as a discovery-pipeline caveat. The hit was JsonWriter.java, but JsonWriter's JsonFactory produces GENERATORS -- the maxStringLength READ constraint set there is defensive, covering the factory's shared use, and is never exercised by writing. The break is a parse-time failure, so it has to be demonstrated on a read path. JsonFeedReader was changed in the same commit, in the same module, with the identical call, and is the reader vespa feeds JSON documents through. The screen's verdict on JsonWriter was still correct -- the call IS there and IS a raise; it simply is not the exercisable site.",
+  "test": "VespaBbcDriver.java (authored trigger, THEIR production reader). Nothing of theirs is reconstructed: the parse goes through their JsonFeedReader over their JsonReader, and the static jsonFactory the driver reads back is exactly the field their adaptation rewrites. Only the document, the document type and the main() are ours.",
+  "why_not_their_own_suite": "The commit adds no test, so there is nothing of theirs that touches this. Their JsonReaderTestCase exercises the reader thoroughly but with small fixtures -- no project ships a 10 MB string fixture, which is why this break needs an authored trigger.",
+  "states": [
+   {"name": "1_baseline", "config": "parent code (9904aaf2) + jackson 2.14.2", "cap_in_force": "n/a (StreamReadConstraints does not exist)",
+    "input": "10,000,000-character string field in a put operation", "result": "PARSED (type DOCUMENT, len 10000000)", "expected": "pass"},
+   {"name": "2_broken", "config": "parent code (9904aaf2) + jackson 2.15.0", "cap_in_force": "5000000",
+    "input": "10,000,000-character string field in a put operation",
+    "result": "THREW java.lang.IllegalArgumentException <- caused by com.fasterxml.jackson.core.exc.StreamConstraintsException: String length (5042038) exceeds the maximum length (5000000)",
+    "expected": "fail"},
+   {"name": "3_adapted", "config": "adapted code (ad7aed9b) + jackson 2.15.0", "cap_in_force": "2147483647",
+    "input": "10,000,000-character string field in a put operation", "result": "PARSED (type DOCUMENT, len 10000000)", "expected": "pass"}
+  ],
+  "isolation": "States 2 and 3 resolve the identical jackson-core 2.15.0 jar, so the only variable between them is their own commit. States 1 and 2 share their code exactly, so the only variable is the library version -- and both versions are theirs, from the property they bumped. The cap readout confirms each state independently: absent, 5000000, 2147483647. `mvn clean` runs between states. Baseline and adapted return the identical length (10000000), so state 3 restores state 1 exactly rather than merely avoiding the throw.",
+  "threats_to_validity": [
+   "THE TRIGGER IS AUTHORED, not their test, for the reason given in why_not_their_own_suite.",
+   "THE DIFFERENTIAL COVERS ONE OF NINE ADAPTED CALL SITES. JsonFeedReader is demonstrated; the other eight (the feed client, the search renderer, the document V1 API handler and so on) are not, since several need a running container or network stack. The break and the fix are the same one-line idiom at every site, but this case establishes it at one.",
+   "THE EXCEPTION REPORTS 5,042,038 CHARACTERS rather than the 10,000,000 written. That is jackson's own buffer-boundary accounting -- it aborts as soon as the accumulated segment passes the cap. The cap it names (5,000,000) is exactly 2.15.0's default.",
+   "THE BUILD CANNOT BE REPRODUCED FROM A FRESH CLONE WITHOUT THEIR BOOTSTRAP. vespa's own bootstrap.sh explains why: Maven cannot resolve a plugin that the same reactor build produces, and vespa's bundle-plugin is a build EXTENSION defining the custom packaging `container-plugin`, so without it installed the reactor cannot even be parsed ('Unknown packaging: container-plugin'). The harness's bootstrap.sh follows their documented order. This is build tooling only and is jackson-version-independent, so it is shared across states and cannot influence the result -- but it makes vespa the most expensive case here to re-verify."
+  ],
+  "reproduce": "scratchpad/jackson-vespa-harness/ — run bootstrap.sh ONCE (vtag.map, container-dependency-versions, parent, root -N, maven-plugins), then `bash run_state.sh <label> <sha> <jackson-version>` per state. Needs JDK 17, which run_state.sh names explicitly."
+ }
+}
