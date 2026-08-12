@@ -1,0 +1,112 @@
+{
+ "case_id": "jackson-streamreadconstraints-arangodb",
+ "status": "verified_bbc",
+ "case_type": "external_production_adaptation",
+ "verified_date": "2026-08-13",
+ "verified_by": "4-state differential running THEIR OWN TEST, JacksonConfigurationTest, from their own Maven build with the jackson version moved through their own adb.jackson.version property, on JDK 17.",
+
+ "note": "THE ONLY CASE IN THIS CORPUS WHOSE TRIGGER IS THE PROJECT'S OWN TEST. Every other case for this break needed a hand-written driver, for the reason each of those records states: no project ships a fixture large enough to cross a multi-megabyte cap. arangodb does not ship one either -- it GENERATES one, appending UUIDs until the string passes 40,000,000 characters -- so their suite can express the break directly. The standing 'the trigger is authored' threat to validity does not apply here.",
+
+ "discovery": {
+  "break_id": "jackson-core-2.15-streamreadconstraints"
+ },
+ "discovery_method": "CODE SEARCH, then dating by file history -- discover/date_hits.py -> discover/screen_dated.py over the cached /search/code hits.",
+
+ "why_the_discovery_method_matters": "The value screen could not decide this one and said so: all three knobs came back `needs_reading`, because the values are not written as builder calls but as reflective Invocation objects (`new Invocation(\"maxStringLength\", int.class, Integer.MAX_VALUE)`). That is the correct verdict -- a regex cannot tell that this reaches the same place as a direct call. It is also a reminder that `needs_reading` is a queue, not a bin: this case sat in it, and it is a verified case.",
+
+ "library": {
+  "group_id": "com.fasterxml.jackson.core",
+  "artifact_id": "jackson-core",
+  "at_version": "2.16.0",
+  "baseline_used": "2.14.2",
+  "_baseline_note": "Their ACTUAL pre-crossing version, from the same property they bumped.",
+  "breaking_boundary": "2.15.0 (StreamReadConstraints imposed by default)",
+  "boundary_type": "minor",
+  "dependency_scope": "compile, declared as <adb.jackson.version> in the root pom"
+ },
+
+ "in_repo_version_transition": {
+  "crossed_boundary": true,
+  "mechanism": "direct bump of their own <adb.jackson.version> property in the root pom",
+  "bump_commit": "1344289bafca7dea3cc48827e755750c218718db",
+  "bump_transition": "2.14.2 -> 2.15.1",
+  "bump_date": "2023-05-26",
+  "bump_commit_message": "updated dependencies",
+  "evidence": "Walking <adb.jackson.version> through the root pom: 2.14.2 from 2023-04-19 through 2023-05-17, then 2.14.2 -> 2.15.1 at 1344289b on 2023-05-26, CROSSING the boundary; then 2.15.2 from 2023-10-05 and 2.16.0 at a0175ac7 on 2023-12-19 ('support Jackson version 2.16'), which is what is in force at the adaptation.",
+  "elapsed": "237 days from crossing (2023-05-26) to fix (2024-01-18)",
+  "_elapsed_note": "THE LONGEST GAP IN THE CORPUS by a wide margin -- json-compare 3 days, vespa 6, benchto 60, datashare 64. They crossed the boundary in a commit titled merely 'updated dependencies', shipped on 2.15 and then 2.16 for eight months, and only then wrote the fix and a test for it. Whatever prompted it, it was not the upgrade itself.",
+  "shape": "POST_MERGE_FIX",
+  "traversal_confirmed_by_pipeline": false,
+  "confirmed_by": "manual walk of <adb.jackson.version> through the root pom's history"
+ },
+
+ "bump_provenance": "EXTERNAL_CHANGELOG_NOT_BUMP (jackson-core-2.15-streamreadconstraints)",
+ "bump_source": "jackson-core 2.15.0 release notes; StreamReadConstraints.",
+
+ "behavioral_break": {
+  "mechanism": "jackson-core 2.15.0 introduced StreamReadConstraints with parser limits applied BY DEFAULT: maxStringLength 5,000,000 (20,000,000 from 2.15.1 onward, so 20,000,000 at both the version they crossed to and the 2.16.0 they ran at the fix), maxNestingDepth 1000, maxNumberLength 1000. 2.16 added maxNameLength, maxDocumentLength and StreamWriteConstraints. JSON that 2.14 parsed fine now throws StreamConstraintsException at parse time.",
+  "why_it_breaks": "Same as `mechanism`; recorded under both names because older cases in this directory use `why_it_breaks` and newer ones use `mechanism`.",
+  "affected_class": "com.arangodb.internal.serde.InternalSerde and com.arangodb.serde.jackson.JacksonSerde (both JsonFactory paths the driver serialises and deserialises through)",
+  "observed_exception": "com.fasterxml.jackson.core.exc.StreamConstraintsException: String value length (20051112) exceeds the maximum allowed (20000000, from `StreamReadConstraints.getMaxStringLength()`), wrapped by java.lang.RuntimeException",
+  "category": "runtime_exception",
+  "blast_radius": "Any document stored in or read from ArangoDB through the Java driver with a string field above the cap. This is a DATABASE DRIVER: the payload is whatever the application chose to store, and a 20 MB string in a document store is a normal thing to keep, not an abuse. As with couchbase, the users exposed are not the ones who upgraded jackson."
+ },
+
+ "adaptation": {
+  "repo": "arangodb/arangodb-java-driver",
+  "repo_note": "The official ArangoDB Java driver. 209 stars, upstream, not a fork, not archived. Multi-module Maven (core, driver, shaded, jackson-serde-json, http, vst).",
+  "commit": "5b1b958a5bde17304be05f5d9416c237d3b59ddf",
+  "parent_commit": "2ae5af937350279ef00b795b7c8f884a3d189119",
+  "date": "2024-01-18",
+  "author": "Michele Rastelli",
+  "commit_message": "[DE-762] configure jackson stream constraints (#537)",
+  "commit_body": "configure Jackson StreamReadConstraints and StreamWriteConstraints with permissive values; test JSON serde with big strings; fix native tests; fix shaded native tests",
+  "build_system": "maven",
+  "module": "core (JacksonUtils), jackson-serde-json (JacksonMapperProvider), driver (test)",
+  "language": "java",
+  "adaptation_in_test_code": false,
+  "adaptation_quality": "production_usage_adaptation",
+  "production_files": [
+   "core/src/main/java/com/arangodb/internal/serde/JacksonUtils.java",
+   "core/src/main/java/com/arangodb/internal/serde/InternalSerdeProvider.java",
+   "jackson-serde-json/src/main/java/com/arangodb/serde/jackson/internal/JacksonMapperProvider.java"
+  ],
+  "test_files": [
+   "driver/src/test/java/com/arangodb/serde/JacksonConfigurationTest.java"
+  ],
+  "the_call": "JacksonUtils.tryConfigureJsonFactory(jf) -- which builds StreamReadConstraints with maxNumberLength, maxStringLength and maxNestingDepth at Integer.MAX_VALUE, plus maxNameLength (Integer.MAX_VALUE) and maxDocumentLength (Long.MAX_VALUE) when jackson >= 2.16, and StreamWriteConstraints.maxNestingDepth at Integer.MAX_VALUE when jackson >= 2.16 -- all applied REFLECTIVELY",
+  "restores_previous_behaviour": true,
+  "_restores_previous_behaviour_note": "A full restoration, and the most defensively engineered one in the corpus. Every limit the running jackson has is set to its maximum, and the code is version-gated at runtime: isAtLeastVersion(jf, 2, 15) guards the read constraints, isAtLeastVersion(jf, 2, 16) guards the 2.16-only ones. Their own comment gives both reasons for the reflection -- 'to avoid compilation errors with older Jackson versions' and 'to be compatible with shaded Jackson' -- the latter because they ship a shaded artifact where jackson's package is relocated, so the class names cannot be written literally. The whole thing is wrapped in tryConfigureJsonFactory, which catches Throwable and logs, so a jackson it does not understand degrades to no-op rather than breaking the driver.",
+  "why_that_matters": "This is what an adaptation looks like when the client cannot know which jackson its users will supply. Compare couchbase, which shades jackson and therefore knows exactly which version it has, and could write the call directly. Same problem, opposite constraint, and the shape of the fix follows from it.",
+  "evidence_of_diagnosis": "They wrote the fix, a test that generates a 40 MB string and round-trips it through BOTH serde paths, and updated the GraalVM native-image reflect-config for all three shipped artifacts (driver, http-protocol, shaded) so the reflective calls survive native compilation. That last part is why the commit touches 11 files.",
+  "scope": "3 production files, 1 test, and native-image reflection metadata; the whole commit is this adaptation and nothing else."
+ },
+
+ "verification": {
+  "method": "Their own Maven build at both commits (mvn -DskipTests install -pl driver -am), with the jackson version supplied through THEIR OWN property (-Dadb.jackson.version), so no build file was edited. The trigger is their own test class, run alone via `surefire:test -Dtest=JacksonConfigurationTest -DfailIfNoSpecifiedTests=true`.",
+  "test": "JacksonConfigurationTest -- THEIRS, added by the adaptation commit. It builds a string by appending UUIDs until it exceeds 40,000,000 characters, serialises and deserialises it through InternalSerdeProvider (the driver's internal serde) and JacksonSerde (the user-facing one), and asserts the round-trip is equal. For the baseline and broken states the file is taken verbatim out of the adaptation commit with `git checkout <fix> -- <path>`, so it cannot have been edited; its imports all exist at the parent, so it compiles there unchanged.",
+  "why_their_own_test_works_here_and_nowhere_else": "The other five cases needed authored triggers because their projects' suites had no fixture near the cap and no project ships a multi-megabyte one in git. arangodb sidesteps that by generating the payload at run time, which costs nothing in the repository. That is the only difference -- and it is what makes this the one case where the break is demonstrated entirely with the project's own code.",
+  "states": [
+   {"name": "1_baseline", "config": "parent code (2ae5af93) + jackson 2.14.2",
+    "result": "PASS -- Tests run: 4, Failures: 0, Errors: 0", "expected": "pass"},
+   {"name": "1b_probe", "config": "parent code (2ae5af93) + jackson 2.15.1",
+    "result": "FAIL -- Tests run: 4, Errors: 2; StreamConstraintsException: String length (20051112) exceeds the maximum length (20000000)",
+    "expected": "fail", "role": "the version they actually crossed TO, see why_four_states"},
+   {"name": "2_broken", "config": "parent code (2ae5af93) + jackson 2.16.0",
+    "result": "FAIL -- Tests run: 4, Errors: 2; StreamConstraintsException: String value length (20051112) exceeds the maximum allowed (20000000, from `StreamReadConstraints.getMaxStringLength()`)",
+    "expected": "fail"},
+   {"name": "3_adapted", "config": "adapted code (5b1b958a) + jackson 2.16.0",
+    "result": "PASS -- Tests run: 4, Failures: 0, Errors: 0", "expected": "pass"}
+  ],
+  "why_four_states": "Their crossing was 2.14.2 -> 2.15.1, but by the time they fixed it they were on 2.16.0, so a differential using only the baseline and the fix-time version would straddle 2.14 to 2.16. State 1b runs the identical parent code at 2.15.1 -- the exact version the crossing commit moved them to -- and it fails there too. So the break is established AT their crossing, not merely at the version they happened to be on eight months later.",
+  "_two_of_four": "In the failing states 2 of the 4 tests error, not 4, and that is expected rather than partial. The test is @ParameterizedTest over ContentType, which has two values: JSON and VPACK. VPACK is ArangoDB's own binary format and does not go through jackson's JSON parser, so the cap cannot fire on it. Only the JSON arm of each of the two test methods breaks. This is a useful negative control that came free with their test: the same payload, the same serde, the same jackson -- and no failure where jackson's JSON parser is not involved.",
+  "isolation": "Every state pins the same code except where stated and moves only adb.jackson.version. States 1, 1b and 2 share the parent source EXACTLY -- the only variable is the jackson version. States 2 and 3 resolve the identical jackson 2.16.0, so the only variable is their own commit. `mvn clean` runs between states. The test file is byte-identical in all four states, taken from the adaptation commit.",
+  "threats_to_validity": [
+   "THE TRIGGER IS NOT AUTHORED -- unusually for this corpus -- but it IS carried back to the parent, where it did not exist. That is unavoidable: the test was added by the fix. It is taken verbatim from the fix commit rather than retyped, and it compiles unchanged at the parent, so nothing about it was adapted to make the baseline pass.",
+   "JAVADOC AND GPG ARE SKIPPED in every state (-Dmaven.javadoc.skip, -Dgpg.skip). The javadoc run fails inside the JDK 17 javadoc tool itself ('java.lang.IllegalStateException: ERRONEOUS') on their sources, which is unrelated to the break; neither goal affects the classes under test, and both are skipped symmetrically.",
+   "THE EXCEPTION REPORTS ~20.05M CHARACTERS rather than the 40,000,000 generated. That is jackson's own buffer-boundary accounting -- it aborts as soon as the accumulated segment passes the cap. The cap it names (20,000,000) is exactly the 2.15.1+ default.",
+   "ONLY THE JSON CONTENT TYPE IS AFFECTED, as recorded in _two_of_four. The claim is about their JSON serde paths, not about VPACK."
+  ],
+  "reproduce": "scratchpad/jackson-arangodb-harness/ — run_state.sh only (no driver file: the trigger is their own test, pulled from the fix commit by the script). `bash run_state.sh <label> <sha> <jackson-version>` runs one state. Needs JDK 17."
+ }
+}
