@@ -1,0 +1,101 @@
+{
+ "case_id": "jackson-streamreadconstraints-athenz",
+ "status": "verified_bbc",
+ "case_type": "external_production_adaptation",
+ "verified_date": "2026-08-12",
+ "verified_by": "3-state differential over the project's OWN adaptation method, ZmsSyncer.setupJsonParserLimits(), built from their real Maven reactor (mvn -pl syncers/zms_aws_domain_syncer -am, JDK 21) and run on JDK 21.",
+
+ "note": "THE STRONGEST CASE IN THIS SET, and the first found by deliberately routing around a bias in the discovery method rather than in spite of it. Six days from bump to fix, a direct version declaration in the root pom, a 997-star upstream project, and state 3 executes the client's own method rather than a reconstruction of it.",
+
+ "discovery": {
+  "break_id": "jackson-core-2.15-streamreadconstraints"
+ },
+ "discovery_method": "CODE SEARCH plus file-history walking. Commit search never returned AthenZ -- it was not among the 82 repos that search found, and a repo-scoped commit search for the identifier returns zero, because GitHub's commit index does not cover this repository's history. Code search for '\"setStreamReadConstraints\" language:java' returned 241 repos, 238 of them unseen by commit search; walking the introducing commit of each candidate file then dated AthenZ's adaptation to 2023-06-08, inside the crossing window.",
+
+ "why_the_discovery_method_matters": "Commit search is biased toward recent commits. Across this break its results were 2021:1, 2023:2, 2025:13, 2026:83 -- 83 of 99 from the current year, three years after the boundary. That is not how adaptation behaves; it is an index artefact. Since cases cluster NEAR the boundary by definition, commit search systematically under-samples exactly where they are. File history via the commits API is complete per path and has no such bias, which is why it found this case immediately.",
+
+ "library": {
+  "group_id": "com.fasterxml.jackson.core",
+  "artifact_id": "jackson-core",
+  "at_version": "2.15.2",
+  "baseline_used": "2.14.2",
+  "_baseline_note": "Their ACTUAL previous version, taken from the same pom property they bumped -- not a stand-in.",
+  "breaking_boundary": "2.15.0 (StreamReadConstraints imposed by default)",
+  "boundary_type": "minor",
+  "dependency_scope": "compile, declared directly as <jackson-core.version> in the root pom.xml"
+ },
+
+ "in_repo_version_transition": {
+  "crossed_boundary": true,
+  "mechanism": "direct bump of the <jackson-core.version> property in the root pom.xml",
+  "bump_commit": "7c140534",
+  "bump_transition": "2.14.2 -> 2.15.2",
+  "bump_date": "2023-06-02",
+  "bump_commit_message": "update java and go dependencies to their latest releases",
+  "evidence": "Walking pom.xml's history gives an unbroken timeline: ... 2.13.4 -> 2.14.1 (2022-12), 2.14.1 -> 2.14.2 (2023-02-28), 2.14.2 -> 2.15.2 @7c140534 (2023-06-02, CROSSING the 2.15.0 boundary), 2.15.2 -> 2.15.3 (2023-10-18), and on to 2.22.1 by 2026.",
+  "elapsed": "6 days from crossing to fix -- the tightest of any case with a traced crossing",
+  "shape": "POST_MERGE_FIX",
+  "traversal_confirmed_by_pipeline": false,
+  "why_the_pipeline_did_not_find_it": "The break was never mined. Only 7 rows were ever classified for this catalog entry. Separately, commit search cannot index this repository's history, so the adaptation-axis search could not have surfaced it either."
+ },
+
+ "bump_provenance": "EXTERNAL_CHANGELOG_NOT_BUMP (jackson-core-2.15-streamreadconstraints)",
+ "bump_source": "jackson-core 2.15.0 release notes; StreamReadConstraints. The library itself raised maxStringLength from 5M to 20M in 2.15.1 after user reports, which is independent evidence the default bit people.",
+
+ "behavioral_break": {
+  "mechanism": "jackson-core 2.15.0 introduced StreamReadConstraints with parser limits applied BY DEFAULT: maxStringLength (5M in 2.15.0, 20M from 2.15.1), maxNestingDepth 1000, maxNumberLength 1000. JSON that 2.14 parsed fine now throws com.fasterxml.jackson.core.exc.StreamConstraintsException at parse time. Nothing on the client's path changes signature, so the client compiles unchanged and fails at run time.",
+  "why_it_breaks": "Same as `mechanism`; recorded under both names because older cases in this directory use `why_it_breaks` and newer ones use `mechanism`.",
+  "affected_class": "com.yahoo.athenz.zms.ZMSImpl and com.yahoo.athenz.zts.ZTSImpl (their JSON mappers), plus the syncer's ZmsSyncer",
+  "observed_exception": "com.fasterxml.jackson.core.exc.StreamConstraintsException: String length (20051429) exceeds the maximum length (20000000)",
+  "category": "runtime_exception",
+  "blast_radius": "Clients parsing JSON with a string field above the default. For AthenZ that is routine -- their own config comment says the raise exists 'to support large domains that may exist in Athenz'."
+ },
+
+ "adaptation": {
+  "repo": "AthenZ/athenz",
+  "repo_note": "Yahoo/Verizon Media's authorization service (ZMS/ZTS). 997 stars, upstream, not a fork. Multi-module Maven.",
+  "commit": "82a1f1a2df6f7f7e24f7f79b8b2fc1107607c63b",
+  "parent_commit": "ffa5cd11659d3eef5d2e2563fd8f2e13046b5872",
+  "date": "2023-06-08",
+  "commit_message": "increased/configure json string limit for jackson (#2203)",
+  "build_system": "maven",
+  "module": "servers/zms, servers/zts, syncers/zms_aws_domain_syncer",
+  "language": "java",
+  "adaptation_in_test_code": false,
+  "adaptation_quality": "production_usage_adaptation",
+  "production_files": [
+   "servers/zms/src/main/java/com/yahoo/athenz/zms/ZMSImpl.java",
+   "servers/zts/src/main/java/com/yahoo/athenz/zts/ZTSImpl.java",
+   "syncers/zms_aws_domain_syncer/src/main/java/com/yahoo/athenz/zms_aws_domain_syncer/ZmsSyncer.java",
+   "servers/zms/conf/zms.properties",
+   "servers/zts/conf/zts.properties"
+  ],
+  "the_call": "StreamReadConstraints.builder().maxNestingDepth(n).maxNumberLength(n).maxStringLength(n).build(); StreamReadConstraints.overrideDefaultStreamReadConstraints(streamReadConstraints);",
+  "restores_previous_behaviour": true,
+  "why_that_matters": "Their default for maxStringLength is 200000000 -- ten times the library's 20M -- so the limit is genuinely lifted rather than exposed as a knob at the library value. Their own config comment states the reason: 'we increase this value to 200GB to support large domains that may exist in Athenz'.",
+  "evidence_of_diagnosis": "They left maxNestingDepth and maxNumberLength at the library's own defaults (1000/1000) and raised ONLY maxStringLength. A blanket hardening or a careless copy would have moved all three; raising exactly the one that broke them indicates the failure was diagnosed.",
+  "scope": "8 files across three services -- a coordinated response, not an incidental edit inside a larger change."
+ },
+
+ "verification": {
+  "method": "Built the syncer module and its reactor dependencies with their own Maven build at both commits (mvn -B -pl syncers/zms_aws_domain_syncer -am -DskipTests test-compile). A driver in their package calls ZmsSyncer.setupJsonParserLimits() directly -- the method is package-private and uses no instance state, and their three-arg constructor skips the AWS setup the no-arg one performs -- then parses JSON with a 25 MB string field through a plain ObjectMapper. The override is JVM-global, which is exactly how their servers rely on it.",
+  "test": "AthenzBbcDriver.java (authored trigger, THEIR adaptation). Nothing of ours is substituted for their logic: the 200000000 value comes from their own Config.DEFAULT_JSON_MAX_STRING_LENGTH via putIfAbsent. We supplied only their expected deployment layout -- an empty ${root}/zms_syncer/conf/zms_syncer.conf -- so that their own defaults load.",
+  "states": [
+   {"name": "1_baseline", "config": "parent code + jackson-core 2.14.2 (+ matching databind/annotations)",
+    "input": "25 MB JSON string field", "result": "PARSED (len 26214400)", "expected": "pass"},
+   {"name": "2_broken", "config": "parent code + jackson-core 2.15.2",
+    "input": "25 MB JSON string field",
+    "result": "THREW StreamConstraintsException: String length (20051429) exceeds the maximum length (20000000)",
+    "expected": "fail"},
+   {"name": "3_adapted", "config": "adapted code + jackson-core 2.15.2, their setupJsonParserLimits() applied",
+    "input": "25 MB JSON string field", "result": "PARSED (len 26214400)", "expected": "pass"}
+  ],
+  "isolation": "States 2 and 3 share the jackson-core 2.15.2 jar, so the only variable is their own commit. States 1 and 2 share their code, so the only variable is the library version -- and both versions are theirs, from the pom property they bumped.",
+  "threats_to_validity": [
+   "THE TRIGGER IS AUTHORED, not their test. The adaptation under test is entirely AthenZ's; only the oversized JSON document and the main() that invokes their method are ours. Their suite has no 25 MB fixture, for the same reason no project does.",
+   "STATE 3 DRIVES THE SYNCER'S COPY of the adaptation, not ZMSImpl's or ZTSImpl's. All three call the same StreamReadConstraints.overrideDefaultStreamReadConstraints with the same 200000000 default; the syncer was chosen because ZMSImpl and ZTSImpl require full server construction. The mechanism verified is identical.",
+   "JACKSON-DATABIND AND -ANNOTATIONS were matched to the core version in each state (2.14.2 with 2.14.2, 2.15.2 with 2.15.2). Mixing them produced a ClassNotFoundException for StreamConstraintsException, which is a version-skew artefact and not the break; the matched pairing is what their pom resolves."
+  ],
+  "reproduce": "scratchpad/jackson-athenz-harness/ — AthenzBbcDriver.java plus run_differential.sh."
+ }
+}
