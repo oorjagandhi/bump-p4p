@@ -138,5 +138,19 @@
     "release_date": "2022-11",
     "epoch_ms": 1669496925000,
     "exact": true
+  },
+  "snakeyaml-1.31-to-1.32-codepointlimit": {
+    "boundary_declared": "1.32",
+    "boundary_resolved": "1.32",
+    "release_date": "2022-09",
+    "epoch_ms": 1662999602000,
+    "exact": true
+  },
+  "snakeyaml-engine-2.4-to-2.5-codepointlimit": {
+    "boundary_declared": "2.5",
+    "boundary_resolved": "2.5",
+    "release_date": "2022-10",
+    "epoch_ms": 1664826577000,
+    "exact": true
   }
 }
