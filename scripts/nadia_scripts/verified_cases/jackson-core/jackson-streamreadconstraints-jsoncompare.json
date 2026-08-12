@@ -1,0 +1,101 @@
+{
+ "case_id": "jackson-streamreadconstraints-jsoncompare",
+ "status": "verified_bbc",
+ "case_type": "external_production_adaptation",
+ "verified_date": "2026-08-12",
+ "verified_by": "3-state differential driving the project's OWN production entry point, JsonUtils.toJson(String), built from their own Maven build (mvn package, jackson version overridden via their own pom properties) and run on JDK 11.",
+
+ "note": "The TIGHTEST case in this set: jackson-core 2.15.0 was released 2023-04-22, this project took it on 2023-04-24, and adapted on 2023-04-27 -- three days from crossing to fix, five from the library's release. Small enough to build in full, which makes it the cheapest case here to re-verify.",
+
+ "discovery": {
+  "break_id": "jackson-core-2.15-streamreadconstraints"
+ },
+ "discovery_method": "CODE SEARCH, then dating by file history, then a crossing bisect -- discover/date_hits.py -> discover/screen_dated.py -> traversal/find_crossing.py over the 600 cached /search/code hits (241 repos). The value screen classified it `raise` automatically (Integer.MAX_VALUE on all three limits) and the bisect confirmed the crossing without human reading.",
+
+ "why_the_discovery_method_matters": "Same reason as the AthenZ case: commit search is recency-biased and returned 83 of 99 hits from 2026, three years past the boundary. Routing through code search and dating by file history gave 2023:31 and 2024:27 instead -- the window where crossings actually are.",
+
+ "library": {
+  "group_id": "com.fasterxml.jackson.core",
+  "artifact_id": "jackson-core",
+  "at_version": "2.15.0",
+  "baseline_used": "2.14.2",
+  "_baseline_note": "Their ACTUAL previous version, read from the same pom property they bumped -- not a stand-in.",
+  "breaking_boundary": "2.15.0 (StreamReadConstraints imposed by default)",
+  "boundary_type": "minor",
+  "dependency_scope": "compile, declared directly as <jackson.version> in pom.xml"
+ },
+
+ "in_repo_version_transition": {
+  "crossed_boundary": true,
+  "mechanism": "direct bump of the <jackson.version> property in pom.xml, by Renovate",
+  "bump_commit": "310bf171e6d6929013167665de312f38606a55f6",
+  "bump_transition": "2.14.2 -> 2.15.0",
+  "bump_date": "2023-04-24",
+  "bump_commit_message": "Update dependency com.fasterxml.jackson.core:jackson-core to v2.15.0",
+  "_databind_note": "jackson-databind followed a day later at 17664c2102c98c4180172f2f5e66796944e21a1d (2023-04-25), a separate Renovate PR. The break is in jackson-core, so the core bump is the crossing; both properties were at 2.15.0 before the adaptation, and the differential overrides both together so the two artifacts never mismatch.",
+  "evidence": "Walking pom.xml's history gives an unbroken timeline on <jackson.version>: 2.14.2 from 2023-01-30 through 2023-03-27, then 2.14.2 -> 2.15.0 at 310bf171 on 2023-04-24, CROSSING the 2.15.0 boundary, and 2.15.0 at every commit thereafter up to the adaptation.",
+  "elapsed": "3 days from crossing to fix; 5 days from the library's 2023-04-22 release",
+  "shape": "POST_MERGE_FIX",
+  "traversal_confirmed_by_pipeline": true,
+  "confirmed_by": "traversal/find_crossing.py, bisecting pom.xml history"
+ },
+
+ "bump_provenance": "EXTERNAL_CHANGELOG_NOT_BUMP (jackson-core-2.15-streamreadconstraints)",
+ "bump_source": "jackson-core 2.15.0 release notes; StreamReadConstraints. The library itself raised maxStringLength from 5M to 20M in 2.15.1 after user reports, which is independent evidence the default bit people -- this project hit it while the cap was still 5M.",
+
+ "behavioral_break": {
+  "mechanism": "jackson-core 2.15.0 introduced StreamReadConstraints with parser limits applied BY DEFAULT: maxStringLength 5,000,000 (raised to 20,000,000 in 2.15.1), maxNestingDepth 1000, maxNumberLength 1000. JSON that 2.14 parsed fine now throws com.fasterxml.jackson.core.exc.StreamConstraintsException at parse time. No signature on the client's path changes, so the client compiles unchanged and fails at run time.",
+  "why_it_breaks": "Same as `mechanism`; recorded under both names because older cases in this directory use `why_it_breaks` and newer ones use `mechanism`.",
+  "affected_class": "io.json.compare.util.JsonUtils and io.json.compare.matcher.JsonPathMatcher (their two static ObjectMappers)",
+  "observed_exception": "com.fasterxml.jackson.core.exc.StreamConstraintsException: String length (5043685) exceeds the maximum length (5000000)",
+  "category": "runtime_exception",
+  "blast_radius": "Every document this library compares. JsonUtils.toJson is the single entry point through which json-compare parses all input, so any user comparing a JSON document with a field above the cap is affected -- which for a comparison library is precisely the payload-inspection use case."
+ },
+
+ "adaptation": {
+  "repo": "fslev/json-compare",
+  "repo_note": "A JSON comparison library. 77 stars, upstream, not a fork. Single-module Maven.",
+  "commit": "a1c205786e02042f704aad196fed6717a31d5572",
+  "parent_commit": "409ccb93a08b5880ec325ce7ab14c4ce5669ae81",
+  "date": "2023-04-27",
+  "commit_message": "Use Integer.MAX_VALUE for ObjectMapper max number, nesting and String length",
+  "build_system": "maven",
+  "module": "(single module)",
+  "language": "java",
+  "adaptation_in_test_code": false,
+  "adaptation_quality": "production_usage_adaptation",
+  "production_files": [
+   "src/main/java/io/json/compare/util/JsonUtils.java",
+   "src/main/java/io/json/compare/matcher/JsonPathMatcher.java",
+   "Changelog.md"
+  ],
+  "the_call": "MAPPER.getFactory().setStreamReadConstraints(StreamReadConstraints.builder().maxNestingDepth(Integer.MAX_VALUE).maxNumberLength(Integer.MAX_VALUE).maxStringLength(Integer.MAX_VALUE).build());",
+  "restores_previous_behaviour": true,
+  "why_that_matters": "Integer.MAX_VALUE on all three limits is a full restoration of pre-2.15 behaviour, not a knob parked at the library's own value. There is no configuration surface and no property to set: the limits are simply removed, which is what a library does when a new default breaks its users and it has no way to know how large their documents are.",
+  "evidence_of_diagnosis": "They changed BOTH static ObjectMappers in the same commit -- JsonUtils and JsonPathMatcher -- rather than the one that happened to fail, and recorded the change in Changelog.md. Three days after the crossing, with the commit message naming all three limits.",
+  "scope": "2 production files plus the changelog; the whole commit is this adaptation and nothing else."
+ },
+
+ "verification": {
+  "method": "Their own Maven build at both commits (mvn -DskipTests package), with the jackson version supplied through THEIR OWN pom properties (-Djackson.version -Djackson.databind.version), so no build file was edited. A driver in the default package calls JsonUtils.toJson(String) -- public, static, no construction needed -- on a JSON document whose single field is 6,000,000 characters, above 2.15.0's 5,000,000 cap. Each state prints the classpath location of the loaded jackson-core jar, so a state cannot silently run the wrong version.",
+  "test": "JsonCompareBbcDriver.java (authored trigger, THEIR production path). Nothing of theirs is reconstructed: the parse goes through their JsonUtils.MAPPER, the same static mapper their adaptation configures. Only the oversized document and the main() are ours.",
+  "why_not_their_own_suite": "Their suite passes identically in all three states. JSONLargeCompareTests exists but its fixture sits far below the cap, so no test flips -- no project ships a 6 MB string fixture, which is why this break needs an authored trigger. Their suite does have 3 pre-existing failures on Windows (JsonPrettyPrintlTest, JsonUtilsTest.testEmptyJsonPrettyPrint, MessageUtilTest.testCrop), all line-ending artefacts, and all three fail in EVERY state -- they never enter a baseline-pass set and are unrelated to this break.",
+  "states": [
+   {"name": "1_baseline", "config": "parent code (409ccb93) + jackson-core/databind 2.14.2",
+    "input": "6,000,000-character JSON string field", "result": "PARSED (len 6000008)", "expected": "pass"},
+   {"name": "2_broken", "config": "parent code (409ccb93) + jackson-core/databind 2.15.0",
+    "input": "6,000,000-character JSON string field",
+    "result": "THREW com.fasterxml.jackson.core.exc.StreamConstraintsException: String length (5043685) exceeds the maximum length (5000000)",
+    "expected": "fail"},
+   {"name": "3_adapted", "config": "adapted code (a1c20578) + jackson-core/databind 2.15.0",
+    "input": "6,000,000-character JSON string field", "result": "PARSED (len 6000008)", "expected": "pass"}
+  ],
+  "isolation": "States 2 and 3 resolve the identical jackson-core 2.15.0 jar, so the only variable between them is their own commit. States 1 and 2 share their code exactly, so the only variable is the library version -- and both versions are theirs, from the property Renovate bumped. `mvn clean` runs between states, because incremental compilation would otherwise reuse the previous state's .class files after a checkout.",
+  "threats_to_validity": [
+   "THE TRIGGER IS AUTHORED, not their test, for the reason given in why_not_their_own_suite.",
+   "THE EXCEPTION REPORTS 5,043,685 characters rather than the 6,000,000 written. That is jackson's own buffer-boundary accounting -- it aborts as soon as the accumulated segment passes the cap, not after reading the whole field. The number differing from the input is expected, and the cap it names (5,000,000) is exactly 2.15.0's default.",
+   "JACKSON-CORE AND -DATABIND were moved together in every state, matching what their pom resolves. Moving core alone would produce a version-skew artefact rather than the break."
+  ],
+  "reproduce": "scratchpad/jackson-jsoncompare-harness/ — JsonCompareBbcDriver.java plus run_state.sh; `bash run_state.sh <label> <sha> <jackson-version>` runs one state."
+ }
+}

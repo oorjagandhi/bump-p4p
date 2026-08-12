@@ -89,3 +89,6 @@ scripts/nadia_scripts/output/population_probe_progress_*.jsonl
 
 # hand-run verification workspace (shallow clones + build output)
 .bbc_work/
+
+# Cloned client repos inside harnesses: the driver and runner are tracked, the clone is not
+scripts/nadia_scripts/scratchpad/**/repo/
