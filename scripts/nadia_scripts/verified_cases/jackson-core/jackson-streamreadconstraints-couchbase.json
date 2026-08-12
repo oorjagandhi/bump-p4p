@@ -1,0 +1,114 @@
+{
+ "case_id": "jackson-streamreadconstraints-couchbase",
+ "status": "verified_bbc",
+ "case_type": "external_production_adaptation",
+ "verified_date": "2026-08-12",
+ "verified_by": "3-state differential driving the project's OWN production decode path, Mapper.decodeInto(String, Class), built from their own Maven build (core-io-deps reshaded per state with -Djackson.version, core-io compiled from source) and run on JDK 11 against their Java 8 target.",
+
+ "note": "The FOURTH case for this break, and the first jackson-core case that is BUNDLED_BUMP_AND_ADAPTATION rather than POST_MERGE_FIX -- the shape is not new to the corpus (worldedit, openmrs-core, collectionspace-services and marklogic-contentpump precede it), but the other three jackson cases are all post-merge fixes. What IS distinctive is the evidence of motive: their commit message states it outright -- 'Jackson 2.15 introduced processing limits. Increase the default string length limit from 5 MB to 20 MiB, in case someone is using a Couchbase document to store a single huge string.' `in case someone is` means nobody had reported it. This is the clearest instance in the corpus of an adaptation made by reading release notes rather than by being bitten, and it is a CLIENT LIBRARY adapting on behalf of users it cannot see.",
+
+ "discovery": {
+  "break_id": "jackson-core-2.15-streamreadconstraints"
+ },
+ "discovery_method": "CODE SEARCH, then dating by file history -- discover/date_hits.py -> discover/screen_dated.py over the cached /search/code hits. The value screen classified it `raise` automatically (20971520 on maxStringLength).",
+
+ "why_the_discovery_method_matters": "Same recency argument as the other jackson cases: commit search is biased toward 2026, and dating by file history is what brings the 2023 window into view. It was the value screen on the adaptation call that surfaced this one -- 20971520 is not a value any default would produce.",
+
+ "library": {
+  "group_id": "com.fasterxml.jackson.core",
+  "artifact_id": "jackson-core",
+  "at_version": "2.15.0",
+  "baseline_used": "2.14.2",
+  "_baseline_note": "Their ACTUAL previous version, read from the same pom property they bumped in this very commit -- not a stand-in.",
+  "breaking_boundary": "2.15.0 (StreamReadConstraints imposed by default)",
+  "boundary_type": "minor",
+  "dependency_scope": "compile, declared as <jackson.version> in core-io-deps/pom.xml and repackaged (shaded) into com.couchbase.client.core.deps.*",
+  "_shading_note": "Jackson is not on couchbase's classpath under its own name. core-io-deps relocates it to com.couchbase.client.core.deps.com.fasterxml.jackson.*, and core-io's source imports those names. The break travels through the relocation unchanged -- the exception observed in state 2 is com.couchbase.client.core.deps.com.fasterxml.jackson.core.exc.StreamConstraintsException."
+ },
+
+ "in_repo_version_transition": {
+  "crossed_boundary": true,
+  "mechanism": "direct bump of <jackson.version> in BOTH core-io-deps/pom.xml and the root pom.xml, hand-written, in the same commit as the adaptation",
+  "bump_commit": "77c218722549303f63489f1ad2b51525f5dcea49",
+  "bump_transition": "2.14.2 -> 2.15.0",
+  "bump_date": "2023-05-08",
+  "bump_commit_message": "JVMCBC-1278 Upgrade Jackson from 2.14.2 to 2.15.0",
+  "evidence": "<jackson.version> reads 2.14.2 at every commit touching core-io-deps/pom.xml from 2023-01-30 (a61cc1fb1) through the immediate parent db4239fcd, and 2.15.0 in the adaptation commit itself. The crossing is therefore not inferred from a bisect -- it is one line of the adaptation commit's own diff.",
+  "elapsed": "0 days: the crossing and the adaptation are the same commit",
+  "shape": "BUNDLED_BUMP_AND_ADAPTATION",
+  "_shape_note": "The name is the pipeline's own: mine/bbc_e2e.py assigns BUNDLED_BUMP_AND_ADAPTATION when the crossing-to-adaptation distance is 0, POST_MERGE_FIX otherwise. Four verified cases already carry it (worldedit, openmrs-core, collectionspace-services, marklogic-contentpump); this is the first for jackson-core, where the other three are all post-merge fixes. For POST_MERGE_FIX cases the elapsed time from crossing to fix is the interesting quantity (3 days for json-compare, 64 for datashare). Here it is zero by construction, and the interesting quantity is instead that state 2 -- their code on 2.15.0 without the fix -- NEVER EXISTED. See verification.threats_to_validity. Bundling has a methodological UPSIDE that worldedit's record also notes: the baseline is the version they were genuinely on, not a reconstruction.",
+  "traversal_confirmed_by_pipeline": false,
+  "confirmed_by": "direct read of the adaptation commit's own diff, plus a walk of <jackson.version> back through core-io-deps/pom.xml's history",
+  "why_the_pipeline_did_not_confirm_it": "Only because it was not run -- nothing here would have defeated it, and this case should NOT be read as an automation gap. find_crossing.py bisects a build file's history independently of where the adaptation sits, so it would have found this clean 2.14.2 -> 2.15.0 transition in core-io-deps/pom.xml and reported `confirmed`; and mine/bbc_e2e.py already models a zero-distance crossing explicitly, treating an 'ancestor/same commit' bump as valid and labelling it BUNDLED_BUMP_AND_ADAPTATION. The crossing was read from the diff instead because when the bump IS the adaptation commit, the diff is the more direct evidence -- a bisect would only rediscover the line already visible in the patch."
+ },
+
+ "bump_provenance": "EXTERNAL_CHANGELOG_NOT_BUMP (jackson-core-2.15-streamreadconstraints)",
+ "bump_source": "jackson-core 2.15.0 release notes; StreamReadConstraints. Couchbase's commit message cites the release-notes fact directly ('Jackson 2.15 introduced processing limits'), which makes this the clearest evidence in the corpus that a maintainer read a changelog and acted on it before any failure occurred.",
+
+ "behavioral_break": {
+  "mechanism": "jackson-core 2.15.0 introduced StreamReadConstraints with parser limits applied BY DEFAULT: maxStringLength 5,000,000 (raised to 20,000,000 in 2.15.1), maxNestingDepth 1000, maxNumberLength 1000. JSON that 2.14 parsed fine now throws StreamConstraintsException at parse time. No signature on the client's path changes, so the client compiles unchanged and fails at run time.",
+  "why_it_breaks": "Same as `mechanism`; recorded under both names because older cases in this directory use `why_it_breaks` and newer ones use `mechanism`.",
+  "affected_class": "com.couchbase.client.core.json.Mapper (the private static ObjectMapper behind core-io's whole encode/decode surface) and com.couchbase.client.java.codec.DefaultJsonSerializer",
+  "observed_exception": "com.couchbase.client.core.deps.com.fasterxml.jackson.core.exc.StreamConstraintsException: String length (5043495) exceeds the maximum length (5000000), wrapped by com.couchbase.client.core.json.MapperException",
+  "category": "runtime_exception",
+  "blast_radius": "Every document read through the Couchbase Java SDK. Mapper is core-io's single decode point, and the payload is whatever the user stored in Couchbase -- so the affected input is an ordinary large document, as their own commit message says. A CLIENT LIBRARY is the worst place for this break to land: the SDK's users would have seen a Couchbase exception on data that had been readable for years, with nothing in their own code or their own dependency list having changed."
+ },
+
+ "adaptation": {
+  "repo": "couchbase/couchbase-jvm-clients",
+  "repo_note": "The official Couchbase SDKs for the JVM (java-client, scala-client, kotlin-client over a shared core-io). 56 stars, upstream, not a fork, not archived. Star count badly understates reach: this is the shipping Couchbase Java SDK.",
+  "commit": "77c218722549303f63489f1ad2b51525f5dcea49",
+  "parent_commit": "db4239fcd5ee4317639982d49a452015c4a865b4",
+  "date": "2023-05-08",
+  "author": "David Nault",
+  "commit_message": "JVMCBC-1278 Upgrade Jackson from 2.14.2 to 2.15.0",
+  "build_system": "maven",
+  "module": "core-io (adaptation), core-io-deps (version bump + shade fix)",
+  "language": "java",
+  "adaptation_in_test_code": false,
+  "adaptation_quality": "production_usage_adaptation",
+  "production_files": [
+   "core-io/src/main/java/com/couchbase/client/core/json/Mapper.java",
+   "java-client/src/main/java/com/couchbase/client/java/codec/DefaultJsonSerializer.java"
+  ],
+  "build_files": [
+   "core-io-deps/pom.xml",
+   "pom.xml"
+  ],
+  "the_call": "mapper.getFactory().setStreamReadConstraints(StreamReadConstraints.defaults().rebuild().maxStringLength(20 * 1024 * 1024).build());  // 20 MiB",
+  "restores_previous_behaviour": "partially",
+  "_restores_previous_behaviour_note": "A BOUNDED RAISE, and this is the third distinct posture the corpus has recorded for one break. Pre-2.15 behaviour was unlimited; 20 MiB is not unlimited, so a document above 20 MiB that parsed on 2.14.2 still fails after their fix. They did not restore the old behaviour -- they picked a new ceiling they considered defensible and left the mechanism in place. Compare json-compare (Integer.MAX_VALUE on all three limits: full restoration) and datashare (1e9 on maxStringLength but nesting and number tightened BELOW jackson's defaults: re-parameterisation).",
+  "why_that_matters": "20 * 1024 * 1024 is a considered number, not a switch. It is also, notably, the same magnitude jackson itself adopted in 2.15.1 when it raised its own default to 20,000,000 after user reports -- couchbase reached that judgement independently, from the release notes, before the library corrected itself, and picked the binary rather than the decimal 20.",
+  "evidence_of_diagnosis": "They introduced a shared factory method, Mapper.newObjectMapper(), and routed BOTH mappers through it -- core-io's static Mapper and java-client's DefaultJsonSerializer, which had been constructing its own bare `new ObjectMapper()`. That is a fix applied to the class of problem rather than to one call site, in the same commit that created the exposure.",
+  "scope": "2 production files and 2 build files. The commit also carries an unrelated-in-kind but necessary build fix: excluding META-INF/versions/** from the shade, a workaround for MSHADE-406, without which jackson 2.15 cannot be repackaged correctly at all.",
+  "no_test_added": "The commit adds no test. Unlike datashare, which added a configuration assertion, couchbase left the new limit unasserted."
+ },
+
+ "verification": {
+  "method": "Their own Maven build at both commits. core-io-deps (the module that shades jackson) is rebuilt from clean per state with -Djackson.version supplied through THEIR OWN pom property, then core-io is compiled from source against it; no build file was edited. A driver in the default package calls Mapper.decodeInto(String, Class) -- public, static -- on a JSON document whose single field is 10,000,000 characters. Each state prints the classpath location of the loaded deps jar AND reads the maxStringLength actually in force off their own mapper by reflection, so a state cannot silently run the wrong configuration.",
+  "test": "CouchbaseBbcDriver.java (authored trigger, THEIR production path). Nothing of theirs is reconstructed: the decode goes through com.couchbase.client.core.json.Mapper, the class whose static mapper their adaptation reconfigures. Only the oversized document and the main() are ours. The driver deliberately imports no shaded type -- it names only Mapper and java.util.Map -- so the same source compiles in all three states.",
+  "the_cap_readout_is_the_control": "The reflective maxStringLength print is what makes this case self-checking, and it reports three different values unprompted: `n/a (pre-2.15: StreamReadConstraints does not exist)` in state 1, `5000000` in state 2, `20971520` in state 3. Those are, respectively, the absence of the feature, jackson 2.15.0's default, and couchbase's chosen value -- so each state is confirmed to be the configuration it claims to be, independently of whether the parse threw.",
+  "why_not_their_own_suite": "The commit adds no test, so there is nothing of theirs to run that touches this. core-io's suite also cannot be run in this harness without live Couchbase infrastructure, and would not exercise a 10 MB string in any case.",
+  "sizing": "THE TRIGGER SIZE IS CONSTRAINED FROM BOTH SIDES, uniquely in this corpus. Their fix is a finite 20 MiB, so the document must exceed jackson 2.15.0's 5,000,000 default AND fall below couchbase's 20,971,520 ceiling: 5,000,000 < 10,000,000 < 20,971,520. In the json-compare and datashare cases the adapted cap was effectively unlimited and any oversized document separated the states; here a document above 20 MiB would throw in state 3 as well and would demonstrate nothing.",
+  "states": [
+   {"name": "1_baseline", "config": "parent code (db4239fc) + jackson 2.14.2",
+    "input": "10,000,000-character JSON string field", "cap_in_force": "n/a (StreamReadConstraints does not exist)",
+    "result": "PARSED (len 10000000)", "expected": "pass"},
+   {"name": "2_broken", "config": "parent code (db4239fc) + jackson 2.15.0",
+    "input": "10,000,000-character JSON string field", "cap_in_force": "5000000",
+    "result": "THREW com.couchbase.client.core.json.MapperException <- caused by com.couchbase.client.core.deps.com.fasterxml.jackson.core.exc.StreamConstraintsException: String length (5043495) exceeds the maximum length (5000000)",
+    "expected": "fail"},
+   {"name": "3_adapted", "config": "adapted code (77c21872) + jackson 2.15.0",
+    "input": "10,000,000-character JSON string field", "cap_in_force": "20971520",
+    "result": "PARSED (len 10000000)", "expected": "pass"}
+  ],
+  "isolation": "States 2 and 3 resolve a core-io-deps jar shaded from the identical jackson 2.15.0, so the only variable between them is their own core-io source. States 1 and 2 share their source exactly, so the only variable is the jackson version -- and both versions are theirs, from the property this commit moved. core-io-deps is rebuilt from CLEAN in every state: without that, the previous state's shaded jar is re-fed to the shade plugin, which is both a build failure and the one plausible route to two states silently sharing a jackson.",
+  "threats_to_validity": [
+   "STATE 2 IS COUNTERFACTUAL AND MUST BE LABELLED AS SUCH. Couchbase bumped and adapted atomically, so 'their code on 2.15.0 without the fix' is a state that never existed in their history and never shipped. It is constructed here by holding their parent source against the new library. This does not weaken the demonstration of the BREAK -- the parent source is genuinely theirs and the failure is genuine -- but it does mean this case is NOT evidence that couchbase's users ever saw this exception. It is evidence of what the upgrade would have done had they not read the release notes.",
+   "CORE-IO-DEPS IS BUILT FROM THE ADAPTED COMMIT'S TREE IN ALL THREE STATES, including state 1. That tree carries the MSHADE-406 shade fix (excluding META-INF/versions/**), which is required to repackage jackson 2.15 at all and is bundled into the same commit as the behavioural adaptation. Holding it fixed keeps a BUILD change out of a BEHAVIOURAL differential; the cost is that state 1 is not byte-identical to what their parent commit would have produced. The shade fix does not touch StreamReadConstraints and cannot affect the cap, which the reflective readout confirms independently in each state.",
+   "THE EXCEPTION REPORTS 5,043,495 CHARACTERS rather than the 10,000,000 written. That is jackson's own buffer-boundary accounting -- it aborts as soon as the accumulated segment passes the cap. The cap it names (5,000,000) is exactly 2.15.0's default.",
+   "THE BUILD REQUIRES BOOTSTRAPPING THREE ARTIFACTS THAT MAVEN CENTRAL DOES NOT HAVE (protostellar 1.0-SNAPSHOT, test-utils 1.4.7-SNAPSHOT, and the root parent POM installed non-recursively). They are built from modules in the repo and none of them contains jackson, so they cannot influence the result -- but this case is materially more expensive to reproduce than the others, and could not be verified from a fresh clone against Central alone."
+  ],
+  "reproduce": "scratchpad/jackson-couchbase-harness/ — run bootstrap.sh ONCE (protostellar codegen, test-utils, root POM), then `bash run_state.sh <label> <core-io-sha> <jackson-version>` per state. JDK 11 on PATH is correct for their Java 8 target."
+ }
+}
