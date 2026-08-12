@@ -1,0 +1,88 @@
+{
+ "case_id": "snakeyaml-codepointlimit-matrixcore",
+ "status": "verified_bbc",
+ "case_type": "external_production_adaptation",
+ "verified_date": "2026-08-12",
+ "verified_by": "3-state differential (direct javac + java, JDK 11) over the project's own production entry point, YamlConfiguration.loadFromString(String). NOT 02_verify_bbc.py: 779 classes were compiled from their own source tree, which is cheaper here than driving their Maven build.",
+
+ "note": "THE BEST-DOCUMENTED CASE IN THIS SET. The commit names the break in its own title, cites a bug ticket users filed, and states the intent in a code comment. It also has the shortest bump-to-fix distance of any case with a traced crossing: 17 days.",
+
+ "discovery": {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit"
+ },
+ "discovery_method": "THE MINE, not the targeted search. bbc_e2e.py run with BBC_CLASSIFY_CAP=800 kept it at row ~600 of 800; find_adaptations.py never surfaced it across two runs and five query variants. This is the clearest evidence that the identifier search and the bump-axis mine are complementary rather than redundant: the mine reaches commits whose diffs the identifier search does not rank, and this is the strongest case either produced.",
+
+ "library": {
+  "group_id": "org.yaml",
+  "artifact_id": "snakeyaml",
+  "at_version": "1.33",
+  "baseline_used": "1.31",
+  "_baseline_note": "The last version before the limit. Their own pre-crossing version was 1.30; 1.31 is used because it is the last release WITHOUT the code-point limit, which isolates the limit rather than the 1.30->1.31 delta.",
+  "breaking_boundary": "1.32 (3 MiB code-point limit imposed by default)",
+  "boundary_type": "minor",
+  "dependency_scope": "compile, declared directly in pom.xml"
+ },
+
+ "in_repo_version_transition": {
+  "crossed_boundary": true,
+  "mechanism": "direct bump in pom.xml",
+  "bump_commit": "acdb55f9",
+  "bump_transition": "1.30 -> 1.32",
+  "bump_date": "2022-09-22",
+  "bump_commit_message": "Update SnakeYAML version",
+  "evidence": "Walking pom.xml's history gives the full timeline; the relevant window is 1.30 -> 1.32 @acdb55f9 (2022-09-22, crossing the boundary), 1.32 -> 1.33 @09943450 (2022-10-01, which is the adaptation's PARENT), then the adaptation @b24bb75a (2022-10-09).",
+  "elapsed": "17 days from crossing to fix",
+  "shape": "POST_MERGE_FIX",
+  "traversal_confirmed_by_pipeline": true
+ },
+
+ "bump_provenance": "EXTERNAL_CHANGELOG_NOT_BUMP (snakeyaml-1.31-to-1.32-codepointlimit)",
+ "bump_source": "snakeyaml 1.32; DoS hardening (CVE-2022-38749..38752 family).",
+
+ "behavioral_break": {
+  "mechanism": "snakeyaml 1.32+ caps incoming documents at 3 MiB (3145728 code points) BY DEFAULT. Bukkit's YamlConfiguration built its parser without a code-point limit, so the new default applied the moment they crossed the boundary and any server config above 3 MiB stopped loading. No signature changed on their path, so the client compiles unchanged and fails at run time.",
+  "why_it_breaks": "Same as `mechanism`; recorded under both names because older cases in this directory use `why_it_breaks` and newer ones use `mechanism`.",
+  "affected_class": "org.bukkit.configuration.file.YamlConfiguration (production)",
+  "observed_exception": "org.yaml.snakeyaml.error.YAMLException: The incoming YAML document exceeds the limit: 3145728 code points.",
+  "category": "runtime_exception",
+  "blast_radius": "Clients loading YAML above 3 MiB. For a Minecraft server that is routine -- large world/plugin configs -- which is why it produced a filed ticket rather than a silent annoyance."
+ },
+
+ "adaptation": {
+  "repo": "yoricya/MatrixCore-API",
+  "repo_note": "The code is Bukkit/Spigot's (package org.bukkit.configuration.file) and the git history is Bukkit's, going back to 2014. GitHub does not mark it a fork and the canonical upstream (SpigotMC's own git) is not hosted on GitHub, so this is the publicly citable copy of the change rather than an independent project. Cite it as such.",
+  "commit": "b24bb75af90daa49b4759f69a9bf7c6adc5d2a06",
+  "parent_commit": "0994345029c4d127696616de3bab3e8044b03749",
+  "date": "2022-10-09",
+  "commit_message": "SPIGOT-7161: SnakeYaml 1.32 changed the default file size limit",
+  "build_system": "maven",
+  "language": "java",
+  "adaptation_in_test_code": false,
+  "adaptation_quality": "production_usage_adaptation",
+  "production_files": ["src/main/java/org/bukkit/configuration/file/YamlConfiguration.java"],
+  "the_call": "yamlLoaderOptions.setCodePointLimit(Integer.MAX_VALUE); // SPIGOT-7161: Not ideal, but was default pre SnakeYAML 1.32",
+  "restores_previous_behaviour": true,
+  "why_that_matters": "Integer.MAX_VALUE with their own comment saying it 'was default pre SnakeYAML 1.32' -- an explicit restoration, not a knob. And critically the options are passed to `new Yaml(constructor, representer, yamlDumperOptions, yamlLoaderOptions)`, the 4-arg form, which is the one that actually reaches the reader. See the shardingsphere exclusion for the same intent applied to the wrong object.",
+  "user_reported": "SPIGOT-7161 -- a filed ticket, so the break was met by real users rather than anticipated from a changelog."
+ },
+
+ "verification": {
+  "method": "3-state differential over the real production entry point. Compiled org/bukkit/configuration/** with javac and -sourcepath, letting the compiler resolve 779 classes from their own tree, against snakeyaml plus jetbrains-annotations, guava, gson, commons-lang3 and the maven-resolver jars that org.bukkit.Bukkit transitively requires.",
+  "test": "Driver.java (authored). Builds a valid Bukkit-style config of N MB and calls new YamlConfiguration().loadFromString(...), then counts the keys. Authored because their suite has no 4 MB fixture -- files that large are generated, never committed.",
+  "states": [
+   {"name": "1_baseline", "config": "parent code + snakeyaml 1.31", "input": "4 MB config",
+    "result": "LOADED (19744 keys)", "expected": "pass"},
+   {"name": "2_broken", "config": "parent code + snakeyaml 1.33", "input": "4 MB config",
+    "result": "THREW org.yaml.snakeyaml.error.YAMLException: The incoming YAML document exceeds the limit: 3145728 code points.", "expected": "fail"},
+   {"name": "3_adapted", "config": "adapted code + snakeyaml 1.33", "input": "4 MB config",
+    "result": "LOADED (19744 keys)", "expected": "pass"}
+  ],
+  "isolation": "States 2 and 3 share the snakeyaml 1.33 jar, so the only variable is their own commit. States 1 and 2 share their code, so the only variable is the library version.",
+  "threats_to_validity": [
+   "THE TEST IS AUTHORED, not theirs. The production code under test is entirely Bukkit's; only the trigger and the oversized config are ours.",
+   "THE BUILD IS PARTIAL. javac over org/bukkit/configuration/** with -sourcepath, not their Maven build. Sufficient to isolate this path, but a build-level regression would not be observed.",
+   "THE BASELINE IS 1.31, NOT THEIR 1.30. Both predate the limit; 1.31 isolates the code-point change rather than also carrying the 1.30->1.31 delta. Their actual pre-crossing version was 1.30."
+  ],
+  "reproduce": "scratchpad/snakeyaml-matrixcore-harness/ — Driver.java plus run_differential.sh."
+ }
+}

@@ -1,0 +1,82 @@
+{
+ "case_id": "snakeyaml-codepointlimit-shardingsphere",
+ "status": "excluded",
+ "exclusion_reason": "ineffective_adaptation",
+ "case_type": "external_production_adaptation",
+ "assessed_date": "2026-08-12",
+
+ "_status_note": "The adaptation was intended for exactly this break, by a major Apache project, in the same fortnight as the MatrixCore case that verified -- AND IT DOES NOT WORK. Measured, not inferred: the three states came out pass -> fail -> FAIL. The client compiles unchanged, the break still fires, and the commit that claims to fix it changes nothing on the path it guards. Not a verified case, and kept as an exclusion because the failure mode is a finding about the library's API.",
+
+ "discovery": {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit"
+ },
+ "discovery_method": "Found twice over: by the bump-axis mine (BBC_CLASSIFY_CAP=800, one of 7 kept), and independently while walking pom.xml history for the snakeyaml-1.25-to-1.26-maxaliases break -- the timeline showed a commit titled 'open YAML 3MB limit' two weeks after the 1.32 crossing.",
+
+ "library": {
+  "group_id": "org.yaml",
+  "artifact_id": "snakeyaml",
+  "at_version": "1.33",
+  "baseline_used": "1.31",
+  "breaking_boundary": "1.32 (3 MiB code-point limit imposed by default)",
+  "dependency_scope": "compile, <snakeyaml.version> property in pom.xml"
+ },
+
+ "in_repo_version_transition": {
+  "crossed_boundary": true,
+  "mechanism": "direct bump of the <snakeyaml.version> property",
+  "bump_commit": "1b2135c0",
+  "bump_transition": "1.30 -> 1.32",
+  "bump_date": "2022-09-20",
+  "evidence": "pom.xml timeline: 1.16 -> 1.30 (2022-02-14), 1.30 -> 1.32 @1b2135c0 (2022-09-20, crossing the boundary), 1.32 -> 1.33 @e8b25870 (2022-10-06, the commit assessed here), 1.33 -> 2.2 (2023-10-19).",
+  "elapsed": "16 days from crossing to the attempted fix",
+  "shape": "POST_MERGE_FIX"
+ },
+
+ "bump_provenance": "EXTERNAL_CHANGELOG_NOT_BUMP (snakeyaml-1.31-to-1.32-codepointlimit)",
+
+ "behavioral_break": {
+  "mechanism": "snakeyaml 1.32+ caps incoming documents at 3 MiB (3145728 code points) by default.",
+  "why_it_breaks": "Same as `mechanism`.",
+  "affected_class": "org.apache.shardingsphere.infra.util.yaml.YamlEngine (production)",
+  "observed_exception": "org.yaml.snakeyaml.error.YAMLException: The incoming YAML document exceeds the limit: 3145728 code points.",
+  "category": "runtime_exception"
+ },
+
+ "adaptation": {
+  "repo": "apache/shardingsphere",
+  "commit": "e8b258702d66fbb9a5f9f4f41a73dccc9651be84",
+  "parent_commit": "dcc9aead6190a96c1994af7529ac90cefddf0154",
+  "date": "2022-10-06",
+  "commit_message": "Update Snakeyaml to 1.33 and open YAML 3MB limit (#21351)",
+  "build_system": "maven",
+  "module": "infra/util",
+  "language": "java",
+  "production_files": [
+   "infra/util/src/main/java/org/apache/shardingsphere/infra/util/yaml/constructor/ShardingSphereYamlConstructor.java",
+   "infra/util/src/main/java/org/apache/shardingsphere/infra/util/yaml/YamlEngine.java"
+  ],
+  "the_call": "super(rootClass, new LoaderOptions() { { setCodePointLimit(Integer.MAX_VALUE); } });",
+  "restores_previous_behaviour": false,
+  "also_contains_compile_shaped_edits": "The same commit changes `new Representer()` to `new Representer(new DumperOptions())` and reshapes ShardingSphereYamlRepresenter's constructor. Those look forced but are NOT: javap confirms Representer(), Representer(DumperOptions) and both Constructor(Class...) overloads exist in 1.31, 1.32 AND 1.33. So nothing here is shadowed by a compile break -- the behavioural change was reachable, and the fix simply misses it."
+ },
+
+ "why_it_does_not_work": {
+  "finding": "snakeyaml enforces the code-point limit in the READER, which takes its LoaderOptions from the Yaml instance -- not from the Constructor. ShardingSphere sets the limit on the Constructor's LoaderOptions, and YamlEngine.unmarshal then calls `new Yaml(new ShardingSphereYamlConstructor(classType))`, so the reader never sees it.",
+  "isolated_probe": "Run directly against snakeyaml 1.33, independent of shardingsphere: (A) limit on the Constructor only -> THREW YAMLException. (B) same limit passed to Yaml's own LoaderOptions -> LOADED. Shape A is shardingsphere's; shape B is MatrixCore's.",
+  "scope_of_the_claim": "Demonstrated for YamlEngine.unmarshal(String, Class), the path driven here. Their unmarshal(File) and unmarshal(byte[]) construct Yaml the same way, so the same conclusion should hold, but those were not run.",
+  "why_it_is_worth_recording": "The mistake is the natural one. Setting the limit on the object you construct looks right, compiles, reads correctly in review, and silently does nothing. Two projects met the same break in the same fortnight; MatrixCore passed the options into the 4-arg Yaml constructor and recovered, shardingsphere set them on the Constructor and did not."
+ },
+
+ "verification": {
+  "method": "3-state differential over their own production entry point, YamlEngine.unmarshal(String, Class) -- literally `new Yaml(new ShardingSphereYamlConstructor(classType)).loadAs(...)`. Compiled infra/util's yaml, spi and exception packages with javac (42 classes at parent, 43 adapted), lombok on the processor path. Sources were listed explicitly rather than resolved via -sourcepath, because implicitly compiled files are NOT annotation-processed and lombok's @SneakyThrows would not expand.",
+  "test": "Driver.java (authored): a 4 MB YAML map through YamlEngine.unmarshal.",
+  "states": [
+   {"name": "1_baseline", "config": "parent code + snakeyaml 1.31", "result": "LOADED (19744 keys)", "expected": "pass"},
+   {"name": "2_broken", "config": "parent code + snakeyaml 1.33", "result": "THREW YAMLException: exceeds the limit: 3145728 code points", "expected": "fail"},
+   {"name": "3_adapted", "config": "adapted code + snakeyaml 1.33", "result": "THREW YAMLException: exceeds the limit: 3145728 code points", "expected": "pass — DID NOT"}
+  ],
+  "verdict": "pass -> fail -> fail. No recovery, so no case."
+ },
+
+ "follow_up_worth_doing": "Check whether shardingsphere later moved the limit onto the Yaml instance. If such a commit exists it would be the real case, and a considerably better-cited one than MatrixCore."
+}
