@@ -1,0 +1,103 @@
+{
+ "case_id": "jackson-streamreadconstraints-jersey",
+ "status": "excluded",
+ "exclusion_reason": "configuration_only",
+ "case_type": "external_production_adaptation",
+ "assessed_date": "2026-08-13",
+
+ "_status_note": "A NEW EXCLUSION REASON, and the most interesting non-case in the corpus. eclipse-ee4j/jersey -- the reference JAX-RS implementation, 730 stars -- bumped jackson 2.14.1 -> 2.15.2 and 'adapted' in the same commit, but the adaptation DOES NOT RESTORE ANYTHING BY DEFAULT. It adds a configuration property and applies limits only when the user sets it. Out of the box, jersey's users get jackson 2.15's new default and the break fires exactly as it would with no adaptation at all. The three-state chain therefore cannot complete: state 3 would fail identically to state 2. Measured against jersey's own published jar, not inferred -- see verification.isolated_probe.",
+
+ "_why_this_is_not_ineffective_adaptation": "The neighbouring category is for a fix that was MEANT to work and does not (shardingsphere set the limit on an object the reader never consults). Jersey's mechanism works correctly when the property is set -- the control arm of the probe confirms it. What makes this a non-case is a DECISION, not a defect: they took the new default and handed users a switch instead of restoring the old behaviour. Filing it as ineffective_adaptation would misattribute a deliberate policy to a bug.",
+
+ "discovery": {
+  "break_id": "jackson-core-2.15-streamreadconstraints"
+ },
+ "discovery_method": "CODE SEARCH, then dating by file history -- discover/date_hits.py -> discover/screen_dated.py over the cached /search/code hits.",
+
+ "_the_screen_got_this_right": "screen_dated.py classified maxStringLength as `knob_at_default` on the evidence line `if (maxStringLength != StreamReadConstraints.DEFAULT_MAX_STRING_LEN) {`, and that verdict is exactly correct: the knob is compared against the library's own default and left there. The repo's overall verdict came out `needs_reading` only because two other knobs were unreadable. Worth recording as a hit for the automated value screen -- it distinguished a configuration surface from a restoration without being told how.",
+
+ "library": {
+  "group_id": "com.fasterxml.jackson.core",
+  "artifact_id": "jackson-core",
+  "at_version": "2.15.2",
+  "baseline_used": "2.14.1",
+  "_baseline_note": "Their actual previous version, from the same property they bumped in this commit.",
+  "breaking_boundary": "2.15.0 (StreamReadConstraints imposed by default)",
+  "boundary_type": "minor",
+  "dependency_scope": "compile, declared as <jackson.version> in the root pom"
+ },
+
+ "in_repo_version_transition": {
+  "crossed_boundary": true,
+  "mechanism": "direct bump of <jackson.version> in the root pom, in the same commit as the adaptation",
+  "bump_commit": "e79aa535afe6f2c9fb7b0a39e4d0cc02d198c99a",
+  "bump_transition": "2.14.1 -> 2.15.2",
+  "bump_date": "2023-09-08",
+  "bump_commit_message": "Adopt Jackson 2.15",
+  "evidence": "<jackson.version> reads 2.14.1 at every commit touching the root pom from 2023-06-20 through the immediate parent (cacccd9ab, 2023-08-18), and 2.15.2 in this commit. The crossing is one line of the adaptation commit's own diff.",
+  "elapsed": "0 days: the crossing and the adaptation are the same commit",
+  "shape": "BUNDLED_BUMP_AND_ADAPTATION",
+  "_shape_note": "Same structural shape as the couchbase case, opposite outcome. Couchbase bumped and RESTORED (raised the cap to 20 MiB); jersey bumped and DELEGATED (exposed a property, default unchanged). Both read the release notes; they drew different conclusions about whose problem the new limit is.",
+  "traversal_confirmed_by_pipeline": false,
+  "confirmed_by": "manual walk of <jackson.version> through the root pom's history"
+ },
+
+ "bump_provenance": "EXTERNAL_CHANGELOG_NOT_BUMP (jackson-core-2.15-streamreadconstraints)",
+
+ "behavioral_break": {
+  "mechanism": "jackson-core 2.15.0 introduced StreamReadConstraints with parser limits applied BY DEFAULT: maxStringLength 5,000,000 (20,000,000 from 2.15.1, so 20,000,000 at jersey's 2.15.2), maxNestingDepth 1000, maxNumberLength 1000. JSON that 2.14 parsed fine now throws StreamConstraintsException at parse time.",
+  "why_it_breaks": "Same as `mechanism`; recorded under both names because older cases in this directory use `why_it_breaks` and newer ones use `mechanism`.",
+  "affected_class": "org.glassfish.jersey.jackson.internal.DefaultJacksonJaxbJsonProvider",
+  "category": "runtime_exception",
+  "blast_radius": "Every JAX-RS application that reads JSON through jersey's Jackson provider -- which is the default JSON binding for Jersey, and Jersey is the JAX-RS reference implementation. The population exposed to the unchanged default is therefore very large, and that is what makes the decision recorded here worth keeping."
+ },
+
+ "adaptation": {
+  "repo": "eclipse-ee4j/jersey",
+  "repo_note": "The JAX-RS reference implementation. 730 stars, upstream, not a fork, not archived.",
+  "commit": "e79aa535afe6f2c9fb7b0a39e4d0cc02d198c99a",
+  "parent_commit": "cacccd9ab",
+  "date": "2023-09-08",
+  "author": "jansupol",
+  "commit_message": "Adopt Jackson 2.15",
+  "build_system": "maven",
+  "module": "media/json-jackson",
+  "language": "java",
+  "adaptation_in_test_code": false,
+  "adaptation_quality": "configuration_surface_only",
+  "production_files": [
+   "media/json-jackson/src/main/java/org/glassfish/jersey/jackson/internal/DefaultJacksonJaxbJsonProvider.java",
+   "core-common/src/main/java/org/glassfish/jersey/message/MessageProperties.java",
+   "media/json-jackson/src/main/java/org/glassfish/jersey/jackson/JacksonFeature.java"
+  ],
+  "the_call": "updateFactoryConstraints(reader.getFactory()) from an overridden _configForReading, which reads MessageProperties.JSON_MAX_STRING_LENGTH and applies StreamReadConstraints ONLY inside `if (maxStringLength != StreamReadConstraints.DEFAULT_MAX_STRING_LEN)`",
+  "restores_previous_behaviour": false,
+  "_restores_previous_behaviour_note": "FALSE, and that is the whole finding. The guard compares the user's value against jackson's OWN default, so the fix is a no-op unless someone has set the property. Their own new test, StreamReadConstrainsTest, is consistent with this reading: it registers a ContextResolver that sets maxNumberLength(4) and asserts the limit then fires. It tests that the knob works. It does not test, and they did not claim, that anything is restored.",
+  "what_they_gave_users_instead": "A property (jersey.config.json.max.string.length via MessageProperties.JSON_MAX_STRING_LENGTH), a JacksonFeature setting, and documented precedence -- their own comment reads 'Priorities 1. property, 2. JacksonFeature#maxStringLength, 3. jsonFactoryValue'. That is a considered configuration design, built in the same commit as the upgrade.",
+  "scope": "23 files, most of them repackaged jackson-jaxrs sources and a new integration test module for jackson 14 compatibility."
+ },
+
+ "why_it_does_not_restore": {
+  "finding": "The entire adaptation is behind one guard, and with the property unset that guard cannot be passed. commonConfig.getProperty(JSON_MAX_STRING_LENGTH) returns null; PropertiesHelper.convertValue(null, Integer.class) is then called, and the comparison `Integer != int` unboxes. Both steps fail, so StreamReadConstraints is never rebuilt and jackson's default stands.",
+  "measured_not_inferred": "Both steps were run against jersey's own published jersey-common 2.41 jar and jackson-core 2.15.0 -- see verification.isolated_probe.",
+  "an_incidental_defect_worth_noting": "With the property unset, convertValue(null, Integer.class) does not return null -- it THROWS NullPointerException, because its final warning branch calls value.getClass() on the null it was given. The NPE propagates into updateFactoryConstraints and is swallowed by the surrounding `catch (Throwable)`, which logs ERROR_JACKSON_STREAMREADCONSTRAINTS. So the default configuration throws and logs a warning on every _configForReading rather than doing nothing quietly. This is a defect in the adaptation, but it is NOT the reason for the exclusion: even had convertValue returned null cleanly, the unboxing comparison in the guard would have thrown too, and even had that returned false, the guard's whole purpose is to do nothing at the default. Three independent routes, one outcome.",
+  "scope_of_the_claim": "Established for the default configuration of DefaultJacksonJaxbJsonProvider, which is the path every jersey application gets unless it opts in. Not a claim about jersey with the property set -- that works, and the probe's control arm shows it."
+ },
+
+ "verification": {
+  "isolated_probe": {
+   "what": "JerseyGuardProbe.java, run against jersey-common 2.41 and jackson-core 2.15.0 resolved from Maven Central -- their released artifact, not a rebuild.",
+   "results": [
+    "DEFAULT_MAX_STRING_LEN = 5000000 (the constant the guard compares against)",
+    "step 1: PropertiesHelper.convertValue(null, Integer.class) -> THREW java.lang.NullPointerException",
+    "step 2: `maxStringLength != DEFAULT_MAX_STRING_LEN` with a null Integer -> THREW NullPointerException (unboxing)",
+    "control: convertValue(\"2147483647\") = 2147483647, guard passes = true"
+   ],
+   "conclusion": "With the property unset the constraints are never touched, by either route. With it set, the mechanism works. The adaptation is opt-in."
+  },
+  "full_differential_not_run": "The 3-state differential was NOT run, and this record does not claim it was. Driving DefaultJacksonJaxbJsonProvider on its real path needs an injected Configuration and Providers -- in practice a JerseyTest container, as their own StreamReadConstrainsTest uses. That cost was not spent because the outcome is not in doubt: state 3 differs from state 2 only in code that provably does not execute at the default configuration. If this is ever promoted to a measured exclusion, the differential should assert state 3 THROWS, and a fourth state with jersey.config.json.max.string.length set should PARSE.",
+  "reproduce": "scratchpad/jackson-jersey-harness/ — JerseyGuardProbe.java; compile against jersey-common 2.41 + jackson-core 2.15.0 + jakarta.ws.rs-api 2.1.6 and run."
+ },
+
+ "follow_up_worth_doing": "Jersey is the clearest instance of a fourth response to a behavioural break, alongside restore / re-parameterise / bound. Call it DELEGATE: the library accepts the new default and moves the decision to its users. If the corpus is ever framed as a taxonomy of responses rather than a count of fixes, this belongs in it -- and the population affected (every JAX-RS app using the default JSON binding) makes it arguably more consequential than several of the verified cases."
+}
