@@ -1377,6 +1377,53 @@
     "signal_grep": "exceeds the limit|code points|YamlEngineException",
     "note": "Boundary pinned empirically (see why_it_breaks). Probe: new Load(LoadSettings.builder().build()).loadFromString(4 MB doc) returns on 2.4 and throws on 2.5."
    }
+  },
+  {
+   "break_id": "snakeyaml-1.25-to-1.26-maxaliases",
+   "provenance": "EXTERNAL_ADVISORY_NOT_BUMP",
+   "_provenance_note": "Third break in snakeyaml's resource-limit family, after 1.31->1.32 (code points) and the engine's 2.4->2.5. CVE-2017-18640 (billion laughs) IS in advisory_candidates.json, fixed=1.26, tier `limit` -- a tier that has never been ranked. So unlike the 1.32 boundary, which is absent from the feed entirely, this one was discoverable there and was missed only because ranking has covered `deserialize` and `validate` and not `limit`.",
+   "library": {
+    "group_id": "org.yaml",
+    "artifact_id": "snakeyaml",
+    "from_version": "1.25",
+    "to_version": "1.26",
+    "boundary_type": "minor",
+    "search_boundary": "within 1.2x",
+    "dependency_scope": "compile"
+   },
+   "why_it_breaks": "1.26 caps the number of aliases for non-scalar nodes at 50 BY DEFAULT and adds LoaderOptions.setMaxAliasesForCollections to change it. BOUNDARY PINNED EMPIRICALLY 2026-08-12 on JDK 11 with a plain `new Yaml()` -- no configuration, which is what an unsuspecting client has:\n  1.25  40 aliases -> OK   60 aliases -> OK\n  1.26  40 aliases -> OK   60 aliases -> THROWS YAMLException 'Number of aliases for non-scalar nodes exceeds the specified max=50'\nDeny-by-default with an explicit re-permit, the same shape as the code-point limit.\n\nSCREEN CAVEAT, recorded rather than overridden. javap reports 20 removed public signatures, and unlike the engine boundary these are REAL removals, not modifier or generics artifacts: ScalarAnalysis.allowBlock (a public field) and Event.is(Event$ID) across the event hierarchy. They are low-level emitter/parser internals that a client calling Yaml.load() never touches, so the behavioural change is reachable for ordinary clients -- but a client that DID use snakeyaml's event API would hit javac first and the behavioural break would be shadowed for them. Narrower risk than snakeyaml 2.0's constructor removal, not zero.",
+   "clients": [],
+   "mining": {
+    "library_keyword": "snakeyaml",
+    "signal_quality": "clean",
+    "commit_search_terms": [
+     "setMaxAliasesForCollections",
+     "maxAliasesForCollections",
+     "Number of aliases",
+     "aliases for non-scalar",
+     "billion laughs",
+     "snakeyaml aliases",
+     "snakeyaml 1.26",
+     "CVE-2017-18640"
+    ],
+    "direct_bump_search_terms": [
+     "bump",
+     "upgrade",
+     "update dependency",
+     "dependency update",
+     "1.26",
+     "CVE"
+    ]
+   },
+   "verify": {
+    "version_property": "bbc.snakeyaml.version",
+    "runnable_baseline": "1.25",
+    "break_boundary": "1.26",
+    "java": 11,
+    "signal_grep": "Number of aliases|exceeds the specified max|YAMLException",
+    "note": "Boundary pinned empirically (see why_it_breaks). Probe: a document with 60 aliases to a collection loads on 1.25 and throws on 1.26. NOTE the default is 50, so `--default-value 50` when running find_adaptations.py: a client raising it above 50 is recovering, one lowering it is hardening."
+   },
+   "_outcome_2026_08_12": "WORKED, NO CASES -- and the reason is the boundary's AGE, which is worth carrying to any future target. find_adaptations.py found 27 commits: 4 raises, 5 knobs at the default 50, 5 hardening, 7 needing a read. The raises are genuine, but the crossings evaporate:\n  CatServer            born past  -- stayed at 1.27 across its whole history\n  jdxia/shardingsphere crossed 1.16 -> 1.30 (2022-02), but that is a fork of apache and the alias fix is 2024, two years later\n  Mirantis, kangarko   no declared version anywhere (Jenkins shared library / managed)\n  liquibase            genuine raise to Integer.MAX_VALUE with a symptom-matching message ('YAML changelogs with many references', 2025-05-30), but NO crossing is locatable: liquibase-core/pom.xml shows snakeyaml 1.24 in 2019 then drops the declaration, and liquibase-standard/pom.xml only begins in 2023 at 2.0. The 1.25 -> 1.26 transition falls in a gap left by module restructuring.\n\n1.26 shipped in 2020, three years before the code-point limit. By now essentially every client is on 2.x, and those that did cross did so long ago in build files that have since been reorganised. The code-point break yielded three cases because it was recent enough that crossings were still traceable; this one is not.\n\nA SEPARATE POINT the liquibase commit makes well: their limit did not change, their DATA grew past it. A fixed limit met by growing input is not a behavioural breaking change, however genuine the resulting fix looks. Worth distinguishing from 'born past the boundary' -- the client may well have crossed, but the crossing changed nothing for them at the time."
   }
  ]
 }
