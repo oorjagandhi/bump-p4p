@@ -28,7 +28,7 @@ verification trustworthy for research — the LLM proposes, the differential dis
 
 ## 2. Pipeline (mostly deterministic; two LLM seams)
 
-Reuses the existing `bbc_e2e.py` stages. Per `(break, candidate)`:
+Reuses the existing `mine/bbc_e2e.py` stages. Per `(break, candidate)`:
 
 | # | stage | kind | reuse |
 |---|---|---|---|
@@ -142,7 +142,7 @@ many candidates per break fast and classify honestly — not to make every candi
 ## 9. Build order
 
 1. **Orchestrator skeleton** — wire stages 1–4, 6–8 (deterministic) around the existing
-   `bbc_e2e.py`; stub seams A/B as agent-callable steps.
+   `mine/bbc_e2e.py`; stub seams A/B as agent-callable steps.
 2. **Seam A prompt** — driver-test generation with the compile/framework rules above.
 3. **Seam B prompt** — non-trip diagnosis with the encoded fixture hints.
 4. **Dry-run** on a KNOWN-good candidate (re-verify jadhavspeaks / amirsnw end-to-end

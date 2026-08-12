@@ -11,11 +11,11 @@ Most files are named `<break_id>_<kind>.jsonl`.
 
 | suffix | one row per | written by |
 |---|---|---|
-| `_candidates.jsonl` | candidate that survived classify **and** traversal | `bbc_e2e.py run` |
-| `_UNDECIDED.jsonl` | traversal row the POM walk could not decide | `extract_undecided.py` |
-| `_UNDECIDED_MVNRECHECK.jsonl` | undecided row re-decided by `mvn dependency:tree` | `resolve_undecided.py` |
-| `_traversal_RECHECK.jsonl` | candidate re-run through traversal | `retraverse.py` |
-| `_SCREENED.jsonl` | candidate labelled behavioural vs compile break | `screen_compile_break.py` |
+| `_candidates.jsonl` | candidate that survived classify **and** traversal | `mine/bbc_e2e.py run` |
+| `_UNDECIDED.jsonl` | traversal row the POM walk could not decide | `traversal/extract_undecided.py` |
+| `_UNDECIDED_MVNRECHECK.jsonl` | undecided row re-decided by `mvn dependency:tree` | `traversal/resolve_undecided.py` |
+| `_traversal_RECHECK.jsonl` | candidate re-run through traversal | `traversal/retraverse.py` |
+| `_SCREENED.jsonl` | candidate labelled behavioural vs compile break | `screen/screen_compile_break.py` |
 | `_PRODONLY.jsonl` | candidates filtered to production adaptations | ad hoc |
 
 `_candidates.jsonl` is written **after** the classify loop finishes, so its row count
@@ -49,7 +49,7 @@ gave 1 measured negative under the throttle and 6 without it. `census.py` reads
 `*_MVNRECHECK.jsonl` and ignores the throttled name, so it is inert in the ledger.
 
 **If you produce another contaminated run, rename it rather than deleting it** — and
-rename it *before* re-running, because `resolve_undecided.py` resumes by `(repo, sha)` and
+rename it *before* re-running, because `traversal/resolve_undecided.py` resumes by `(repo, sha)` and
 would otherwise skip every poisoned row as already done.
 
 ## Reports (Markdown)
@@ -75,3 +75,4 @@ regenerate — otherwise the next regeneration silently reverts the correction.
 | `candidate_ranking_<tier>.json` | ranking verdicts, other tiers |
 | `boundary_dates.json` | each boundary version resolved to its release month |
 | `major_screen.json` | machine-readable form of `MAJOR_SCREEN.md` |
+| `_jackson_codesearch_hits.json` | the 600 `/search/code` hits that found the AthenZ case. **Kept as evidence, not scratch** — code-search results drift with the index, so the "241 repos, 238 unseen by commit search" claim in that case file cannot be re-derived later. |

@@ -25,7 +25,7 @@ verified_cases/
 Six files under `excluded/` still read `status: verified_bbc` — they were verified and
 then excluded as authored mimics, mechanism-only, or no-boundary-crossing, and their
 status was never rewritten. Anything globbing `**/*.json` and filtering on status will
-count them and overstate the verified total. `report/census.py`, `bbc_e2e.py summarize()`
+count them and overstate the verified total. `report/census.py`, `mine/bbc_e2e.py summarize()`
 and `agent/fanout.py` all glob `*/*.json` and skip `excluded`, `pending_differential`
 and `drivers` by name.
 
@@ -87,7 +87,7 @@ client adapting:
   the break is real, but the client never lived through the transition.
 
 Note on `xstream-logging-chainsaw`: it remains a valid **traversal** fixture in
-`test_gates.py` — BUMP recorded its bump commit, so its boundary crossing is
+`verify/test_gates.py` — BUMP recorded its bump commit, so its boundary crossing is
 independently confirmed. Valid crossing, test-only adaptation, not a case.
 
 

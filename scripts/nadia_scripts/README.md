@@ -44,7 +44,7 @@ library, in this order:
 
 | # | Rule | Failure it catches | Cost to check |
 |---|---|---|---|
-| 1 | The boundary must remove **no public API** | A compile break shadows the behavioural one — the client stops at javac and never reaches the change. Killed snakeyaml. | 2 jar downloads + javap (`rank_candidates.py`, `screen_majors.py`) |
+| 1 | The boundary must remove **no public API** | A compile break shadows the behavioural one — the client stops at javac and never reaches the change. Killed snakeyaml. | 2 jar downloads + javap (`discover/rank_candidates.py`, `discover/screen_majors.py`) |
 | 2 | The new restriction must be **active by default** | *Relaxation*: the fix removes a restriction, so nothing breaks (mybatis 3.5.6). *Opt-in*: the restriction ships switched off (avro 1.11.3). | read the `-sources.jar` diff |
 | 3 | The boundary must be **old enough that clients crossed it** | The client population is born past it, so no crossing can exist however many adaptations there are. Killed org-json (2013 boundary). | `report/boundary_dates.py` |
 | 4 | The library must be used **directly**, not only transitively | Nobody writes code against it, so nobody has code to adapt. Killed json-smart (89% of mined commits changed no Java). | inspect a sample of mined commits |
@@ -56,8 +56,8 @@ javap — two libraries passed rule 1 and still turned out to be dead ends.
 ## The pipeline
 
 ```
-  advisories / majors        rank_candidates.py       is a case even possible?
-          │                  screen_majors.py         (rules 1 and 3)
+  advisories / majors        discover/rank_candidates.py       is a case even possible?
+          │                  discover/screen_majors.py         (rules 1 and 3)
           ▼
    shape check (manual)      sources-jar diff         is the restriction on by default?
           │                                           (rule 2)
@@ -65,19 +65,19 @@ javap — two libraries passed rule 1 and still turned out to be dead ends.
    catalog entry             specs/bump_breaks_catalog.json
           │                                           boundary pinned EMPIRICALLY first
           ▼
-   mine ──► classify ──► traversal                    bbc_e2e.py run <break_id>
+   mine ──► classify ──► traversal                    mine/bbc_e2e.py run <break_id>
           │
           ▼
-   resolve undecided         resolve_undecided.py     ask Maven what the POM walk couldn't
+   resolve undecided         traversal/resolve_undecided.py     ask Maven what the POM walk couldn't
           │
           ▼
    judgment (human/LLM)      read the diff            is this really THIS break?
           │
           ▼
-   3-state differential      02_verify_bbc.py         pass → fail → pass
+   3-state differential      verify/02_verify_bbc.py         pass → fail → pass
 ```
 
-### Mining, classifying, traversal — `bbc_e2e.py run <break_id>`
+### Mining, classifying, traversal — `mine/bbc_e2e.py run <break_id>`
 
 Chains three stages, each checkpointed so a kill costs only the row in flight.
 
@@ -91,11 +91,11 @@ Chains three stages, each checkpointed so a kill costs only the row in flight.
   - confirmed — a boundary-crossing bump in the commit's ancestry
   - genuine negative — versions resolved, no crossing (client born past the boundary)
   - **undecided** — the version comes from a BOM or parent POM the HTTP walk can't read.
-    This is an *unknown*, not a negative. Feed it to `resolve_undecided.py`.
+    This is an *unknown*, not a negative. Feed it to `traversal/resolve_undecided.py`.
 
 ### Verification — two paths
 
-**`02_verify_bbc.py`** runs the client's **own** test suite at three states: baseline
+**`verify/02_verify_bbc.py`** runs the client's **own** test suite at three states: baseline
 (parent commit), pom-only (parent code + just the version bump, via
 `git show <sha> -- pom.xml | git apply`), and adapted (the full fix). A BBC is confirmed
 only from tests that pass → fail → pass. Differential per-test, so a project with
@@ -112,35 +112,35 @@ Everything around those two calls is deterministic. See `specs/AGENT_DESIGN.md` 
 **Finding targets**
 | script | does |
 |---|---|
-| `mine_advisories.py` | pull candidate breaks from the OSV Maven feed |
-| `rank_candidates.py` | rank advisories by whether a case is *possible* (rules 1 + 3) |
-| `screen_majors.py` | same API check across curated major-version boundaries |
-| `mine_major_bumps.py` | discovery-first mining for top-library major releases |
-| `bump_semantic_sweep.py` | classify the BUMP corpus by kind of failure |
+| `discover/mine_advisories.py` | pull candidate breaks from the OSV Maven feed |
+| `discover/rank_candidates.py` | rank advisories by whether a case is *possible* (rules 1 + 3) |
+| `discover/screen_majors.py` | same API check across curated major-version boundaries |
+| `discover/mine_major_bumps.py` | discovery-first mining for top-library major releases |
+| `discover/bump_semantic_sweep.py` | classify the BUMP corpus by kind of failure |
 
 **Mining and classifying**
 | script | does |
 |---|---|
-| `bbc_e2e.py` | the main pipeline: `run`, `mine-commits`, `classify`, `gen-harness` |
-| `bbc_pipeline.py` | older stage-wise driver, kept for reference |
-| `extract_undecided.py` | pull undecided traversal rows out of a classify checkpoint |
-| `resolve_undecided.py` | decide them with `mvn dependency:tree` (endpoint comparison) |
-| `resolve_version.py` | what version does a client's build actually resolve? |
-| `retraverse.py` | re-run traversal over already-mined candidates |
-| `audit_traversal.py` | record a traversal verdict into each verified case |
+| `mine/bbc_e2e.py` | the main pipeline: `run`, `mine-commits`, `classify`, `gen-harness` |
+| `mine/bbc_pipeline.py` | older stage-wise driver, kept for reference |
+| `traversal/extract_undecided.py` | pull undecided traversal rows out of a classify checkpoint |
+| `traversal/resolve_undecided.py` | decide them with `mvn dependency:tree` (endpoint comparison) |
+| `traversal/resolve_version.py` | what version does a client's build actually resolve? |
+| `traversal/retraverse.py` | re-run traversal over already-mined candidates |
+| `traversal/audit_traversal.py` | record a traversal verdict into each verified case |
 
 **Screening candidates**
 | script | does |
 |---|---|
-| `screen_compile_break.py` | separate behavioural breaks from compile breaks |
-| `screen_trigger.py` | does the client actually exercise the broken behaviour? |
+| `screen/screen_compile_break.py` | separate behavioural breaks from compile breaks |
+| `screen/screen_trigger.py` | does the client actually exercise the broken behaviour? |
 
 **Verifying**
 | script | does |
 |---|---|
-| `02_verify_bbc.py` | the 3-state differential over the client's own tests |
+| `verify/02_verify_bbc.py` | the 3-state differential over the client's own tests |
 | `agent/orchestrator.py` | the same 3 states with a generated test |
-| `test_gates.py` | regression fixtures for the decision gates |
+| `verify/test_gates.py` | regression fixtures for the decision gates |
 
 **Reporting**
 | script | does |
@@ -151,6 +151,12 @@ Everything around those two calls is deterministic. See `specs/AGENT_DESIGN.md` 
 | `report/make_figures.py` | figures for the technical report |
 
 ## Where things live
+
+Scripts sit in role folders — `discover/` (is a case possible?), `mine/`, `traversal/`,
+`screen/`, `verify/`, `report/`, `agent/`. They still import each other by bare module name
+and resolve data paths against **this** directory, which a small `sys.path` preamble at the
+top of each file makes work: run them from anywhere, but keep that preamble if you move a
+script again.
 
 | path | holds |
 |---|---|
@@ -169,19 +175,19 @@ Everything around those two calls is deterministic. See `specs/AGENT_DESIGN.md` 
 ```bash
 export GH_TOKEN=...                      # GitHub search + contents API
 
-python rank_candidates.py --tier validate --limit 120 --since 2019 \
+python discover/rank_candidates.py --tier validate --limit 120 --since 2019 \
        --out output/CANDIDATE_RANKING_VALIDATE.md
-python screen_majors.py
+python discover/screen_majors.py
 
-python bbc_e2e.py run <break_id>         # mine + classify + traversal
-python extract_undecided.py <break_id>
-python resolve_undecided.py <break_id> --in output/<break_id>_UNDECIDED.jsonl
+python mine/bbc_e2e.py run <break_id>         # mine + classify + traversal
+python traversal/extract_undecided.py <break_id>
+python traversal/resolve_undecided.py <break_id> --in output/<break_id>_UNDECIDED.jsonl
 
 python report/boundary_dates.py
 python report/census.py > output/CENSUS.md
 ```
 
-Tiers for `rank_candidates.py`: `deserialize`, `validate`, `limit`, `all`.
+Tiers for `discover/rank_candidates.py`: `deserialize`, `validate`, `limit`, `all`.
 
 ## Things that will bite you
 
@@ -191,15 +197,15 @@ Tiers for `rank_candidates.py`: `deserialize`, `validate`, `limit`, `all`.
 - **Maven Central answers 403 when it throttles you**, and a 403 is indistinguishable from
   a 404 to code that only checks "did I get a jar". A throttled run once produced 20 of 22
   rows of `mvn failed`, which read exactly like genuinely unresolvable projects. The guards
-  now in place: `rank_candidates.py` aborts after 5 consecutive 403s and labels them
-  distinctly, and `screen_majors.py` reports `UNAVAILABLE`/`UNREADABLE` as *non-verdicts*.
+  now in place: `discover/rank_candidates.py` aborts after 5 consecutive 403s and labels them
+  distinctly, and `discover/screen_majors.py` reports `UNAVAILABLE`/`UNREADABLE` as *non-verdicts*.
   Keep that principle — **a failure to measure must never be recorded as a measurement**.
   The quarantined `*_MVNRECHECK_THROTTLED.jsonl` is kept as an example of the failure mode.
 - **Don't run two Central-heavy jobs at once.** A `mvn dependency:tree` sweep plus jar
   downloads is what earned the throttle.
 - **GitHub secondary rate limits** cost a forced 60s sleep; the mine handles them, but they
   stretch wall-clock time considerably.
-- **Disk.** `C:` runs near-full. `resolve_undecided.py` shallow-clones large repos one at a
+- **Disk.** `C:` runs near-full. `traversal/resolve_undecided.py` shallow-clones large repos one at a
   time and deletes each after use; leftovers appear as `%TEMP%/bbcres_*` when a run is
   killed.
 - **Pin every boundary empirically before mining.** Run the old and new jars side by side

@@ -10,20 +10,20 @@ dependency's **behavioural breaking change (BBC)**. Codifies the flow validated 
 xstream/TVRenamer (`verified_cases/xstream-tvrenamer.json`).
 
 Driver: `specs/bump_breaks_catalog.json`, each break carrying its `characterization`,
-`mining`, and `verify` blocks. Entry point: `bbc_e2e.py`.
+`mining`, and `verify` blocks. Entry point: `mine/bbc_e2e.py`.
 
 Breaks now come from two sources, and the catalog records which via `provenance`:
 
 - **BUMP** — breaks confirmed from the BUMP corpus, which carry a `characterization`
   block naming the failing test. `characterize` (stage 1) applies only to these.
 - **EXTERNAL_ADVISORY_NOT_BUMP / EXTERNAL_CHANGELOG_NOT_BUMP** — breaks found by mining
-  the OSV Maven feed and screening it (`mine_advisories.py` → `rank_candidates.py` → a
+  the OSV Maven feed and screening it (`discover/mine_advisories.py` → `discover/rank_candidates.py` → a
   shape check). These have no BUMP client, so `run` skips stage 1 for them. Their
   boundary is **pinned empirically** — old and new jars run side by side until the
   behaviour flips — before any mining is spent.
 
 Two stages now run *before* this pipeline, and cost minutes rather than the day a mine
-costs: `rank_candidates.py` / `screen_majors.py` reject boundaries that remove public API
+costs: `discover/rank_candidates.py` / `discover/screen_majors.py` reject boundaries that remove public API
 (a compile break shadows the behavioural one), and a manual sources-jar diff confirms the
 new restriction is active by default rather than relaxed or opt-in. See `README.md`.
 
@@ -146,8 +146,8 @@ distinction the census depends on:
 - **genuine negative** — versions resolved, no crossing; the client was born past the
   boundary
 - **undecided** — the version is BOM- or parent-managed and the HTTP POM walk cannot
-  resolve it. An *unknown*. Extract with `extract_undecided.py` and decide with
-  `resolve_undecided.py`, which asks `mvn dependency:tree` directly.
+  resolve it. An *unknown*. Extract with `traversal/extract_undecided.py` and decide with
+  `traversal/resolve_undecided.py`, which asks `mvn dependency:tree` directly.
 
 The undecided share varies enormously by ecosystem: beanutils gave 19 undecided against 3
 genuine negatives; kubernetes-client gave 22 against 0, because every fabric8 client takes
@@ -156,8 +156,8 @@ the entire traversal answer.
 
 ## Files
 
-- `bbc_e2e.py` — orchestrator (this pipeline)
-- `bbc_pipeline.py` — original stages; `characterize` reused here
+- `mine/bbc_e2e.py` — orchestrator (this pipeline)
+- `mine/bbc_pipeline.py` — original stages; `characterize` reused here
 - `specs/bump_breaks_catalog.json` — the break catalog + characterization/mining/verify
 - `specs/BUMP_BREAKS.md` — human-readable catalog of the BUMP-sourced breaks
 - `verified_cases/` — the output dataset (one JSON per case + README)

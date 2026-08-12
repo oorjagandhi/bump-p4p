@@ -104,7 +104,7 @@ distinctive adaptation pattern.
 
 Because BUMP rarely contains the fix, the pipeline treats each confirmed behavioural break as a query
 seed and searches external GitHub repositories for other projects that crossed the same dependency
-boundary and adapted to it. This pipeline is implemented in `bbc_e2e.py`.
+boundary and adapted to it. This pipeline is implemented in `mine/bbc_e2e.py`.
 
 ### Characterising the Break
 

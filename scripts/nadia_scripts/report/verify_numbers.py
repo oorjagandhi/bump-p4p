@@ -14,6 +14,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 NADIA = os.path.dirname(HERE)                       # scripts/nadia_scripts
 ROOT = os.path.dirname(os.path.dirname(NADIA))      # repo root (C:\bump-p4p)
 sys.path.insert(0, NADIA)
+sys.path.insert(0, os.path.join(NADIA, "discover"))  # scripts moved into role folders, 2026-08
 from bump_semantic_sweep import classify, read_log  # same classifier the report used
 
 def jload(p):

@@ -89,7 +89,7 @@ cheap deterministic test.
 
 Per candidate, eight steps. Six are ordinary deterministic code — git, Maven, file
 parsing — reusing the mining and classification machinery already validated in
-`bbc_e2e.py`. Only two require judgment, and those are the ones handed to the model. We
+`mine/bbc_e2e.py`. Only two require judgment, and those are the ones handed to the model. We
 call them **seams**: narrow, well-defined points where an LLM is inserted into an
 otherwise mechanical pipeline.
 
@@ -266,7 +266,7 @@ require the same verdict.
 - The inclusion rules were made explicit and applied, which moved most former entries into
   `excluded/`. The count fell from 16 files to 3 cases. The earlier number was not wrong
   arithmetic — it summed four different kinds of evidence under one status field.
-- `02_verify_bbc.py` (verify against the client's OWN test suite) was fixed and run on the
+- `verify/02_verify_bbc.py` (verify against the client's OWN test suite) was fixed and run on the
   traversal-confirmed pairs. It returned `no_bc` for two hand-verified cases: **false
   negatives**. The cause is structural — BUMP's corpus exists because a test failed, but
   externally mined adaptations reached production precisely because no test caught them.
