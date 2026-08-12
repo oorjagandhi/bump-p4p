@@ -23,6 +23,17 @@ Reports the three-valued outcome the census depends on, and they are NOT interch
                    ICIJ/datashare lands here: jackson.version simply appears in 2024-06 when
                    datashare-api was pulled back into the repo, so the crossing, if any,
                    happened in the predecessor repository.
+
+That last distinction earned its keep. ICIJ/datashare DID cross -- 2.12.2 -> 2.15.1 at
+2368659234e2 on 2024-05-14 -- in the standalone ICIJ/datashare-api repo, whose history is
+reachable only as the SECOND parent of merge 6efdf79d. This bisect walks one file on the
+first-parent lineage, where the property has no history before 2024-06 and starts already
+past the boundary: the exact signature of a client born past it. Reporting that as a
+negative would have discarded a case that is now verified (verified_cases/jackson-core/
+jackson-streamreadconstraints-datashare.json). `undecided` kept it alive for a human.
+
+So: undecided is not a soft negative and must never be counted as one. Resolving it means
+looking for a predecessor repository or a parent POM by hand.
 """
 
 # Scripts live one level down (discover/, mine/, traversal/, screen/, verify/) since

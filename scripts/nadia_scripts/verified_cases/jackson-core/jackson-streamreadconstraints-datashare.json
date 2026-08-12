@@ -1,0 +1,107 @@
+{
+ "case_id": "jackson-streamreadconstraints-datashare",
+ "status": "verified_bbc",
+ "case_type": "external_production_adaptation",
+ "verified_date": "2026-08-12",
+ "verified_by": "3-state differential driving the project's OWN production mapper, JsonObjectMapper.MAPPER, built from their own Maven build (mvn -DskipTests package -pl datashare-api -am, jackson version overridden via their own pom property) and run on JDK 17.",
+
+ "note": "The THIRD case for this break, and the one that shows it is not only a small-library problem: ICIJ/datashare is the International Consortium of Investigative Journalists' document-analysis platform (749 stars), and the field that blows the cap is document text, which is its entire workload. It is also the first case in the set whose crossing happened in a PREDECESSOR REPOSITORY -- see in_repo_version_transition.",
+
+ "discovery": {
+  "break_id": "jackson-core-2.15-streamreadconstraints"
+ },
+ "discovery_method": "CODE SEARCH, then dating by file history, then a crossing bisect -- discover/date_hits.py -> discover/screen_dated.py -> traversal/find_crossing.py over the cached /search/code hits. The value screen classified maxStringLength `raise` automatically (1,000,000,000).",
+
+ "why_the_discovery_method_matters": "Same reason as the AthenZ and json-compare cases: commit search is recency-biased, and dating by file history is what puts the 2023-2024 crossing window in view. This case additionally shows why the traversal step must report `undecided` rather than a negative -- the pipeline could not see this crossing, but the crossing is real.",
+
+ "library": {
+  "group_id": "com.fasterxml.jackson.core",
+  "artifact_id": "jackson-core",
+  "at_version": "2.15.1",
+  "baseline_used": "2.12.2",
+  "_baseline_note": "Their ACTUAL previous version, read from the same pom property they bumped -- not a stand-in. They jumped 2.12.2 -> 2.15.1 in one move, so the baseline is three minor versions back rather than one.",
+  "breaking_boundary": "2.15.0 (StreamReadConstraints imposed by default)",
+  "boundary_type": "minor",
+  "dependency_scope": "compile, declared directly as <jackson.version> in pom.xml",
+  "_cap_note": "They landed on 2.15.1, whose maxStringLength default is 20,000,000 -- the already-relaxed value. json-compare hit the original 5,000,000 cap of 2.15.0. Both broke; datashare's documents are simply larger."
+ },
+
+ "in_repo_version_transition": {
+  "crossed_boundary": true,
+  "mechanism": "direct bump of the <jackson.version> property, but in the PREDECESSOR REPOSITORY ICIJ/datashare-api, whose history was later merged into ICIJ/datashare",
+  "bump_commit": "2368659234e228363e4c9c06115432c840a1393a",
+  "bump_transition": "2.12.2 -> 2.15.1",
+  "bump_date": "2024-05-14",
+  "bump_commit_message": "chore: bump jackson from 2.12 to 2.15",
+  "evidence": "The adaptation lives in ICIJ/datashare at datashare-api/, but that module's jackson.version only APPEARS in that repo in 2024-06, already at 2.15.1 -- the module had been split out in 2020 (3acaa25e2, '[#438][refactor] removes datashare-api') and lived in its own repository until it was merged back at 6efdf79dadd2779db7b8ab39ebefaeeab1d43f2e on 2024-06-10. That merge is a true two-parent merge, so the standalone repo's history is reachable in the clone as its SECOND parent, 3dce150830dc1161e209b88510d2b5c1bfe6fa78. Walking pom.xml on that lineage gives the crossing outright: <jackson.version> is 2.12.2 up to 2024-05-14, then 2.12.2 -> 2.15.1 at 2368659234e2, CROSSING the 2.15.0 boundary, and 2.15.1 at every commit thereafter -- including the state in which it entered the merged repo and the state at the adaptation.",
+  "elapsed": "64 days from crossing (2024-05-14) to fix (2024-07-17)",
+  "shape": "POST_MERGE_FIX",
+  "traversal_confirmed_by_pipeline": false,
+  "confirmed_by": "manual walk of the merge's second-parent lineage, after traversal/find_crossing.py returned `undecided`",
+  "why_the_pipeline_could_not_confirm_it": "find_crossing.py bisects ONE build file's history on the first-parent lineage and assumes the version only moves forward. Both assumptions fail across a repo restructure: on datashare's own lineage jackson.version has no history at all before 2024-06, and the value it starts at is already past the boundary. That is indistinguishable, to the bisect, from a client BORN past the boundary -- which is a genuine_negative and not a case. The script's three-valued output is what saves this case: it reported `undecided`, an UNKNOWN, so the candidate stayed alive for a human to resolve. Had it collapsed undecided into negative, a real verified case would have been discarded. This is the concrete instance the find_crossing docstring was written around.",
+  "_note_for_the_census": "Counted as a confirmed crossing, with the confirmation attributed to manual work rather than to the pipeline. traversal_confirmed_by_pipeline is false and must stay false -- the automation did not establish this."
+ },
+
+ "bump_provenance": "EXTERNAL_CHANGELOG_NOT_BUMP (jackson-core-2.15-streamreadconstraints)",
+ "bump_source": "jackson-core 2.15.0 release notes; StreamReadConstraints. That the library itself raised maxStringLength from 5M to 20M in 2.15.1 after user reports is independent evidence the default bit people -- and this project broke through even the raised 20M cap.",
+
+ "behavioral_break": {
+  "mechanism": "jackson-core 2.15.0 introduced StreamReadConstraints with parser limits applied BY DEFAULT: maxStringLength 5,000,000 (raised to 20,000,000 in 2.15.1), maxNestingDepth 1000, maxNumberLength 1000. JSON that 2.12 parsed fine now throws com.fasterxml.jackson.core.exc.StreamConstraintsException at parse time. No signature on the client's path changes, so the client compiles unchanged and fails at run time.",
+  "why_it_breaks": "Same as `mechanism`; recorded under both names because older cases in this directory use `why_it_breaks` and newer ones use `mechanism`.",
+  "affected_class": "org.icij.datashare.json.JsonObjectMapper (their single public static ObjectMapper)",
+  "observed_exception": "com.fasterxml.jackson.core.exc.StreamConstraintsException: String length (20051239) exceeds the maximum length (20000000)",
+  "category": "runtime_exception",
+  "blast_radius": "Every document datashare indexes or reads back. JsonObjectMapper.MAPPER is the one mapper the application parses through, and the payload is extracted document text -- so the affected input is not an edge case but the product's central data type. A 20 MB text field is an ordinary large PDF or email archive in an investigative-journalism corpus, which is presumably why they raised the limit to 1,000,000,000 rather than nudging it."
+ },
+
+ "adaptation": {
+  "repo": "ICIJ/datashare",
+  "repo_note": "The ICIJ's self-hosted document-analysis platform. 749 stars, upstream, not a fork, not archived. Multi-module Maven; the mapper lives in datashare-api.",
+  "commit": "2693664cfe4cbc09445baa21fbac6d4bcfff2ce4",
+  "parent_commit": "6107c1a2ddf4ec99d080a8157e94b8627ae18e3c",
+  "date": "2024-07-17",
+  "commit_message": "feat: add streamReadConstraints for the objectmapper",
+  "build_system": "maven",
+  "module": "datashare-api",
+  "language": "java",
+  "adaptation_in_test_code": false,
+  "adaptation_quality": "production_usage_adaptation",
+  "production_files": [
+   "datashare-api/src/main/java/org/icij/datashare/json/JsonObjectMapper.java"
+  ],
+  "test_files": [
+   "datashare-api/src/test/java/org/icij/datashare/json/JsonObjectMapperTest.java"
+  ],
+  "the_call": "MAPPER.getFactory().setStreamReadConstraints(StreamReadConstraints.builder().maxNestingDepth(MAX_NESTING_DEPTH).maxNumberLength(MAX_NUMBER_LENGTH).maxStringLength(MAX_STRING_LENGTH).build());  // 20 / 100 / 1_000_000_000",
+  "restores_previous_behaviour": "partially",
+  "_restores_previous_behaviour_note": "TRUE OF THE LIMIT THAT BROKE THEM, FALSE OF THE OTHER TWO, and the distinction is the interesting part of this case. maxStringLength goes to 1,000,000,000 -- effectively unbounded, a restoration of pre-2.15 behaviour. But in the SAME builder call maxNestingDepth goes 1000 -> 20 and maxNumberLength goes 1000 -> 100, both far TIGHTER than jackson's new defaults and tighter than the pre-2.15 unlimited behaviour they came from. So this is not a rollback; it is a re-parameterisation that accepts the new mechanism and disagrees with its numbers in both directions. Compare json-compare, which set Integer.MAX_VALUE on all three -- a pure restoration. Same break, same API, two different postures.",
+  "why_that_matters": "A client that raises one limit while lowering two others is not resisting the new feature -- it is using it. That is the strongest form of adaptation in this corpus: the break forced them to think about parser limits, and they came back with values of their own rather than with a switch flipped back to off.",
+  "evidence_of_diagnosis": "They named all three limits as public constants, configured them on the one mapper the application shares, and added a test asserting the factory reports exactly those three values.",
+  "scope": "1 production file plus 1 test file; the whole commit is this adaptation and nothing else."
+ },
+
+ "verification": {
+  "method": "Their own Maven build at both commits (mvn -B -DskipTests package -pl datashare-api -am), with the jackson version supplied through THEIR OWN pom property (-Djackson.version), so no build file was edited. A driver in the default package reads a JSON document whose single field is 25,000,000 characters -- above 2.15.1's 20,000,000 cap -- through JsonObjectMapper.MAPPER, the public static mapper their adaptation configures. Each state prints the classpath location of the loaded jackson-core jar, so a state cannot silently run the wrong version.",
+  "test": "DatashareBbcDriver.java (authored trigger, THEIR production mapper). Nothing of theirs is reconstructed: the parse goes through JsonObjectMapper.MAPPER itself, the exact object the adaptation's static initializer configures. Only the oversized document and the main() are ours.",
+  "why_not_their_own_suite": "Their suite cannot express this break in any state. The test they added in the adaptation commit, JsonObjectMapperTest.test_check_stream_read_constraints, is a pure CONFIGURATION assertion -- it reads back getMaxNestingDepth/getMaxNumberLength/getMaxStringLength and compares them to their own constants. It never parses an oversized document, so it cannot fail from the break; and it cannot even be compiled against the parent, since the constants it imports do not exist there. A configuration assertion is what a project writes when the failure itself is too expensive to keep in a suite -- no project ships a 25 MB string fixture -- which is exactly why this break needs an authored trigger.",
+  "states": [
+   {"name": "1_baseline", "config": "parent code (6107c1a2) + jackson 2.12.2",
+    "input": "25,000,000-character JSON string field", "result": "PARSED (len 25000014)", "expected": "pass"},
+   {"name": "2_broken", "config": "parent code (6107c1a2) + jackson 2.15.1",
+    "input": "25,000,000-character JSON string field",
+    "result": "THREW com.fasterxml.jackson.core.exc.StreamConstraintsException: String length (20051239) exceeds the maximum length (20000000)",
+    "expected": "fail"},
+   {"name": "3_adapted", "config": "adapted code (2693664c) + jackson 2.15.1",
+    "input": "25,000,000-character JSON string field", "result": "PARSED (len 25000014)", "expected": "pass"}
+  ],
+  "isolation": "States 2 and 3 resolve the identical jackson-core 2.15.1 jar, so the only variable between them is their own commit. States 1 and 2 share their code exactly, so the only variable is the library version -- and both versions are theirs, from the property they bumped. `mvn clean` runs between states, because incremental compilation would otherwise reuse the previous state's .class files after a checkout. Baseline and adapted return the identical length (25000014), so state 3 restores state 1 exactly rather than merely avoiding the throw.",
+  "threats_to_validity": [
+   "THE TRIGGER IS AUTHORED, not their test, for the reason given in why_not_their_own_suite.",
+   "THE DIFFERENTIAL EXERCISES ONE OF THE THREE LIMITS THEY CHANGED. maxStringLength is the one that breaks them and the one the driver drives. Their simultaneous TIGHTENING of maxNestingDepth (1000 -> 20) and maxNumberLength (1000 -> 100) is not tested here, and would not show up as a break in any case -- tightening a limit cannot be caused by the library's change, it is their own choice layered on top. Recorded in adaptation._restores_previous_behaviour_note rather than measured.",
+   "THE EXCEPTION REPORTS 20,051,239 characters rather than the 25,000,000 written. That is jackson's own buffer-boundary accounting -- it aborts as soon as the accumulated segment passes the cap, not after reading the whole field. The number differing from the input is expected, and the cap it names (20,000,000) is exactly 2.15.1's default.",
+   "THE BASELINE IS THREE MINOR VERSIONS BACK (2.12.2), because that is the version they actually jumped from. A 2.12 -> 2.15 baseline gap admits more unrelated change than the one-version gaps elsewhere in this set; it is used because it is theirs, not because it is tidy. The break is nonetheless pinned to the boundary by json-compare's 2.14.2 -> 2.15.0 differential, which isolates the same exception across a single minor version.",
+   "THE CROSSING WAS CONFIRMED MANUALLY, not by the pipeline -- see in_repo_version_transition.why_the_pipeline_could_not_confirm_it. The crossing itself is not in doubt (the bump commit is exact and its diff is a one-line version change), but this case should not be counted as evidence that the traversal automation works."
+  ],
+  "reproduce": "scratchpad/jackson-datashare-harness/ — DatashareBbcDriver.java plus run_state.sh; `bash run_state.sh <label> <sha> <jackson-version>` runs one state. Needs JDK 17, which run_state.sh names explicitly rather than taking from PATH."
+ }
+}
