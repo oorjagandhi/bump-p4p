@@ -86,10 +86,23 @@ def _clean_log(text: str) -> str:
 
 
 def characterize(sha: str):
-    """Pull the failing test(s) + assertion diff from BUMP's reproduction log."""
+    """Pull the failing test(s) + assertion diff from BUMP's reproduction log.
+
+    DEAD SINCE 2026-08-12: reproductionLogs/ was deleted with the rest of the BUMP
+    corpus. The parsing below is kept because it is hardened against three surefire
+    formats and ANSI-dirty logs, and re-deriving it would be tedious — but it has no
+    input here any more. What it produced is already baked into the catalog: 12 of the
+    13 BUMP-sourced breaks carry their `characterization.failing_tests` inline, which
+    is what every downstream stage actually reads. To run this again, restore the logs
+    from upstream chains-project/bump.
+    """
     logs = list((REPO_ROOT / "reproductionLogs").glob(f"**/{sha}*.log"))
     if not logs:
-        sys.exit(f"no reproduction log found for {sha} under reproductionLogs/")
+        sys.exit(
+            f"no reproduction log for {sha}: reproductionLogs/ was deleted on 2026-08-12.\n"
+            "The failing tests it would have extracted are already in "
+            "specs/bump_breaks_catalog.json under characterization.failing_tests.\n"
+            "To re-run characterize, restore reproductionLogs/ from chains-project/bump.")
     text = _clean_log(logs[0].read_text(encoding="utf-8", errors="replace"))
     print(f"[characterize] {logs[0].relative_to(REPO_ROOT)}\n")
 

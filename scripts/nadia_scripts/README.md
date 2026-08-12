@@ -116,7 +116,6 @@ Everything around those two calls is deterministic. See `specs/AGENT_DESIGN.md` 
 | `discover/rank_candidates.py` | rank advisories by whether a case is *possible* (rules 1 + 3) |
 | `discover/screen_majors.py` | same API check across curated major-version boundaries |
 | `discover/mine_major_bumps.py` | discovery-first mining for top-library major releases |
-| `discover/bump_semantic_sweep.py` | classify the BUMP corpus by kind of failure |
 
 **Mining and classifying**
 | script | does |
@@ -147,7 +146,7 @@ Everything around those two calls is deterministic. See `specs/AGENT_DESIGN.md` 
 |---|---|
 | `report/census.py` | build `output/CENSUS.md` from the artifacts |
 | `report/boundary_dates.py` | resolve each boundary to its release date |
-| `report/verify_numbers.py` | independently re-derive the numbers quoted in the report |
+| `report/BUMP_NUMBERS_FROZEN.md` | *(not a script)* the last output of the deleted `verify_numbers.py`, kept as the record behind the report's BUMP figures |
 | `report/make_figures.py` | figures for the technical report |
 
 ## Where things live

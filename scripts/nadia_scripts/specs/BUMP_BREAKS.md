@@ -8,7 +8,8 @@ from BUMP and re-derived in our own differential.
 Machine-readable version (with per-`to_version` breaking-commit SHAs, consumed by
 `bbc_pipeline.py characterize`): [`bump_breaks_catalog.json`](bump_breaks_catalog.json).
 
-SHAs verified against `data/benchmark_test_failures/` on 2026-07-06. All entries
+SHAs were verified against `data/benchmark_test_failures/` on 2026-07-06; that data was
+deleted on 2026-08-12, so the SHAs here are now the record rather than a derivation. All entries
 `failureCategory=TEST_FAILURE`, reproduced on Java 11. Failing tests + signals
 characterized from the repro logs on 2026-07-06 (see `characterization` in the JSON).
 
@@ -53,7 +54,8 @@ characterized from the repro logs on 2026-07-06 (see `characterization` in the J
    [`bump_breaks_catalog.json`](bump_breaks_catalog.json).
 2. `python bbc_pipeline.py characterize <breaking_commit>` → prints the exact
    failing test + assertion/exception from
-   `reproductionLogs/successfulReproductionLogs/<sha>.log`.
+   `reproductionLogs/successfulReproductionLogs/<sha>.log` — deleted 2026-08-12, restore
+   from upstream chains-project/bump if you need it.
 3. Write a per-break spec (see [`xstream-1.4.19-forbiddenclass.json`](xstream-1.4.19-forbiddenclass.json),
    [`jsoup-1.15-whitespace.json`](jsoup-1.15-whitespace.json)) capturing root cause,
    `affected_usage_regex`, and mimic.

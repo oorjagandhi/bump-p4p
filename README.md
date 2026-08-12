@@ -18,19 +18,24 @@ regenerated from the artifacts rather than hand-maintained.
 
 ## What's in this repository
 
-| path | holds |
-|---|---|
-| `scripts/nadia_scripts/` | the pipeline, the verified cases, the census, the report |
-| `data/benchmark/` | BUMP's 571 breaking updates + their failure categories |
-| `data/benchmark_test_failures*/` | the TEST_FAILURE subsets |
-| `reproductionLogs/` | BUMP's build logs, read by the `characterize` stage |
+Everything lives under [`scripts/nadia_scripts/`](scripts/nadia_scripts/) — the pipeline,
+the verified cases, the census, and the report. Nothing else remains at the root.
 
-`data/` and `reproductionLogs/` are **kept as evidence, not as scaffolding**: the mid-year
-report's BUMP breakdown is re-derived from them by
-[`report/verify_numbers.py`](scripts/nadia_scripts/report/verify_numbers.py), so removing
-them would make those numbers unverifiable. The rest of the upstream BUMP harness (the
-Java reproduction tooling, CI workflows, RQ data, and helper scripts) was removed in
-August 2026 — it is unused here and remains available upstream.
+**The upstream BUMP corpus is gone.** The Java reproduction harness, CI workflows, `RQData/`,
+and helper scripts were removed on 2026-08-12, and `data/` and `reproductionLogs/` followed
+the same day: the contribution here no longer rests on the BUMP breakdown, and the corpus
+cost ~26 MB to carry. Two consequences worth knowing before you go looking for them:
+
+- The BUMP figures quoted in the mid-year report can no longer be recomputed in this
+  repository. The last verified output is frozen in
+  [`report/BUMP_NUMBERS_FROZEN.md`](scripts/nadia_scripts/report/BUMP_NUMBERS_FROZEN.md),
+  which is a record, not a measurement.
+- `bbc_pipeline.py`'s `characterize` stage has no input and exits with a message saying so.
+  It is not needed: 12 of the 13 BUMP-sourced breaks already carry their failing tests
+  inline in `specs/bump_breaks_catalog.json`, which is what downstream stages read.
+
+To restore either, clone [chains-project/bump](https://github.com/chains-project/bump); the
+deleted files are also in this repository's history.
 
 ## Provenance
 
