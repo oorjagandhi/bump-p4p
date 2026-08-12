@@ -1,0 +1,116 @@
+{
+ "case_id": "jackson-streamreadconstraints-benchto",
+ "status": "verified_bbc",
+ "case_type": "external_production_adaptation",
+ "verified_date": "2026-08-12",
+ "verified_by": "4-state differential driving the project's OWN production ObjectMapper bean, ServiceApp.configureObjectMapper(), built from their own Maven build (jackson moved through Spring Boot's jackson-bom.version property) and run on JDK 21.",
+
+ "note": "The fifth case for this break, and the one with the TIGHTEST isolation in the whole corpus: the identical parent source parses at jackson 2.14.2 and throws at 2.15.0, one minor version apart, with the framework held fixed. It is also the first case whose crossing is entirely TRANSITIVE -- benchto never names a jackson version anywhere in its build, and never bumped one. Jackson arrived, and moved, through a parent-POM upgrade.",
+
+ "discovery": {
+  "break_id": "jackson-core-2.15-streamreadconstraints"
+ },
+ "discovery_method": "CODE SEARCH, then dating by file history -- discover/date_hits.py -> discover/screen_dated.py over the cached /search/code hits. The value screen classified all three named knobs `raise` automatically (Integer.MAX_VALUE).",
+
+ "why_the_discovery_method_matters": "A build-file scan could not have found this client at all. benchto declares no jackson version, so any search keyed on a version string or on a bump commit misses it entirely; only the adaptation CALL is visible. That is the whole argument for the code-search route, in one repository.",
+
+ "library": {
+  "group_id": "com.fasterxml.jackson.core",
+  "artifact_id": "jackson-core",
+  "at_version": "2.17.2",
+  "baseline_used": "2.14.2",
+  "_baseline_note": "NOT their actual pre-crossing version, and the reason is itself a finding -- see verification.why_the_baseline_is_not_2_13_3. Their resolved version before the crossing was 2.13.3; 2.14.2 is the last release before the 2.15.0 boundary and the lowest version this code can run at all.",
+  "breaking_boundary": "2.15.0 (StreamReadConstraints imposed by default)",
+  "boundary_type": "minor",
+  "dependency_scope": "compile, TRANSITIVE AND MANAGED -- no version declared anywhere in benchto",
+  "_how_jackson_arrives": "benchto's root pom sets io.airlift:airbase as its parent and imports spring-boot-dependencies at ${dep.spring.boot.version}. Spring Boot's BOM manages jackson through its own <jackson-bom.version>. benchto names jackson-core and jackson-databind as dependencies with NO <version> element at all. So jackson's version is decided two levels up, by a project benchto does not control."
+ },
+
+ "in_repo_version_transition": {
+  "crossed_boundary": true,
+  "mechanism": "TRANSITIVE: a parent-POM upgrade (airbase 141 -> 175) which carried Spring Boot 2.7.3 -> 3.3.4 with it, which in turn moved the managed jackson from 2.13.3 to 2.17.2. benchto never edited a jackson version.",
+  "bump_commit": "c05adffaf4f47ab63ebe6efb32fa9dc05b862cf1",
+  "bump_transition": "jackson-core 2.13.3 -> 2.17.2 (resolved), via dep.spring.boot.version 2.7.3 -> 3.3.4 and airbase 141 -> 175",
+  "bump_date": "2024-09-19",
+  "bump_commit_message": "Update airbase to 175",
+  "evidence": "Sampling <dep.spring.boot.version> across pom.xml's history gives 2.7.3 unchanged from 2022-09 to 2024-09, then 3.3.4 at c05adffa (2024-09-19), then 3.3.5 in the 2024-11-04 cleanup, and 3.3.5 at the adaptation. The RESOLVED jackson was then measured on both sides rather than inferred from the Spring Boot version: `mvn dependency:list -pl benchto-service` reports jackson-core 2.13.3 at 85e211de (the commit before the crossing) and 2.17.2 at 89597ae (the adaptation's parent). 2.13.3 -> 2.17.2 crosses 2.15.0.",
+  "elapsed": "60 days from crossing (2024-09-19) to fix (2024-11-18)",
+  "shape": "POST_MERGE_FIX",
+  "traversal_confirmed_by_pipeline": false,
+  "confirmed_by": "manual sampling of dep.spring.boot.version through pom.xml history, plus mvn dependency:list on both sides to read the RESOLVED jackson version",
+  "why_the_pipeline_did_not_confirm_it": "find_crossing.py bisects a build file for a DECLARED version at or past the boundary. benchto declares no jackson version at any commit, so the bisect has nothing to read and would return `undecided` -- the same UNKNOWN verdict that saved the datashare case, for a different reason. Resolving it requires asking Maven what the version resolves to, not reading the POM, which is what was done here. This is the concrete instance of the limitation the census already states in prose: `below` reads the declared version and cannot see one that arrives transitively."
+ },
+
+ "bump_provenance": "EXTERNAL_CHANGELOG_NOT_BUMP (jackson-core-2.15-streamreadconstraints)",
+ "bump_source": "jackson-core 2.15.0 release notes; StreamReadConstraints.",
+
+ "behavioral_break": {
+  "mechanism": "jackson-core 2.15.0 introduced StreamReadConstraints with parser limits applied BY DEFAULT: maxStringLength 5,000,000 (raised to 20,000,000 in 2.15.1), maxNestingDepth 1000, maxNumberLength 1000. Later releases added maxDocumentLength and maxNameLength, and 2.16 added StreamWriteConstraints. JSON that 2.14 parsed fine now throws StreamConstraintsException at parse time; nothing on the client's path changes signature, so the client compiles unchanged and fails at run time.",
+  "why_it_breaks": "Same as `mechanism`; recorded under both names because older cases in this directory use `why_it_breaks` and newer ones use `mechanism`.",
+  "affected_class": "io.trino.benchto.service.ServiceApp (the Jackson2ObjectMapperBuilder @Bean that defines the application's one ObjectMapper)",
+  "observed_exception": "com.fasterxml.jackson.core.exc.StreamConstraintsException: String value length (20051239) exceeds the maximum allowed (20000000, from `StreamReadConstraints.getMaxStringLength()`)",
+  "category": "runtime_exception",
+  "blast_radius": "Every JSON document the benchto service reads or writes. It is a benchmarking service that stores query results and run metadata as JSON, so large documents are its ordinary workload rather than an edge case -- which is presumably why the fix disables all five read limits and the write nesting limit rather than raising one."
+ },
+
+ "adaptation": {
+  "repo": "trinodb/benchto",
+  "repo_note": "Trino's benchmarking service and driver. 39 stars, upstream, not a fork, not archived. Multi-module Maven; the mapper lives in benchto-service.",
+  "commit": "322af5ff1e40a500b89170eb0ff257d29bdeb69e",
+  "parent_commit": "89597ae38910b306bbd51e1eadded532885da6b5",
+  "date": "2024-11-18",
+  "author": "Mateusz \"Serafin\" Gajewski",
+  "commit_message": "Restore previous Jackson read/write constraints",
+  "build_system": "maven",
+  "module": "benchto-service",
+  "language": "java",
+  "adaptation_in_test_code": false,
+  "adaptation_quality": "production_usage_adaptation",
+  "production_files": [
+   "benchto-service/src/main/java/io/trino/benchto/service/ServiceApp.java"
+  ],
+  "build_files": [
+   "benchto-service/pom.xml"
+  ],
+  "the_call": "objectMapper.getFactory().setStreamReadConstraints(StreamReadConstraints.builder().maxNestingDepth(MAX).maxStringLength(MAX).maxDocumentLength(MAX).maxNameLength(MAX).maxNumberLength(MAX).build()).setStreamWriteConstraints(StreamWriteConstraints.builder().maxNestingDepth(MAX).build());  // MAX = Integer.MAX_VALUE, applied via Jackson2ObjectMapperBuilder.postConfigurer",
+  "restores_previous_behaviour": true,
+  "_restores_previous_behaviour_note": "THE MOST COMPLETE RESTORATION IN THE CORPUS. Integer.MAX_VALUE on all FIVE read constraints -- including maxDocumentLength and maxNameLength, which did not exist in 2.15 and were added later -- plus the write-side maxNestingDepth from StreamWriteConstraints. json-compare set three; benchto set six. The commit message, 'Restore previous Jackson read/write constraints', states the intent exactly.",
+  "why_that_matters": "Setting limits that postdate the break shows the fix was written against the CURRENT jackson (2.17.2), not against 2.15 -- the author enumerated every constraint the library then had, rather than the one that failed. That is a client deciding the whole constraints mechanism is unwanted, which is the strongest form of rejection this corpus records.",
+  "evidence_of_diagnosis": "The fix is applied through Jackson2ObjectMapperBuilder.postConfigurer, which is the correct Spring seam: it runs after Spring's own configuration, so the constraints cannot be overwritten by the framework's defaults. They also added an explicit jackson-core dependency to benchto-service/pom.xml -- previously it arrived only transitively -- because the fix now names StreamReadConstraints directly in source.",
+  "scope": "1 production file and 1 build file; the whole commit is this adaptation and nothing else.",
+  "no_test_added": "The commit adds no test."
+ },
+
+ "verification": {
+  "method": "Their own Maven build at both commits (mvn -DskipTests compile -pl benchto-service), with the jackson version supplied through SPRING BOOT'S OWN property (-Djackson-bom.version), so no build file was edited and Spring Boot itself stays pinned at 3.3.5 in every state. A driver in the default package calls new ServiceApp().configureObjectMapper().build() -- their @Bean method, which applies their postConfigurer -- and reads a JSON document whose single field is 25,000,000 characters. Each state prints the classpath location of the loaded jackson-core jar and the maxStringLength actually in force.",
+  "_why_the_version_knob_works": "benchto imports spring-boot-dependencies with scope=import, so setting jackson-bom.version in benchto's own POM would NOT override it. A Maven USER property (-D) does, because user properties outrank properties declared inside an imported BOM. Verified directly before relying on it: `dependency:list` reports jackson-core 2.17.2 with no flag and 2.14.2 with -Djackson-bom.version=2.14.2.",
+  "test": "BenchtoBbcDriver.java (authored trigger, THEIR production bean). Nothing of theirs is reconstructed: the mapper is built by their own @Bean method, so the postConfigurer their adaptation adds is what configures it. Only the oversized document and the main() are ours. The bean method's signature is identical at both commits, so one driver source compiles in every state.",
+  "why_not_their_own_suite": "The commit adds no test, so there is nothing of theirs that touches this. benchto-service's own suite targets a benchmarking service backed by a database and would not exercise a 25 MB string in any case.",
+  "states": [
+   {"name": "1_baseline", "config": "parent code (89597ae) + jackson 2.14.2", "cap_in_force": "n/a (StreamReadConstraints does not exist)",
+    "input": "25,000,000-character JSON string field", "result": "PARSED (len 25000000)", "expected": "pass"},
+   {"name": "1b_probe", "config": "parent code (89597ae) + jackson 2.15.0", "cap_in_force": "5000000",
+    "input": "25,000,000-character JSON string field",
+    "result": "THREW com.fasterxml.jackson.core.exc.StreamConstraintsException: String length (5043495) exceeds the maximum length (5000000)",
+    "expected": "fail", "role": "boundary probe -- not part of their history, see below"},
+   {"name": "2_broken", "config": "parent code (89597ae) + jackson 2.17.2", "cap_in_force": "20000000",
+    "input": "25,000,000-character JSON string field",
+    "result": "THREW com.fasterxml.jackson.core.exc.StreamConstraintsException: String value length (20051239) exceeds the maximum allowed (20000000, from `StreamReadConstraints.getMaxStringLength()`)",
+    "expected": "fail"},
+   {"name": "3_adapted", "config": "adapted code (322af5ff) + jackson 2.17.2", "cap_in_force": "2147483647",
+    "input": "25,000,000-character JSON string field", "result": "PARSED (len 25000000)", "expected": "pass"}
+  ],
+  "why_four_states": "Their own crossing jumped 2.13.3 -> 2.17.2 in a single parent-POM upgrade, so a differential using only their before/after pair would straddle four minor versions and could not say WHICH one broke them. State 1b re-runs the IDENTICAL parent source at 2.15.0. With 1 and 1b together the demonstration narrows to a single minor version -- 2.14.2 parses, 2.15.0 throws, same code, same framework -- which is the tightest isolation of this break anywhere in the corpus. State 2 then shows it still fails at the version they actually ran, at the higher 20,000,000 cap.",
+  "why_the_baseline_is_not_2_13_3": "IT CANNOT BE RUN, and this is worth recording as a property of framework-mediated crossings. Their true pre-crossing resolved version was jackson 2.13.3, but this code requires Spring Boot 3.3.5, and Spring Framework 6.1 calls com.fasterxml.jackson.databind.cfg.DatatypeFeature -- a class introduced in jackson 2.14. Holding their code at Spring Boot 3.3.5 and dropping jackson to 2.13.3 fails with NoClassDefFoundError inside Jackson2ObjectMapperBuilder.build() before any parsing happens. Below 2.14 the library and the framework that delivered it are not separable, so 2.14.2 -- the last release before the boundary -- is the lowest usable baseline. Maven's enforcer said the same thing statically before the JVM did: airbase's RequireUpperBoundDeps rejects the downgrade outright.",
+  "isolation": "Every state pins Spring Boot 3.3.5 and moves only jackson, so the framework upgrade that delivered the crossing is held constant and cannot be confused with the library change. States 1, 1b and 2 share their source EXACTLY -- only the jackson version differs. States 2 and 3 resolve the identical jackson 2.17.2, so the only variable is their own commit. `mvn clean` runs between states.",
+  "threats_to_validity": [
+   "THE TRIGGER IS AUTHORED, not their test, for the reason given in why_not_their_own_suite.",
+   "AIRBASE'S ENFORCER IS SKIPPED (-Dair.check.skip-enforcer=true) IN EVERY STATE. RequireUpperBoundDeps fails on the baseline because pinning jackson below what other artifacts in the graph request is, correctly, a dependency-hygiene violation. It is skipped SYMMETRICALLY rather than only where it fires: states 2 and 3 pass the rule on their own, and building them under different rules than state 1 would break the one-variable property the differential depends on. The rule concerns the shape of the dependency graph, not runtime behaviour, and the states' actual resolved jackson versions are confirmed independently by the driver's jar-location print.",
+   "STATE 1b IS NOT A STATE OF THEIR HISTORY. benchto never ran jackson 2.15.0; it is constructed to locate the boundary. It is labelled a probe and is not evidence about what benchto shipped.",
+   "THE BASELINE IS 2.14.2 RATHER THAN THEIR ACTUAL 2.13.3, for the hard reason in why_the_baseline_is_not_2_13_3. Since 2.14.2 is still below the boundary and still parses the document, the demonstration of the break is unaffected -- but this differential does not reproduce the exact version pair benchto moved between.",
+   "THE EXCEPTION REPORTS ~5.04M / ~20.05M CHARACTERS rather than the 25,000,000 written. That is jackson's own buffer-boundary accounting -- it aborts as soon as the accumulated segment passes the cap. The caps it names are exactly 2.15.0's and 2.17.2's defaults.",
+   "WHICH CONSTRAINT ACTUALLY BIT THEM IS UNKNOWN. Their commit disables six limits at once and says only 'Restore previous Jackson read/write constraints'. This differential drives maxStringLength, which is demonstrably one of them; it is not established that maxStringLength is the one that prompted the commit."
+  ],
+  "reproduce": "scratchpad/jackson-benchto-harness/ — BenchtoBbcDriver.java plus run_state.sh; `bash run_state.sh <label> <sha> <jackson-version>` runs one state. Needs JDK 21, which run_state.sh names explicitly. run_state.sh also forces core.autocrlf=false: airbase's checkstyle fails the build on CRLF, which a default Windows clone introduces into every source file."
+ }
+}
