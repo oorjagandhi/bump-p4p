@@ -129,7 +129,7 @@ A confirmed BBC:
 ## Per-break readiness
 
 **See [`output/CENSUS.md`](output/CENSUS.md)** — it is generated from the artifacts by
-`report/census.py`, so unlike a table here it cannot drift out of date. It gives, per
+`ledger/census.py`, so unlike a table here it cannot drift out of date. It gives, per
 break: rows examined, production adaptations, traversal-confirmed, behavioural vs compile
 break, verified, and excluded — plus an undecided-resolution table and a decidability
 audit.

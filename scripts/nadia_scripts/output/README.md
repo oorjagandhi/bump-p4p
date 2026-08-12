@@ -56,7 +56,7 @@ would otherwise skip every poisoned row as already done.
 
 | file | what |
 |---|---|
-| `CENSUS.md` | **the ledger.** Per-break funnel, undecided resolution, decidability audit. Regenerate with `python report/census.py > output/CENSUS.md` |
+| `CENSUS.md` | **the ledger.** Per-break funnel, undecided resolution, decidability audit. Regenerate with `python ledger/census.py > output/CENSUS.md` |
 | `CANDIDATE_RANKING_WIDE.md` | advisory ranking, `deserialize` tier |
 | `CANDIDATE_RANKING_VALIDATE.md` | advisory ranking, `validate` tier |
 | `MAJOR_SCREEN.md` | major-version boundaries: which remove public API |

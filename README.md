@@ -26,10 +26,11 @@ and helper scripts were removed on 2026-08-12, and `data/` and `reproductionLogs
 the same day: the contribution here no longer rests on the BUMP breakdown, and the corpus
 cost ~26 MB to carry. Two consequences worth knowing before you go looking for them:
 
-- The BUMP figures quoted in the mid-year report can no longer be recomputed in this
-  repository. The last verified output is frozen in
-  [`report/BUMP_NUMBERS_FROZEN.md`](scripts/nadia_scripts/report/BUMP_NUMBERS_FROZEN.md),
-  which is a record, not a measurement.
+- The mid-year technical report, its figures, and the frozen BUMP numbers were deleted
+  with the corpus itself. All of it is in git history; nothing in the live pipeline reads
+  it. What survives as the standing record of what has been measured is
+  [`output/CENSUS.md`](scripts/nadia_scripts/output/CENSUS.md), which is regenerated from
+  the artifacts by `ledger/census.py` and does not depend on BUMP at all.
 - `bbc_pipeline.py`'s `characterize` stage has no input and exits with a message saying so.
   It is not needed: 12 of the 13 BUMP-sourced breaks already carry their failing tests
   inline in `specs/bump_breaks_catalog.json`, which is what downstream stages read.

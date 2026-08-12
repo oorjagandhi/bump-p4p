@@ -31,7 +31,7 @@ a decidability audit. **Read it rather than any number quoted in prose**, here o
 elsewhere, because it is regenerated from the artifacts:
 
 ```
-python report/census.py > output/CENSUS.md
+python ledger/census.py > output/CENSUS.md
 ```
 
 The census distinguishes a measured zero from an absent measurement. `--` means the stage
@@ -46,7 +46,7 @@ library, in this order:
 |---|---|---|---|
 | 1 | The boundary must remove **no public API** | A compile break shadows the behavioural one — the client stops at javac and never reaches the change. Killed snakeyaml. | 2 jar downloads + javap (`discover/rank_candidates.py`, `discover/screen_majors.py`) |
 | 2 | The new restriction must be **active by default** | *Relaxation*: the fix removes a restriction, so nothing breaks (mybatis 3.5.6). *Opt-in*: the restriction ships switched off (avro 1.11.3). | read the `-sources.jar` diff |
-| 3 | The boundary must be **old enough that clients crossed it** | The client population is born past it, so no crossing can exist however many adaptations there are. Killed org-json (2013 boundary). | `report/boundary_dates.py` |
+| 3 | The boundary must be **old enough that clients crossed it** | The client population is born past it, so no crossing can exist however many adaptations there are. Killed org-json (2013 boundary). | `discover/boundary_dates.py` |
 | 4 | The library must be used **directly**, not only transitively | Nobody writes code against it, so nobody has code to adapt. Killed json-smart (89% of mined commits changed no Java). | inspect a sample of mined commits |
 | 5 | Prefer a restriction on the library's **primary API path** | Blast radius predicts yield. xstream's filter hits every `fromXML`; beanutils' hits only the property named `class`. | judgment, from the diff |
 
@@ -144,15 +144,13 @@ Everything around those two calls is deterministic. See `specs/AGENT_DESIGN.md` 
 **Reporting**
 | script | does |
 |---|---|
-| `report/census.py` | build `output/CENSUS.md` from the artifacts |
-| `report/boundary_dates.py` | resolve each boundary to its release date |
-| `report/BUMP_NUMBERS_FROZEN.md` | *(not a script)* the last output of the deleted `verify_numbers.py`, kept as the record behind the report's BUMP figures |
-| `report/make_figures.py` | figures for the technical report |
+| `ledger/census.py` | build `output/CENSUS.md` from the artifacts |
+| `discover/boundary_dates.py` | resolve each boundary to its release date |
 
 ## Where things live
 
 Scripts sit in role folders — `discover/` (is a case possible?), `mine/`, `traversal/`,
-`screen/`, `verify/`, `report/`, `agent/`. They still import each other by bare module name
+`screen/`, `verify/`, `ledger/`, `agent/`. They still import each other by bare module name
 and resolve data paths against **this** directory, which a small `sys.path` preamble at the
 top of each file makes work: run them from anywhere, but keep that preamble if you move a
 script again.
@@ -164,7 +162,7 @@ script again.
 | `specs/*.md` | agent design docs, BUMP break notes |
 | `output/` | every artifact the pipeline produces — see `output/README.md` for naming |
 | `verified_cases/` | confirmed cases, plus `excluded/` with a reason per rejection |
-| `report/` | census, figures, the mid-year technical report |
+| `ledger/` | `census.py`, which builds `output/CENSUS.md` from the artifacts |
 | `agent/` | the LLM-seam verification path |
 | `_runlogs/` | run logs (gitignored) |
 | `scratchpad/` | generated harnesses and the jar cache (jars gitignored) |
@@ -182,8 +180,8 @@ python mine/bbc_e2e.py run <break_id>         # mine + classify + traversal
 python traversal/extract_undecided.py <break_id>
 python traversal/resolve_undecided.py <break_id> --in output/<break_id>_UNDECIDED.jsonl
 
-python report/boundary_dates.py
-python report/census.py > output/CENSUS.md
+python discover/boundary_dates.py
+python ledger/census.py > output/CENSUS.md
 ```
 
 Tiers for `discover/rank_candidates.py`: `deserialize`, `validate`, `limit`, `all`.
