@@ -115,8 +115,27 @@ def find_crossing(repo, path, prop, artifact, boundary, token, keyword=None):
 
     res = {"repo": repo, "path": path, "commits_at_path": len(commits)}
     if first is None:
-        res.update(outcome="genuine_negative",
-                   why="the declared version never reaches the boundary in this file")
+        # "never reaches the boundary" and "never declares a version here at all" look
+        # identical to the bisection and are NOT the same finding. Azure declares jackson
+        # in eng/versioning/external_dependencies.txt, not the root pom; Confluent projects
+        # inherit it from a parent. Calling that a measured negative is precisely the error
+        # the census exists to prevent, so sample the ends before deciding.
+        seen = [declared_version(B._gh_file(repo, path, c["sha"], token),
+                                 prop, artifact, keyword)
+                for c in (commits[-1], commits[len(commits) // 2], commits[0])]
+        latest = seen[0]        # commits is oldest-first, so commits[-1] is the newest
+        if latest is None:
+            # Either never declared here, or declared once and since moved to a parent/BOM.
+            # Both mean this file cannot answer the question.
+            ever = next((s for s in seen if s), None)
+            res.update(outcome="undecided",
+                       why=(f"no version declared in {path} at the latest commit "
+                            + (f"(seen {ever} earlier) " if ever else "or at any point ")
+                            + "-- parent/BOM-managed or declared in another file. "
+                              "An UNKNOWN, not a negative."))
+        else:
+            res.update(outcome="genuine_negative",
+                       why=f"declared here (latest: {latest}) but never reaches the boundary")
         return res
 
     c = commits[first]
