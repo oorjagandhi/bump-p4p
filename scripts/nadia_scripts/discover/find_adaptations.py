@@ -125,13 +125,47 @@ def resolve_variable(name, added_lines):
     return None
 
 
-def classify(added_lines, identifier, default_value):
-    """(verdict, value, evidence) for one commit's added lines."""
+def classify(added_lines, identifier, default_value, library_class=None):
+    """(verdict, value, evidence) for one commit's added lines.
+
+    `library_class` names the class holding the library's own default constants, e.g.
+    "StreamReadConstraints". Passing an argument that IS one of those constants is a knob
+    by definition, whatever the number behind it happens to be, and this is the dominant
+    false positive on every break mined so far: CloudSlang/score writes
+
+        Integer.getInteger("jackson.core.maxStringLen", StreamReadConstraints.DEFAULT_MAX_STRING_LEN)
+
+    which is a property an operator MAY raise, defaulting to the library's own value, so
+    out of the box it changes nothing. It must not be counted with the raises. Matching on
+    the library's class name rather than the constant's name is what keeps this from
+    swallowing a client's own DEFAULT_-named constant -- AthenZ's
+    Config.DEFAULT_JSON_MAX_STRING_LENGTH is a genuine 200 MB raise.
+    """
     calls = [l for l in added_lines if identifier in l]
     if not calls:
         return "no_call", None, None
+    if library_class:
+        lib_default = re.compile(re.escape(library_class) + r"\s*\.\s*DEFAULT_\w+")
+        for line in calls:
+            if lib_default.search(line):
+                return "knob_at_default", None, line.strip()[:110]
+        # the call may pass a variable that is itself assigned the library's default
+        for line in calls:
+            m = re.search(re.escape(identifier) + r"\s*\(([^;]*?)\)", line)
+            if not m:
+                continue
+            bare = m.group(1).strip().split(".")[-1]
+            if re.match(r"^\w+$", bare):
+                for a in added_lines:
+                    if re.search(re.escape(bare) + r"\s*=", a) and lib_default.search(a):
+                        return "knob_at_default", None, a.strip()[:110]
     for line in calls:
-        m = re.search(re.escape(identifier) + r"\s*\(([^;]*)\)", line)
+        # NON-GREEDY. Greedy `([^;]*)` ran to the LAST paren on the line, so the fluent
+        # builder form `maxStringLength(20000000).build()` captured `20000000).build(`,
+        # which is not a size expression -- 19 of the first 55 jackson rows landed in
+        # needs_reading for that reason alone. Nested-call arguments still fall through to
+        # resolve_variable exactly as before.
+        m = re.search(re.escape(identifier) + r"\s*\(([^;]*?)\)", line)
         if not m:
             continue
         arg = m.group(1).strip()
