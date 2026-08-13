@@ -84,6 +84,13 @@ The agent MUST record the reason and never promote a coupled/uncertain case to
 
 ## 4. Environment handling (from the C:/JDK/heap gotchas)
 
+> **This section is the weak point, and it is now measured.** Of 15 failures logged while
+> verifying the seven jackson-core cases by hand, **12 were environment, build or missing
+> prerequisites** — the static list below covers only some of them. The two LLM seams
+> addressed 2. See [`AGENT_GAP_ANALYSIS.md`](AGENT_GAP_ANALYSIS.md), which proposes a third
+> seam (`diagnose_build_failure`) plus mandatory provenance assertions, and argues for
+> building the acceptance suite before extending the agent.
+
 - **JDK table**: map `verify.java` → an installed JDK path (11 = Eclipse Adoptium; 17 =
   `C:/Program Files/Java/jdk-17`; 21 available). Fail the case cleanly if the needed JDK is absent.
 - **Heap**: pass `-DargLine=-Xmx3g` when the fixture is large (POI). Detectable from seam-B size.

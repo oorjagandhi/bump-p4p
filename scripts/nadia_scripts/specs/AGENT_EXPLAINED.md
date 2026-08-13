@@ -206,6 +206,14 @@ design that promised that would be the untrustworthy one.
 *Status as of 2026-08-04. The figures below replace an earlier count of "16 case files —
 9 verified_bbc, 6 signature_confirmed"; see "What changed" at the end of this section.*
 
+> **Update, 2026-08-13.** Still true, with one thing made explicit: the agent is
+> **demonstrated, not deployed**. Its one logged acceptance run (`artshishkin`) reproduced
+> a verdict that had been established by hand a month earlier, and **no case in
+> `verified_cases/` was produced by the agent** — all 17 came from hand-written harnesses.
+> Seven jackson-core cases verified since then logged 15 failures, of which 12 were
+> environment/build/prerequisite problems the agent does not model at all.
+> [`AGENT_GAP_ANALYSIS.md`](AGENT_GAP_ANALYSIS.md) has the breakdown and what to do about it.
+
 **Working:**
 - Deterministic plumbing — `agent/orchestrator.py` implements the state machine: clone,
   JDK selection, the three-state runner, signature matching, outcome classification.
