@@ -94,6 +94,107 @@ def matches_signal(state_log: str, signal_grep: str) -> bool:
     return re.search(signal_grep, state_log) is not None
 
 
+# ---- version-knob probe (AGENT_GAP_ANALYSIS P3) ---------------------------
+#
+# WHY THIS EXISTS. The version override used to be a single property name read
+# from the catalog, with a TODO admitting it was unfinished. That is wrong often
+# enough to be dangerous, because being wrong is SILENT: the state runs, the
+# build succeeds, and the differential reports a result for a library version
+# nobody chose.
+#
+# fslev/json-compare is the case that proved it, and the mechanism is worth stating
+# exactly. The catalog's version_property for this break is `bbc.jackson.version` --
+# a SYNTHETIC name belonging to `gen-harness --reuse-pom`, which REWRITES the client
+# pom to use it. This orchestrator does no such rewrite, so `-Dbbc.jackson.version=X`
+# against the untouched pom matched nothing and did nothing. The baseline ran on
+# 2.15 instead of 2.14.2, the break fired where a PASS was required, and the agent
+# reported "baseline did not pass cleanly" -- which reads as "this client is not a
+# case" rather than "the harness ran the wrong jar".
+#
+# Note json-compare declares the version in TWO properties (<jackson.version> and
+# <jackson.databind.version>); jackson-core moves with the first alone, so the
+# duplication was not the cause here -- but a break whose artifact hangs off the
+# second would fail the same silent way, which is why the probe sets every candidate.
+#
+# The fix is not a longer list of property names -- it is a MEASUREMENT. Ask
+# Maven what the build actually resolves to, and refuse to run a differential
+# whose version knob cannot be shown to work.
+
+def resolved_version(repo_dir, jdk, module, group_id, artifact_id, props) -> str | None:
+    """The version of group:artifact this build ACTUALLY resolves to under `props`.
+
+    Reads it from `mvn dependency:list` rather than from the POM text, so a version
+    that arrives through a parent POM or an imported BOM is seen too -- that shape
+    (benchto inherits jackson from Spring Boot's BOM, two levels up) is invisible to
+    any amount of POM parsing.
+    """
+    cmd = [MVN, "-B", "dependency:list", f"-DincludeGroupIds={group_id}",
+           f"-DincludeArtifactIds={artifact_id}"]
+    if module:
+        cmd += ["-pl", module]
+    for k, v in (props or {}).items():
+        cmd.append(f"-D{k}={v}")
+    p = subprocess.run(cmd, cwd=repo_dir, capture_output=True, text=True,
+                       env=dict(os.environ, JAVA_HOME=jdk))
+    m = re.search(rf"{re.escape(group_id)}:{re.escape(artifact_id)}:jar:([^:\s]+)",
+                  p.stdout + p.stderr)
+    return m.group(1) if m else None
+
+
+def candidate_version_props(repo_dir, catalog_prop, keyword) -> list:
+    """Property names that might carry the library version, best guess first.
+
+    The catalog's own answer is tried first and kept even when the POM does not
+    declare it -- benchto's knob is Spring Boot's `jackson-bom.version`, which
+    appears nowhere in benchto's own build files. Everything else is discovered by
+    scanning the POMs for `*<keyword>*version*`, which is how projects that spell it
+    their own way (adb.jackson.version, jackson2.version, dep.jackson.version) are
+    picked up without hardcoding a list.
+    """
+    names = [catalog_prop] if catalog_prop else []
+    for dirpath, _dirs, files in os.walk(repo_dir):
+        if ".git" in dirpath:
+            continue
+        if "pom.xml" not in files:
+            continue
+        try:
+            text = open(os.path.join(dirpath, "pom.xml"), encoding="utf-8",
+                        errors="replace").read()
+        except OSError:
+            continue
+        text = re.sub(r"<!--.*?-->", "", text, flags=re.S)   # never read commented-out XML
+        for name in re.findall(r"<([\w.\-]+)>\s*[^<\s$][^<]*</\1>", text):
+            low = name.lower()
+            if keyword in low and "version" in low and name not in names:
+                names.append(name)
+    return names
+
+
+def probe_version_props(repo_dir, jdk, module, group_id, artifact_id,
+                        catalog_prop, keyword, probe_to) -> dict:
+    """Find the -D properties that actually MOVE the resolved version. Raise if none do.
+
+    Sets every candidate at once rather than bisecting for a minimal set: extra -D
+    properties Maven does not use are harmless, and json-compare shows the minimal
+    set is not always a single name. What matters is the assertion afterwards --
+    the resolved version must equal `probe_to`, or the knob is not real and the
+    differential must not run.
+    """
+    names = candidate_version_props(repo_dir, catalog_prop, keyword)
+    if not names:
+        raise RuntimeError(f"no candidate version properties found for '{keyword}'")
+    props = {n: probe_to for n in names}
+    got = resolved_version(repo_dir, jdk, module, group_id, artifact_id, props)
+    if got == probe_to:
+        return props
+    baseline_seen = resolved_version(repo_dir, jdk, module, group_id, artifact_id, {})
+    raise RuntimeError(
+        f"version knob does not work: asked for {group_id}:{artifact_id}={probe_to} via "
+        f"{names}, build resolved {got!r} (resolves {baseline_seen!r} with no override). "
+        f"Refusing to run a differential whose library version cannot be controlled."
+    )
+
+
 # ---- LLM-judgment seams (stubs) ------------------------------------------
 
 def SEAM_A_generate_test(brk: dict, cand: Candidate, repo_dir: str) -> str:
@@ -141,16 +242,32 @@ def verify_candidate(break_id: str, cand: Candidate, workdir: str, max_retries=3
     except Exception as e:
         return Result(OUTCOME_FAILED, f"SEAM_A failed: {e}")
 
-    # version override property is per-break (e.g. bbc.xstream.version); resolved by classify
-    prop = v.get("version_property", "")   # TODO: carry from catalog/candidate
     test = "bbc.BbcTest"                    # convention
+    lib = brk["library"]
+    to_version = lib["to_version"]
+
+    # Which -D properties actually control this build's library version? MEASURED,
+    # not read from the catalog -- see probe_version_props. Probing against the
+    # BASELINE version (not to_version) is deliberate: at both shas the repo already
+    # declares to_version, so an override to to_version is indistinguishable from no
+    # override working at all, and a broken knob would probe green.
+    try:
+        version_props = probe_version_props(
+            repo_dir, jdk, cand.module, lib["group_id"], lib["artifact_id"],
+            v.get("version_property", ""), lib["artifact_id"].split("-")[0].lower(),
+            baseline)
+    except Exception as e:
+        return Result(OUTCOME_FAILED, f"version knob probe: {e}")
+
+    def at(version):
+        return {k: version for k in version_props}
 
     # STATE 3 (adapted) — checkout adapt_sha (already there)
-    s3 = run_state(repo_dir, jdk, test, {prop: brk["library"]["to_version"]}, add_opens=add_opens)
+    s3 = run_state(repo_dir, jdk, test, at(to_version), add_opens=add_opens)
 
     # STATE 2 (new lib, parent code) — checkout parent, keep untracked test
     subprocess.run([GIT, "-C", repo_dir, "checkout", "-q", "-f", cand.parent_sha], check=True)
-    s2 = run_state(repo_dir, jdk, test, {prop: brk["library"]["to_version"]}, add_opens=add_opens)
+    s2 = run_state(repo_dir, jdk, test, at(to_version), add_opens=add_opens)
 
     # diagnose non-trip (SEAM B), bounded
     attempt = 0
@@ -164,13 +281,13 @@ def verify_candidate(break_id: str, cand: Candidate, workdir: str, max_retries=3
             return Result(OUTCOME_SIGNATURE, "break did not trip after diagnosis")
         test_src = new_src
         write_test(repo_dir, cand.module, new_src)
-        s2 = run_state(repo_dir, jdk, test, {prop: brk["library"]["to_version"]}, add_opens=add_opens)
+        s2 = run_state(repo_dir, jdk, test, at(to_version), add_opens=add_opens)
 
     if not (s2["err"] or s2["fail"]) or not matches_signal(s2["log"], signal):
         return Result(OUTCOME_SIGNATURE, "state2 did not reproduce the signal")
 
     # STATE 1 (baseline) — parent code + baseline version
-    s1 = run_state(repo_dir, jdk, test, {prop: baseline}, add_opens=add_opens)
+    s1 = run_state(repo_dir, jdk, test, at(baseline), add_opens=add_opens)
     if s1["run"] == 0 or s1["fail"] or s1["err"]:
         return Result(OUTCOME_FAILED, "baseline did not pass cleanly", states=[s1, s2, s3])
 
