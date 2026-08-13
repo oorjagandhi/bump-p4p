@@ -61,24 +61,56 @@ def vtuple(v):
     return tuple(int(x) for x in nums[:3]) if nums else None
 
 
-def declared_version(text, prop, artifact, keyword=None):
+_XML_COMMENT = re.compile(r"<!--.*?-->", re.S)
+
+
+def strip_comments(text):
+    """Remove XML comments before any regex reads a version out of a POM.
+
+    Not cosmetic. A commented-out property is extremely common in real build files --
+    someone pins a version, then comments it out and puts the live one below it -- and
+    reading the dead one as live makes the version look OLDER than it is. In a boundary
+    bisect that is the worst possible error: a pre-boundary version read at a post-boundary
+    commit places the crossing later than it happened, or hides it entirely.
+    """
+    return _XML_COMMENT.sub("", text or "")
+
+
+def declared_version(text, prop, artifact, keyword=None, group=None):
     """The version this build file declares, from a <property> or a direct <dependency>.
 
     `prop='auto'` finds the property by keyword instead of by exact name, because every
     project spells it differently -- jackson.version, jackson-core.version,
     jackson-bom.version, version.jackson. Batch runs are unusable without this.
+
+    NOTE this is deliberately a REGEX read of one file, not a POM resolve. It answers
+    "what does this file literally declare", which is what a history bisect needs, and it
+    returns None rather than guessing when the value is a ${...} reference it cannot see
+    through -- that None is what surfaces as `undecided`. For the full resolve, including
+    parent/BOM walking, see traversal/resolve_version.py, which is a different question and
+    a different function of the same name.
     """
     if not text:
         return None
+    text = strip_comments(text)
     if prop == "auto":
         kw = (keyword or "jackson").lower()
+        # Prefer the property the target dependency ACTUALLY references. Picking by name
+        # length instead ("most specific") silently loses whenever a project keeps a legacy
+        # property whose name happens to be longer than the live one -- e.g. a live
+        # <jackson.version> beside a dead <jackson-bom-legacy.version>.
+        referenced = set()
+        for blk in re.findall(r"<dependency>(.*?)</dependency>", text, re.S):
+            if artifact and not re.search(r"<artifactId>\s*" + re.escape(artifact) + r"\s*</artifactId>", blk):
+                continue
+            referenced.update(re.findall(r"<version>\s*\$\{([\w.\-]+)\}\s*</version>", blk))
         best = None
         for name, val in re.findall(r"<([\w.\-]+)>\s*([^<\s]+)\s*</\1>", text):
             n = name.lower()
             if kw in n and "version" in n and not val.startswith("${"):
-                # prefer the most specific match (jackson-core.version over jackson.version)
-                if best is None or len(name) > len(best[0]):
-                    best = (name, val)
+                rank = (1 if name in referenced else 0, len(name))
+                if best is None or rank > best[0]:
+                    best = (rank, val)
         if best:
             return best[1]
     elif prop:
@@ -86,6 +118,22 @@ def declared_version(text, prop, artifact, keyword=None):
         if m and not m.group(1).startswith("${"):
             return m.group(1)
     if artifact:
+        # Match inside a single <dependency> block so the groupId can be checked. Matching
+        # artifactId alone attributes a repackaged fork's version to the real library.
+        for blk in re.findall(r"<dependency>(.*?)</dependency>", text, re.S):
+            if not re.search(r"<artifactId>\s*" + re.escape(artifact) + r"\s*</artifactId>", blk):
+                continue
+            if group:
+                g = re.search(r"<groupId>\s*([^<]+?)\s*</groupId>", blk)
+                if g and g.group(1) != group:
+                    continue
+            v = re.search(r"<version>\s*([^<$][^<]*?)\s*</version>", blk)
+            if v:
+                return v.group(1)
+        if group:
+            # A groupId was demanded and no <dependency> block satisfied it. Falling back
+            # to the loose scan below would re-admit exactly what the check just rejected.
+            return None
         m = re.search(r"<artifactId>\s*" + re.escape(artifact) +
                       r"\s*</artifactId>\s*<version>\s*([^<$][^<]*?)\s*</version>", text)
         if m:
@@ -106,14 +154,14 @@ def path_commits(repo, path, token, max_pages=8):
     return list(reversed(out))          # oldest first
 
 
-def find_crossing(repo, path, prop, artifact, boundary, token, keyword=None):
+def find_crossing(repo, path, prop, artifact, boundary, token, keyword=None, group=None):
     commits = path_commits(repo, path, token)
     if not commits:
         return {"repo": repo, "outcome": "undecided", "why": f"no commits at {path}"}
 
     bt = vtuple(boundary)
     at = lambda c: vtuple(declared_version(
-        B._gh_file(repo, path, c["sha"], token), prop, artifact, keyword))
+        B._gh_file(repo, path, c["sha"], token), prop, artifact, keyword, group))
 
     lo, hi, first = 0, len(commits) - 1, None
     while lo <= hi:                     # first commit at/past the boundary
@@ -132,7 +180,7 @@ def find_crossing(repo, path, prop, artifact, boundary, token, keyword=None):
         # inherit it from a parent. Calling that a measured negative is precisely the error
         # the census exists to prevent, so sample the ends before deciding.
         seen = [declared_version(B._gh_file(repo, path, c["sha"], token),
-                                 prop, artifact, keyword)
+                                 prop, artifact, keyword, group)
                 for c in (commits[-1], commits[len(commits) // 2], commits[0])]
         latest = seen[0]        # commits is oldest-first, so commits[-1] is the newest
         if latest is None:
@@ -155,7 +203,7 @@ def find_crossing(repo, path, prop, artifact, boundary, token, keyword=None):
                          "message": c["commit"]["message"].splitlines()[0][:100],
                          "version": declared_version(
                              B._gh_file(repo, path, c["sha"], token), prop, artifact,
-                             keyword)}
+                             keyword, group)}
     if first == 0:
         res.update(outcome="genuine_negative",
                    why="the file's oldest commit is already past the boundary "
@@ -163,7 +211,7 @@ def find_crossing(repo, path, prop, artifact, boundary, token, keyword=None):
         return res
 
     prev_raw = declared_version(B._gh_file(repo, path, commits[first - 1]["sha"], token),
-                               prop, artifact, keyword)
+                               prop, artifact, keyword, group)
     res["previous_version"] = prev_raw
     if prev_raw is None:
         res.update(outcome="undecided",
@@ -181,6 +229,8 @@ def main():
     ap.add_argument("--path", default="pom.xml", help="build file to walk")
     ap.add_argument("--property", dest="prop", help="version property, e.g. jackson.version")
     ap.add_argument("--artifact", help="artifactId, for a directly-declared version")
+    ap.add_argument("--group", help="groupId; with --artifact, rejects a repackaged "
+                                    "fork that reuses the artifactId")
     ap.add_argument("--keyword", help="with --property auto, the library keyword to look "
                                       "for in property names (default: jackson)")
     ap.add_argument("--boundary", required=True, help="e.g. 2.15.0")
@@ -197,7 +247,7 @@ def main():
     for repo in args.repos:
         try:
             r = find_crossing(repo, args.path, args.prop, args.artifact,
-                              args.boundary, token, args.keyword)
+                              args.boundary, token, args.keyword, args.group)
         except Exception as e:
             r = {"repo": repo, "outcome": "error", "why": f"{type(e).__name__}: {e}"[:200]}
         results.append(r)
