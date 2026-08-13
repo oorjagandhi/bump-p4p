@@ -1,9 +1,14 @@
 # BBC → external-production-adaptation pipeline
 
-**Stage mechanics reference.** For what the project is, the current findings, and the
-screening rules that decide which libraries are worth mining at all, start with
-[`README.md`](README.md) — this document assumes a target has already been chosen and
-describes how the stages work.
+**Stage mechanics reference for the COMMIT-SEARCH route.** For what the project is, the
+current findings, and the screening rules that decide which libraries are worth mining at
+all, start with [`README.md`](README.md) — this document assumes a target has already been
+chosen and describes how the stages work.
+
+> For the whole pipeline in one place — including the **code-search route**
+> (`find_adaptations --via code-search` → `date_hits` → `screen_dated` → `find_crossing` →
+> a hand-written harness), which is what produced the jackson-core cases and is not
+> described here — see [`PIPELINE_END_TO_END.md`](PIPELINE_END_TO_END.md).
 
 End-to-end workflow for finding, and verifying, real client **adaptations** to a
 dependency's **behavioural breaking change (BBC)**. Codifies the flow validated by hand on

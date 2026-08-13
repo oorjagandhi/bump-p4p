@@ -55,6 +55,13 @@ javap — two libraries passed rule 1 and still turned out to be dead ends.
 
 ## The pipeline
 
+> **Full walkthrough:** [`PIPELINE_END_TO_END.md`](PIPELINE_END_TO_END.md) covers all five
+> phases in one place, both discovery routes (commit search *and* code search), and the
+> hand-written harness conventions the jackson-core cases were verified with.
+> [`PIPELINE.md`](PIPELINE.md) is the deep reference for the commit-search stages.
+
+The diagram below is the commit-search route:
+
 ```
   advisories / majors        discover/rank_candidates.py       is a case even possible?
           │                  discover/screen_majors.py         (rules 1 and 3)
