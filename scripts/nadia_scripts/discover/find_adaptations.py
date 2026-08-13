@@ -234,8 +234,9 @@ def code_search_files(query, token, pages=3):
     search found 241 repos of which 238 were unseen by commit search; on snakeyaml, 160 of
     which 155 were unseen.
 
-    bbc_pipeline.gh_code_search exists but keeps only repo names, and the path is exactly
-    what the history walk below needs, so this is its own function.
+    This keeps the file PATH, not just the repo name, because the history walk below needs
+    it. (A repo-name-only version lived in mine/bbc_pipeline.py until that file was deleted
+    on 2026-08-13.)
 
     Code search is rate-limited to ~10 requests/minute and capped at 1000 results.
     """

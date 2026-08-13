@@ -5,8 +5,8 @@ The set of behavioural breaking changes (BBCs) selected from **BUMP**
 `TEST_FAILURE` reproduction, so the exact failing test + exception can be pulled
 from BUMP and re-derived in our own differential.
 
-Machine-readable version (with per-`to_version` breaking-commit SHAs, consumed by
-`bbc_pipeline.py characterize`): [`bump_breaks_catalog.json`](bump_breaks_catalog.json).
+Machine-readable version, with per-`to_version` breaking-commit SHAs:
+[`bump_breaks_catalog.json`](bump_breaks_catalog.json).
 
 SHAs were verified against `data/benchmark_test_failures/` on 2026-07-06; that data was
 deleted on 2026-08-12, so the SHAs here are now the record rather than a derivation. All entries
@@ -52,10 +52,10 @@ characterized from the repro logs on 2026-07-06 (see `characterization` in the J
 
 1. Pick the client's `breaking_commit` for the wanted `to_version` from
    [`bump_breaks_catalog.json`](bump_breaks_catalog.json).
-2. `python bbc_pipeline.py characterize <breaking_commit>` → prints the exact
-   failing test + assertion/exception from
-   `reproductionLogs/successfulReproductionLogs/<sha>.log` — deleted 2026-08-12, restore
-   from upstream chains-project/bump if you need it.
+2. Read the failing test + assertion/exception from the entry's own `characterization`
+   block. It used to be extracted from `reproductionLogs/successfulReproductionLogs/<sha>.log`
+   by `bbc_pipeline.py characterize`; those logs were deleted 2026-08-12 and that script on
+   2026-08-13. Restore from upstream chains-project/bump only if you need the raw log.
 3. Write a per-break spec (see [`xstream-1.4.19-forbiddenclass.json`](xstream-1.4.19-forbiddenclass.json),
    [`jsoup-1.15-whitespace.json`](jsoup-1.15-whitespace.json)) capturing root cause,
    `affected_usage_regex`, and mimic.

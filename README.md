@@ -31,9 +31,11 @@ cost ~26 MB to carry. Two consequences worth knowing before you go looking for t
   it. What survives as the standing record of what has been measured is
   [`output/CENSUS.md`](scripts/nadia_scripts/output/CENSUS.md), which is regenerated from
   the artifacts by `ledger/census.py` and does not depend on BUMP at all.
-- `bbc_pipeline.py`'s `characterize` stage has no input and exits with a message saying so.
-  It is not needed: 12 of the 13 BUMP-sourced breaks already carry their failing tests
-  inline in `specs/bump_breaks_catalog.json`, which is what downstream stages read.
+- The `characterize` stage had no input left, so on 2026-08-13 it was removed along with
+  `mine/bbc_pipeline.py` (which implemented it) and `mine/bbc_common.py` (which had served
+  a miner deleted earlier still). Nothing was lost: 12 of the 13 BUMP-sourced breaks
+  already carry their failing tests inline in `specs/bump_breaks_catalog.json`, which is
+  what downstream stages read. `mine/bbc_e2e.py run` now starts at mining.
 
 To restore either, clone [chains-project/bump](https://github.com/chains-project/bump); the
 deleted files are also in this repository's history.

@@ -7,8 +7,6 @@ leaves clearly-marked seams for the two AI/human JUDGMENT stages.
 
 Flow (each stage a subcommand), driven by specs/bump_breaks_catalog.json:
 
-  characterize <break_id>          [deterministic]  failing test + signal from BUMP
-                                                    (delegates to bbc_pipeline.characterize)
   mine-commits <break_id>          [deterministic]  GitHub COMMIT search for adaptation
                                                     commits (the winning tool for
                                                     bump-TRIGGERED fixes), per the
@@ -28,12 +26,17 @@ Flow (each stage a subcommand), driven by specs/bump_breaks_catalog.json:
                                                     STUB derived from the BUMP failing
                                                     test — the stub body is the JUDGMENT
                                                     seam an agent/human completes
-  run <break_id>                   [orchestration]  characterize -> mine -> classify,
+  run <break_id>                   [orchestration]  mine -> classify -> traversal,
                                                     printing production candidates ready
                                                     for gen-harness + verify
 
+A `characterize` stage used to run first, pulling the failing test out of a BUMP
+reproduction log. reproductionLogs/ was deleted with the rest of the BUMP corpus on
+2026-08-12, so it had no input; it and mine/bbc_pipeline.py, which implemented it, were
+removed on 2026-08-13. Its output is already baked into the catalog's characterization
+blocks, and nothing downstream reads it.
+
 JUDGMENT seams (an AI agent or human supplies these; everything else is plumbing):
-  • root_cause / affected_usage         — read from characterize output (spec.*)
   • mining.commit_search_terms          — the adaptation signature to search for
   • the generated test's BODY           — how to exercise the affected production path
                                           (gen-harness emits a stub + the characterization)
@@ -65,7 +68,6 @@ from urllib.parse import quote
 
 import requests
 
-from bbc_pipeline import _clean_log, characterize  # reuse hardened log parsing
 
 try:  # commit messages can contain non-cp1252 chars (e.g. CJK) on Windows
     sys.stdout.reconfigure(encoding="utf-8")
@@ -1263,18 +1265,11 @@ def mine_verify(break_id):
 def run(break_id):
     brk = get_break(break_id)
     token = _token()
-    # characterize reads a BUMP reproduction log, so it only applies to BUMP-sourced
-    # breaks. Advisory-sourced ones (snakeyaml came from the OSV feed via
-    # mine_advisories.py, CVE-2022-1471) carry no `clients`, and indexing [0] raised
-    # IndexError before mining even began -- making `run` unusable for exactly the
-    # breaks the project is expanding into. Mining does not depend on it.
-    clients = brk.get("clients") or []
-    if clients and clients[0].get("breaking_commit"):
-        print(f"\n=== characterize {break_id} ===")
-        characterize(clients[0]["breaking_commit"])
-    else:
-        print(f"\n=== characterize {break_id}: SKIPPED "
-              f"(no BUMP client/breaking_commit — advisory-sourced break) ===")
+    # Stage 1 (characterize) is gone. It read a failing test out of a BUMP reproduction
+    # log, and reproductionLogs/ was deleted with the rest of the BUMP corpus on
+    # 2026-08-12, so it had no input left. What it produced is already baked into the
+    # catalog's characterization blocks. `run` now starts at mining, which never
+    # depended on it.
     print(f"\n=== mine-commits {break_id} ===")
     rows = mine_commits(brk, token)
     print(f"\n=== classify candidates (production adaptations first) ===")
@@ -1370,7 +1365,6 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    sub.add_parser("characterize").add_argument("break_id")
     sub.add_parser("mine-commits").add_argument("break_id")
     p = sub.add_parser("classify"); p.add_argument("repo"); p.add_argument("sha"); p.add_argument("break_id")
     p = sub.add_parser("traversal"); p.add_argument("repo"); p.add_argument("sha"); p.add_argument("break_id")
@@ -1393,10 +1387,7 @@ def main():
     sub.add_parser("summarize")
     args = ap.parse_args()
 
-    if args.cmd == "characterize":
-        brk = get_break(args.break_id)
-        characterize(brk["clients"][0]["breaking_commit"])
-    elif args.cmd == "mine-commits":
+    if args.cmd == "mine-commits":
         for r in mine_commits(get_break(args.break_id), _token()):
             print(f"  {r['repo']}@{r['sha'][:8]}  [{r['matched_term']}]  {r['message']}")
     elif args.cmd == "classify":

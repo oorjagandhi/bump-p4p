@@ -162,7 +162,10 @@ the entire traversal answer.
 ## Files
 
 - `mine/bbc_e2e.py` — orchestrator (this pipeline)
-- `mine/bbc_pipeline.py` — original stages; `characterize` reused here
+  (Stage 1, `characterize`, was removed on 2026-08-13 along with `mine/bbc_pipeline.py`
+  and `mine/bbc_common.py`: it read a BUMP reproduction log, and reproductionLogs/ went
+  with the BUMP corpus on 2026-08-12. Its output is already in the catalog's
+  characterization blocks. `run` now starts at mining.)
 - `specs/bump_breaks_catalog.json` — the break catalog + characterization/mining/verify
 - `specs/BUMP_BREAKS.md` — human-readable catalog of the BUMP-sourced breaks
 - `verified_cases/` — the output dataset (one JSON per case + README)

@@ -128,7 +128,6 @@ Everything around those two calls is deterministic. See `specs/AGENT_DESIGN.md` 
 | script | does |
 |---|---|
 | `mine/bbc_e2e.py` | the main pipeline: `run`, `mine-commits`, `classify`, `gen-harness` |
-| `mine/bbc_pipeline.py` | older stage-wise driver, kept for reference |
 | `traversal/extract_undecided.py` | pull undecided traversal rows out of a classify checkpoint |
 | `traversal/resolve_undecided.py` | decide them with `mvn dependency:tree` (endpoint comparison) |
 | `traversal/resolve_version.py` | what version does a client's build actually resolve? |
