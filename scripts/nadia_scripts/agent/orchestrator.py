@@ -167,6 +167,21 @@ def candidate_version_props(repo_dir, catalog_prop, keyword) -> list:
             low = name.lower()
             if keyword in low and "version" in low and name not in names:
                 names.append(name)
+
+    # Conventional names, appended last. A project can inherit its version from a
+    # parent POM or an imported BOM and declare NOTHING itself -- trinodb/benchto is
+    # the case: it names no jackson property anywhere, because the knob is Spring
+    # Boot's own `jackson-bom.version`, reachable only because a Maven USER property
+    # (-D) outranks a property declared inside an imported BOM.
+    #
+    # Guessing is safe here precisely because probe_version_props MEASURES the result:
+    # a name that controls nothing changes nothing, and a name that works is proven to
+    # work before any state runs. That asymmetry is what lets this list be broad
+    # rather than exhaustively researched.
+    for conv in (f"{keyword}-bom.version", f"{keyword}.version", f"{keyword}.bom.version",
+                 f"dep.{keyword}.version", f"{keyword}2.version", f"version.{keyword}"):
+        if conv not in names:
+            names.append(conv)
     return names
 
 
@@ -174,25 +189,52 @@ def probe_version_props(repo_dir, jdk, module, group_id, artifact_id,
                         catalog_prop, keyword, probe_to) -> dict:
     """Find the -D properties that actually MOVE the resolved version. Raise if none do.
 
-    Sets every candidate at once rather than bisecting for a minimal set: extra -D
-    properties Maven does not use are harmless, and json-compare shows the minimal
-    set is not always a single name. What matters is the assertion afterwards --
-    the resolved version must equal `probe_to`, or the knob is not real and the
-    differential must not run.
+    Three passes, cheapest first:
+
+      1. All candidates at once. Usually right and costs one Maven invocation.
+      2. If that failed, each candidate alone -- because setting every name is NOT
+         always harmless. trinodb/benchto is the counterexample: `jackson-bom.version`
+         alone resolves jackson-core to the probe version, but the same request with
+         the other guesses added does not. A parent POM (airbase here) can use a name
+         like `dep.jackson.version` for its own purposes, so a guess that controls
+         nothing on its own can still perturb resolution when combined.
+      3. Re-add the remaining names one at a time, keeping only those that leave the
+         target version correct. This matters for SIBLING SKEW: json-compare's
+         jackson-core moves with `jackson.version` alone, but leaving
+         `jackson.databind.version` behind would run core and databind at different
+         versions -- a difference between states that is nothing to do with the break.
+
+    Every step is measured, never assumed, which is what makes guessing names safe.
     """
     names = candidate_version_props(repo_dir, catalog_prop, keyword)
     if not names:
         raise RuntimeError(f"no candidate version properties found for '{keyword}'")
-    props = {n: probe_to for n in names}
-    got = resolved_version(repo_dir, jdk, module, group_id, artifact_id, props)
-    if got == probe_to:
-        return props
-    baseline_seen = resolved_version(repo_dir, jdk, module, group_id, artifact_id, {})
-    raise RuntimeError(
-        f"version knob does not work: asked for {group_id}:{artifact_id}={probe_to} via "
-        f"{names}, build resolved {got!r} (resolves {baseline_seen!r} with no override). "
-        f"Refusing to run a differential whose library version cannot be controlled."
-    )
+
+    def resolves(props):
+        return resolved_version(repo_dir, jdk, module, group_id, artifact_id, props) == probe_to
+
+    all_props = {n: probe_to for n in names}
+    if resolves(all_props):
+        return all_props
+
+    effective = [n for n in names if resolves({n: probe_to})]
+    if not effective:
+        got = resolved_version(repo_dir, jdk, module, group_id, artifact_id, all_props)
+        seen = resolved_version(repo_dir, jdk, module, group_id, artifact_id, {})
+        raise RuntimeError(
+            f"version knob does not work: asked for {group_id}:{artifact_id}={probe_to} via "
+            f"{names}, build resolved {got!r} (resolves {seen!r} with no override). "
+            f"Refusing to run a differential whose library version cannot be controlled."
+        )
+
+    props = {n: probe_to for n in effective}
+    for n in names:
+        if n in props:
+            continue
+        trial = dict(props, **{n: probe_to})
+        if resolves(trial):
+            props = trial
+    return props
 
 
 # ---- LLM-judgment seams (stubs) ------------------------------------------
