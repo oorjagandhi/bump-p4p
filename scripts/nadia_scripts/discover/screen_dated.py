@@ -44,10 +44,20 @@ HERE = Path(__file__).resolve().parent.parent
 
 
 def added_lines(repo, sha, path, token):
-    """Lines ADDED to `path` by `sha`. The removed side is not evidence of adaptation."""
+    """Lines ADDED to `path` by `sha`. The removed side is not evidence of adaptation.
+
+    Returns None if the diff could not be READ, which is not the same as the diff
+    containing no adaptation. GitHub returns its errors as JSON *objects* -- a 401 body
+    is `{"message": "Bad credentials", ...}` -- so an `isinstance(c, dict)` guard passes
+    them straight through, and `c.get("files", [])` then yields [] for every repo. On
+    2026-08-15 an expired token made that path score 92 of 107 snakeyaml candidates
+    `no_call_in_diff`: a dead credential rendered as a research verdict. An unreadable
+    diff is an UNKNOWN and must never be recorded as a negative -- the same rule the
+    traversal side already enforces with its third value, `undecided`.
+    """
     c = B._gh(f"{B.GH}/repos/{repo}/commits/{sha}", token)
-    if not isinstance(c, dict):
-        return []
+    if not isinstance(c, dict) or "sha" not in c:
+        return None                       # error body, or anything that is not a commit
     for f in c.get("files", []):
         if f.get("filename") == path:
             patch = f.get("patch") or ""
@@ -90,6 +100,14 @@ def main():
     if not token:
         sys.exit("GH_TOKEN required")
 
+    # Preflight. Every verdict below is read out of an authenticated API call, so a bad
+    # token does not fail the run -- it silently empties every diff. Spend one call to
+    # find out now rather than discovering it 107 repos later.
+    who = B._gh(f"{B.GH}/rate_limit", token)
+    if not isinstance(who, dict) or "resources" not in who:
+        sys.exit(f"GH_TOKEN rejected by GitHub: {str(who)[:160]}\n"
+                 "Refusing to screen -- every verdict would be an artefact of the token.")
+
     knobs = {}
     for k in args.knob:
         name, _, dflt = k.partition("=")
@@ -108,7 +126,12 @@ def main():
     if outp.exists():
         for line in outp.read_text(encoding="utf-8").splitlines():
             if line.strip():
-                done.add(json.loads(line)["repo"])
+                rec = json.loads(line)
+                # `undecided` is not a result, it is a failure to obtain one. Resuming
+                # must RETRY those repos; treating them as done would make a transient
+                # outage permanent in the corpus.
+                if rec.get("screen") != "undecided":
+                    done.add(rec["repo"])
     todo = [r for r in in_window if r["repo"] not in done]
     print(f"[screen] {len(done)} already screened, {len(todo)} to go\n")
 
@@ -126,6 +149,13 @@ def main():
                 continue
             try:
                 lines = added_lines(r["repo"], r["sha"], r["path"], token)
+                if lines is None:
+                    out["screen"] = "undecided"
+                    out["undecided_reason"] = "diff unreadable (API error)"
+                    fh.write(json.dumps(out) + "\n"); fh.flush()
+                    print(f"  [{i}/{len(todo)}] {r['repo']:<42} {r['date']}  "
+                          f"undecided (diff unreadable)")
+                    continue
                 verdicts = {}
                 for name, dflt in knobs.items():
                     if any(name in l for l in lines):
