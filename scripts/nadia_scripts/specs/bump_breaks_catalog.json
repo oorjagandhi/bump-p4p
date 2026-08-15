@@ -873,12 +873,12 @@
      "behavioural": 8,
      "compile_break": 0,
      "verified": 7,
-     "excluded": 4
+     "excluded": 5
     },
     "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
     "assessed_on": null,
     "reason": null,
-    "unexploited_leads": "traversal-confirmed, no case file, never taken to a differential: iitsoftware/swiftmq-client",
+    "unexploited_leads": "none — all 10 traversal-confirmed candidates now have case files (6 verified_bbc, 2 signature_confirmed, 2 excluded). The last open row, iitsoftware/swiftmq-client, was assessed 2026-08-15: the commit REMOVES xstream rather than adapting to it, so no differential is possible.",
     "consolidated_from": null,
     "unexploited_leads_method": "Traversal-confirmed rows in output/02_mine/<break>_candidates.jsonl cross-referenced against every repo named in verified_cases/ (including excluded/). A candidate with a case file of ANY status is dispositioned, not open. Recompute rather than trusting this string — the first version of this field omitted the cross-reference and reported an already-excluded candidate (apache/rocketmq-connect) as an open fastjson lead."
    }

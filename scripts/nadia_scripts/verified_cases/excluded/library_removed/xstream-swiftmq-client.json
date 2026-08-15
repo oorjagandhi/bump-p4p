@@ -1,0 +1,38 @@
+{
+ "case_id": "xstream-swiftmq-client",
+ "status": "excluded__library_removed_not_adapted",
+ "case_type": "external_mined_candidate__last_open_traversal_confirmed_row_for_xstream",
+ "assessed_date": "2026-08-15",
+ "assessed_by": "commit reading via GitHub API; no differential run",
+ "discovery": {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "found_by": "bbc_e2e mine-commits -> classify -> traversal; surfaced 2026-08-15 as the last open traversal-confirmed xstream row"
+ },
+ "links": {
+  "repo": "https://github.com/iitsoftware/swiftmq-client",
+  "adaptation_commit": "https://github.com/iitsoftware/swiftmq-client/commit/e3143433",
+  "bump_commit": "https://github.com/iitsoftware/swiftmq-client/commit/9506bd2e"
+ },
+ "the_candidate": {
+  "repo": "iitsoftware/swiftmq-client",
+  "commit": "e314343307d0847ee788ddd9770ec2150ded3f31",
+  "parent": "423d18511f29564857858b98463f618298549c91",
+  "message": "Remove XStream dependency and related functionality",
+  "commit_date": "2025-10-21",
+  "evidence": "message+content",
+  "traversal": "confirmed: direct bump 1.4.17 -> 1.4.18 in pom.xml @9506bd2e (2021-08-25), 186 commits before this commit",
+  "shape_as_mined": "POST_MERGE_FIX"
+ },
+ "why_excluded": {
+  "finding": "The commit REMOVES xstream rather than adapting to it. There is no production code at the adaptation commit that uses the library, so a three-state differential is impossible in principle: the same driver cannot run at both the parent and the adaptation, because the classes it would drive no longer exist.",
+  "evidence": "Every change is a deletion. pom.xml +0/-5 drops the dependency outright. FileQueryPropsReply.java (-84), FileQueryPropsRequest.java (-88), ContextImpl.java (-183) and InitialContextFactoryImpl.java (-44) are deleted files. ProtocolFactory -8, ProtocolVisitor -2, ProtocolVisitorAdapter -3, FiletransferImpl +1/-5, SecureClassLoaderObjectInputStream +1/-1. Three added lines across the whole commit, none of them an xstream call.",
+  "stated_motive": "'Eliminated the XStream library from the project, including all functionality utilizing it (e.g., JNDI filesystem, FileQueryProps). This reduces sec[urity surface]' -- the project's own commit body.",
+  "the_client_never_adapted": "The dependency stood at 1.4.21 when it was deleted, and the boundary crossing to 1.4.18 happened on 2021-08-25. The project ran on post-boundary xstream for over four years and 186 commits without changing production code. Whatever the restrictive default cost them, it was not enough to force an adaptation -- which is itself a data point about how often this break bites."
+ },
+ "why_the_miner_flagged_it": {
+  "mechanism": "Removal and adaptation look identical to the classifier. Both change production files that reference the library, both have commit messages naming it, and `is_production_adaptation` is true for both. The mined row even carried `version_at_commit: null` and `version_changed_here: false`, which in hindsight is the tell -- there is no version at the commit because the dependency is gone.",
+  "screen_to_add": "Reject a candidate whose diff NET-REMOVES the library dependency from the build file, or whose library-referencing production files are net-deleted. Cheap: it is visible in the pom patch and the per-file additions/deletions the classify step already fetches.",
+  "second_tell": "distance_commits was 186 and the gap between bump and 'adaptation' was over four years. A large distance does not disprove a case -- adaptations can lag -- but combined with a net-deletion diff it is conclusive."
+ },
+ "consequence": "xstream now has ZERO open traversal-confirmed candidates. Every one of its 10 has a case file: 6 verified_bbc, 2 signature_confirmed, 2 excluded."
+}
