@@ -451,6 +451,13 @@ def differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pi
                         extra_args=args.mvn_arg, extra_env=dict(args.env or []))
         with open(os.path.join(logs, f"{slug}_{name}.log"), "w", encoding="utf-8") as f:
             f.write(s["log"])
+        # Which test METHODS failed, not just how many. A driver with more than one @Test
+        # cannot be scored in aggregate: SEAM_A sometimes emits the two-method "Shape B"
+        # driver (a plain pre-adaptation stand-in beside the real production config), where
+        # the stand-in is MEANT to keep failing at state 3. Counting that as a failed state
+        # marks the whole case signature_confirmed -- which is exactly how openmrs/openmrs-core,
+        # verified_bbc by hand, came back as a disagreement.
+        s["failed_tests"] = sorted(set(re.findall(r"BbcTest\.(\w+)", s["log"])) - {"java"})
         print(f"  [state {name}] run={s['run']} fail={s['fail']} err={s['err']}", flush=True)
         return s
 
@@ -494,7 +501,8 @@ def differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pi
     # "baseline did not pass cleanly", i.e. blamed the client for a bug in this function.
     s1 = state("1_baseline", cand.parent_sha, baseline)
 
-    summary = [{"name": n, "run": s["run"], "fail": s["fail"], "err": s["err"]}
+    summary = [{"name": n, "run": s["run"], "fail": s["fail"], "err": s["err"],
+                "failed_tests": s.get("failed_tests") or []}
                for n, s in (("1_baseline", s1), ("2_newlib_oldcode", s2), ("3_adapted", s3))]
 
     # DID THE TEST ACTUALLY RUN? A state that executed no tests is not evidence of
@@ -535,9 +543,18 @@ def differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pi
         # adaptation to a real break, but it is not a recovery, and calling it "coupling"
         # would hide the distinction the corpus is actually here to measure.
         if O.matches_signal(s3["log"], signal):
+            same = sorted(set(s3.get("failed_tests") or []) & set(s2.get("failed_tests") or []))
+            multi = (s3["run"] or 0) > 1
             return {"outcome": O.OUTCOME_SIGNATURE, "states": summary,
-                    "reason": "knob exposed, default unchanged: state 3 still hits the limit "
-                              "on the unconfigured production path"}
+                    "reason":
+                        (f"state 3 still shows the signal in {same}, but the driver has "
+                         f"{s3['run']} tests — if one is a deliberate pre-adaptation control "
+                         f"(Shape B), this aggregate verdict is WRONG and the case needs "
+                         f"per-test scoring"
+                         if multi else
+                         "adaptation did not restore the default path: state 3 reproduces the "
+                         "same signal as state 2 on the unconfigured production path (e.g. a "
+                         "knob exposed with its default left unchanged)")}
         return {"outcome": O.OUTCOME_SIGNATURE, "states": summary,
                 "reason": "adapted state did not pass (coupling?)"}
     return {"outcome": O.OUTCOME_VERIFIED, "states": summary,
