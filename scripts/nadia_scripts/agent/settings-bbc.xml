@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Maven settings for the verification agent. Pass with `-s`, or point BBC_MVN_SETTINGS at it.
+
+  WHY THIS FILE EXISTS. The user-level ~/.m2/settings.xml carries a `<mirrorOf>*</mirrorOf>`
+  mirror, added for a different project to route around a defunct repository
+  (maven.restlet.com, which had begun serving an HTML landing page that Maven cached as
+  corrupt jars). `*` mirrors EVERY repository, including the ones a client legitimately
+  declares for itself, so a client whose dependencies are not all on Central cannot resolve
+  at all under it.
+
+  That produced a SILENT false negative, which is the dangerous kind. onthegomap/planetiler
+  needs org.geotools from the OSGeo repository it declares in its own POM; under the global
+  mirror those requests went to Central, 404'd, and the version knob probe reported "build
+  resolved None". In the ledger that is indistinguishable from "this client does not depend
+  on the library", so the candidate would have been written off as unverifiable for a reason
+  that has nothing to do with the client, the library, or the break.
+
+  So: mirror Central only. A client's own repositories are left alone, which is the point.
+
+  (Note for editors: XML comments may not contain a double hyphen. An earlier revision of
+  this header used them as dashes and made the file non-parseable, which Maven reports as
+  "Error executing Maven / problem building the effective settings" on every goal, while
+  `mvn -version` still succeeds because it never reads settings.)
+-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <mirrors>
+    <mirror>
+      <id>central-mirror</id>
+      <name>Central only, never a client's own repositories</name>
+      <url>https://repo1.maven.org/maven2</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors>
+</settings>

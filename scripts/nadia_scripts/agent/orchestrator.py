@@ -15,6 +15,18 @@ import json, os, subprocess, tempfile, shutil, re
 
 MVN = shutil.which("mvn") or "mvn"   # resolves mvn.cmd on Windows
 GIT = shutil.which("git") or "git"
+
+# Settings file every Maven invocation here runs under. Defaults to agent/settings-bbc.xml,
+# which mirrors Central ONLY -- see that file for the false negative a `<mirrorOf>*</mirrorOf>`
+# in the user-level settings caused. Set BBC_MVN_SETTINGS="" to fall back to ~/.m2/settings.xml.
+MVN_SETTINGS = os.environ.get(
+    "BBC_MVN_SETTINGS",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "settings-bbc.xml"))
+
+
+def mvn_base() -> list:
+    """[mvn] plus the settings flag, so every invocation resolves the same way."""
+    return [MVN] + (["-s", MVN_SETTINGS] if MVN_SETTINGS and os.path.exists(MVN_SETTINGS) else [])
 from dataclasses import dataclass, field, asdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -75,12 +87,18 @@ def clone(repo: str, sha: str, dest: str):
     subprocess.run([GIT, "-C", dest, "checkout", "-q", "-f", sha], check=True)
 
 
-def run_state(repo_dir: str, jdk: str, test: str, version_props: dict, heap="-Xmx2g", add_opens=None) -> dict:
-    """One differential state: mvn clean test with the given -D overrides. Returns surefire summary."""
+def run_state(repo_dir: str, jdk: str, test: str, version_props: dict, heap="-Xmx2g", add_opens=None,
+              extra_args=None) -> dict:
+    """One differential state: mvn clean test with the given -D overrides. Returns surefire summary.
+
+    `extra_args` is passed through to Maven untouched, for build-shape flags a candidate needs
+    (`-pl core -am` on a multi-module repo, `-Dspotless.check.skip=true` on one whose verify
+    phase would otherwise fail on the injected driver). It never carries version overrides —
+    those come from the probe, so that what the differential ran stays measured."""
     env = dict(os.environ, JAVA_HOME=jdk)
     argline = heap + ("".join(" " + o for o in (add_opens or [])))
-    cmd = [MVN, "clean", "test", f"-Dtest={test}", f"-DargLine={argline}",
-           "-Dsurefire.failIfNoSpecifiedTests=false"]
+    cmd = mvn_base() + ["clean", "test", f"-Dtest={test}", f"-DargLine={argline}",
+                        "-Dsurefire.failIfNoSpecifiedTests=false", *(extra_args or [])]
     for k, v in version_props.items():
         cmd.append(f"-D{k}={v}")
     p = subprocess.run(cmd, cwd=repo_dir, env=env, capture_output=True, text=True)
@@ -128,8 +146,11 @@ def resolved_version(repo_dir, jdk, module, group_id, artifact_id, props) -> str
     (benchto inherits jackson from Spring Boot's BOM, two levels up) is invisible to
     any amount of POM parsing.
     """
-    cmd = [MVN, "-B", "dependency:list", f"-DincludeGroupIds={group_id}",
-           f"-DincludeArtifactIds={artifact_id}"]
+    # -U so a resolution that failed under a bad mirror is RETRIED rather than read back out
+    # of the local repository's cached-failure record, which would keep reporting None long
+    # after the cause was fixed.
+    cmd = mvn_base() + ["-B", "-U", "dependency:list", f"-DincludeGroupIds={group_id}",
+                        f"-DincludeArtifactIds={artifact_id}"]
     if module:
         cmd += ["-pl", module]
     for k, v in (props or {}).items():
