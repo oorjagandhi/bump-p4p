@@ -75,6 +75,8 @@ def stage_for(name: str) -> Path:
     """The folder a file of this name belongs in. Unmatched names go to output/ itself,
     which is deliberate: an unrouted file is visible rather than silently filed wrong."""
     base = Path(name).name
+    if base.upper() == "README.MD":
+        return OUTPUT          # a folder's own README is not a report
     for token, folder in _RULES:
         if token in base:
             return folder
