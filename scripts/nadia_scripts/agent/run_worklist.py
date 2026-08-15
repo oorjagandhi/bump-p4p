@@ -154,6 +154,42 @@ def pin_version_property(repo_dir: str, group_id: str, artifact_id: str, prop: s
     return changed
 
 
+def inject_library_dep(repo_dir: str, module: str, group_id: str, artifact_id: str,
+                       prop: str) -> str | None:
+    """Declare the library as a DIRECT dependency at ${prop}, for clients that get it
+    transitively.
+
+    A -D property only moves a version the build actually names. When the library arrives
+    through someone else's dependency tree there is nothing to name and nothing to pin:
+    artshishkin/art-kargopolov-cqrs-saga-axon-microservices gets xstream via Axon, so the
+    probe measured 1.4.19 no matter what was asked for, and the run died at `setup:` — on a
+    case verified by hand long ago. The original acceptance harness for it did exactly what
+    this does, by hand.
+
+    Adding a depth-1 declaration is version-neutral in the sense that matters: Maven's
+    nearest-wins rule then lets the property decide, and every state gets the same treatment.
+    It DOES change the dependency graph, so it is recorded in the ledger, and the probe still
+    measures the result rather than assuming it.
+    """
+    pom = os.path.join(repo_dir, module or "", "pom.xml")
+    if not os.path.exists(pom):
+        return None
+    text = open(pom, encoding="utf-8", errors="replace").read()
+    if f"<artifactId>{artifact_id}</artifactId>" in text:
+        return None                      # already declared; pinning was the right tool
+    i = text.find("<dependencies>")
+    if i < 0:
+        return None
+    i += len("<dependencies>")
+    dep = (f"\n        <dependency>\n"
+           f"            <groupId>{group_id}</groupId>\n"
+           f"            <artifactId>{artifact_id}</artifactId>\n"
+           f"            <version>${{{prop}}}</version>\n"
+           f"        </dependency>")
+    open(pom, "w", encoding="utf-8", newline="").write(text[:i] + dep + text[i:])
+    return os.path.relpath(pom, repo_dir)
+
+
 JUNIT4_DEP = """
         <dependency>
             <groupId>junit</groupId>
@@ -229,6 +265,11 @@ def run_one(item: dict, args, ledger: str) -> dict:
            "test_dep_injected": bool(args.add_test_dep),
            "module": item.get("module", "") or None,
            "mvn_args": args.mvn_arg or None}
+    # Re-verification rows carry the answer they are being checked against, so the ledger
+    # scores itself instead of needing the case files opened alongside it.
+    if item.get("known_outcome"):
+        row["known_outcome"] = item["known_outcome"]
+        row["case_file"] = item.get("case_file")
     t0 = time.time()
     try:
         if not os.path.exists(repo_dir):
@@ -245,6 +286,51 @@ def run_one(item: dict, args, ledger: str) -> dict:
         print(f"  [probe] version knob for {brk['library']['artifact_id']}={baseline}", flush=True)
         try:
             props = probe(item, brk, repo_dir, jdk, baseline)
+        except Exception as first_e:
+            # No property controls the version. Before giving up, try rewriting the hardcoded
+            # <version> literal to one and probing again — a client that names the version
+            # with no property is a fact about its POM, not about the break.
+            #
+            # This was --pin-version, opt-in, and that was wrong: it needs the operator to
+            # already know why the probe failed. On marklogic/marklogic-contentpump — a case
+            # verified by hand long ago — the agent refused a known-good client because its
+            # pom pins xstream twice as a literal. On a NEW candidate that refusal would have
+            # read as "not verifiable" and nobody would have looked further.
+            #
+            # Safe to attempt unconditionally because the probe still MEASURES the result: a
+            # rewrite that does not move the version fails exactly as before.
+            if not args.pin_version:
+                lib = brk["library"]
+                pinned = pin_version_property(repo_dir, lib["group_id"], lib["artifact_id"],
+                                              pin_prop)
+                if pinned:
+                    print(f"  [probe] no property controls the version; pinned literal -> "
+                          f"${{{pin_prop}}} in {pinned}, re-probing", flush=True)
+                    try:
+                        props = probe(item, brk, repo_dir, jdk, baseline)
+                        row["version_pinned"] = pinned
+                        row["version_pinned_auto"] = True
+                        args.pin_version = True     # keep it applied after every checkout
+                    except Exception as e:
+                        raise e from first_e
+                else:
+                    # Nothing to pin means the client never names the library: it arrives
+                    # transitively. Declare it at depth 1 so the property has something to
+                    # control, then measure again.
+                    injected = inject_library_dep(repo_dir, item.get("module", ""),
+                                                  lib["group_id"], lib["artifact_id"], pin_prop)
+                    if not injected:
+                        raise first_e
+                    print(f"  [probe] library is transitive; declared it directly in "
+                          f"{injected} at ${{{pin_prop}}}, re-probing", flush=True)
+                    try:
+                        props = probe(item, brk, repo_dir, jdk, baseline)
+                        row["library_dep_injected"] = injected
+                        args.inject_library_dep = True   # re-apply after every checkout
+                    except Exception as e:
+                        raise e from first_e
+            else:
+                raise first_e
         except Exception as e:
             reason = f"version knob probe: {e}"
             if "resolved None" in reason:
@@ -289,7 +375,8 @@ def run_one(item: dict, args, ledger: str) -> dict:
         else:
             driver_src = open(args.driver, encoding="utf-8").read()
             row["seam_a"] = f"path_b (file: {os.path.basename(args.driver)})"
-        res = differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pin_prop)
+        res = differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args,
+                           pin_prop, jdk_key)
         row.update(res)
         return row
     except Exception as e:
@@ -301,7 +388,8 @@ def run_one(item: dict, args, ledger: str) -> dict:
             force_rmtree(repo_dir)
 
 
-def differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pin_prop="") -> dict:
+def differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pin_prop="",
+                 jdk_key="") -> dict:
     """The 3-state oracle, with the driver supplied rather than generated (Path B seam).
 
     States are the same ones orchestrator.verify_candidate runs; this copy exists so the
@@ -322,7 +410,17 @@ def differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pi
     # the adaptation they shipped; running it at the boundary measures one they never had.
     state3_version = getattr(args, "state3_version", None) or to_version
     signal = v.get("signal_grep", "")
+
+    # jvm_add_opens is a JDK 9+ module-system flag. The catalog sets it for the JDK the break
+    # is normally verified on (17 for xstream), but some clients only build on 8 — and there
+    # `--add-opens` is not "ignored", it kills the forked JVM outright: surefire reports "The
+    # forked VM terminated without properly saying goodbye", Tests run: 0, BUILD FAILURE. On
+    # marklogic/marklogic-contentpump that looked exactly like a client whose tests cannot run.
     add_opens = v.get("jvm_add_opens")
+    if add_opens and str(jdk_key) == "8":
+        print(f"  [note] dropping {len(add_opens)} --add-opens flag(s): JDK 8 predates them",
+              flush=True)
+        add_opens = None
     test_class = args.test or "bbc.BbcTest"
     O.write_test(repo_dir, cand.module, driver_src, test_class.split(".")[-1])
 
@@ -341,6 +439,10 @@ def differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pi
             if args.pin_version:
                 lib = brk["library"]
                 pin_version_property(repo_dir, lib["group_id"], lib["artifact_id"], pin_prop)
+            if getattr(args, "inject_library_dep", False):
+                lib = brk["library"]
+                inject_library_dep(repo_dir, cand.module, lib["group_id"], lib["artifact_id"],
+                                   pin_prop)
         if args.add_test_dep:
             inject_test_dep(os.path.join(repo_dir, cand.module or "", "pom.xml"))
         print(f"  [state {name}] {brk['library']['artifact_id']}={version}", flush=True)
@@ -494,7 +596,12 @@ def main():
         print(f"\n=== {i['repo']} @ {i['adapt_sha'][:10]} ({i['break_id']}) ===", flush=True)
         row = run_one(i, args, ledger)
         append(ledger, row)
-        print(f"  -> {row['outcome']}: {row.get('reason','')[:160]}", flush=True)
+        verdict = ""
+        if row.get("known_outcome"):
+            verdict = ("  [AGREES with the recorded case]"
+                       if row["outcome"] == row["known_outcome"]
+                       else f"  [DISAGREES — case says {row['known_outcome']}]")
+        print(f"  -> {row['outcome']}: {row.get('reason','')[:160]}{verdict}", flush=True)
 
     print(f"\nledger: {ledger}")
 

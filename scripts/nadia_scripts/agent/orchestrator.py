@@ -35,6 +35,12 @@ CATALOG = os.path.join(NADIA, "specs", "bump_breaks_catalog.json")
 
 # JDK table (see AGENT_DESIGN §4). Extend as needed.
 JDKS = {
+    # Java 8 is not optional. Projects old enough to be crossing these boundaries routinely
+    # predate the JDK's JAXB removal (javax.xml.bind, gone in 11), so on 11+ they fail to
+    # compile AT BASELINE — which the oracle would otherwise read as "baseline did not pass
+    # cleanly", i.e. as a fact about the client. marklogic/marklogic-contentpump was verified
+    # by hand on 8. Extracted from the Adoptium zip; the MSI install fails 1603 on this box.
+    "8": r"C:/Users/nadia/jdk8/jdk8u492-b09",
     "11": r"C:/Program Files/Eclipse Adoptium/jdk-11.0.31.11-hotspot",
     "17": r"C:/Program Files/Java/jdk-17",
     "21": r"C:/Program Files/Java/jdk-21",
@@ -95,10 +101,18 @@ def run_state(repo_dir: str, jdk: str, test: str, version_props: dict, heap="-Xm
     (`-pl core -am` on a multi-module repo, `-Dspotless.check.skip=true` on one whose verify
     phase would otherwise fail on the injected driver). It never carries version overrides —
     those come from the probe, so that what the differential ran stays measured."""
-    env = dict(os.environ, JAVA_HOME=jdk)
+    # -Dfile.encoding=UTF-8: this box's platform encoding is Cp1252, and maven-resources-plugin
+    # decodes filtered resources with it. marklogic/marklogic-contentpump ships sample-data
+    # files that are not Cp1252-decodable, so `clean test` died with UnmappableCharacterException
+    # before compiling anything — every state run=0, and without the run==0 guard that would
+    # have read as a finding about a case already verified by hand.
+    env = dict(os.environ, JAVA_HOME=jdk,
+               MAVEN_OPTS=os.environ.get("MAVEN_OPTS", "") + " -Dfile.encoding=UTF-8")
     argline = heap + ("".join(" " + o for o in (add_opens or [])))
     cmd = mvn_base() + ["clean", "test", f"-Dtest={test}", f"-DargLine={argline}",
-                        "-Dsurefire.failIfNoSpecifiedTests=false", *(extra_args or [])]
+                        "-Dsurefire.failIfNoSpecifiedTests=false",
+                        "-Dproject.build.sourceEncoding=UTF-8",
+                        "-Dproject.reporting.outputEncoding=UTF-8", *(extra_args or [])]
     for k, v in version_props.items():
         cmd.append(f"-D{k}={v}")
     p = subprocess.run(cmd, cwd=repo_dir, env=env, capture_output=True, text=True)
