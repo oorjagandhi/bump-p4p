@@ -1,0 +1,33 @@
+{
+ "case_id": "snakeyaml-datastax-metric-collector",
+ "status": "excluded__compile_break_AND_wrong_cause",
+ "assessed_date": "2026-08-15",
+ "assessed_by": "commit reading via GitHub API; no differential run",
+ "discovery": {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+  "found_by": "mine-commits -> classify -> traversal; open traversal-confirmed row surfaced 2026-08-15"
+ },
+ "links": {
+  "repo": "https://github.com/datastax/metric-collector-for-apache-cassandra",
+  "adaptation_commit": "https://github.com/datastax/metric-collector-for-apache-cassandra/commit/1d1481b7"
+ },
+ "the_candidate": {
+  "repo": "datastax/metric-collector-for-apache-cassandra",
+  "commit": "1d1481b71c63",
+  "message": "Bump SnakeYaml to 2.4 to remedieate CVE-2022-25857, CVE-2022-38749 (#107)",
+  "commit_date": "2025-03-28",
+  "production_files": [
+   "src/main/java/com/datastax/mcac/ConfigurationLoader.java"
+  ],
+  "traversal": "confirmed: direct 1.26 -> 2.4 in pom.xml, same commit as the adaptation",
+  "why_it_looked_strong": "A dedicated bump commit -- not a feature PR -- touching exactly one production file, and that file references the library. The best-shaped open row in the codepointlimit corpus."
+ },
+ "why_excluded": {
+  "finding": "A COMPILE break, and attributed to the wrong break. The adaptation responds to snakeyaml 2.0 removing the Constructor(Class) overload, not to the 1.32 code-point limit.",
+  "the_diff": "`CustomConstructor(Class<?> theRoot) { super(theRoot); }` becomes `CustomConstructor() { super(new LoaderOptions()); }`, and the call site `new CustomConstructor(Configuration.class)` becomes `new CustomConstructor()`. The only other change is pinning the version to a ${snakeyaml.version} property.",
+  "why_it_is_a_compile_break": "snakeyaml 2.0 removed every Constructor overload that does not take a LoaderOptions. `super(theRoot)` stops compiling, so the client never reaches any runtime behaviour change. State 2 would fail at javac.",
+  "wrong_break": "The crossing 1.26 -> 2.4 passes through the 1.32 code-point boundary, which is why the codepointlimit mine caught it, but nothing in the diff touches setCodePointLimit or any limit. Crossing a boundary is not the same as adapting to it.",
+  "collateral_note": "The fix also drops the root type: the constructor no longer receives Configuration.class. That is a semantic change made to satisfy the compiler, not to restore behaviour.",
+  "pattern": "Fourth instance of the snakeyaml-2.0 constructor-removal compile break, after adityajoy-1902/Dashboard-V-2, snork-alt/beanszoo and GoogleCloudPlatform/appengine-plugins. The compile-masking assessment on snakeyaml-1.x-to-2.0 now stands at 4 for 4."
+ }
+}

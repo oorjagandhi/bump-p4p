@@ -1,0 +1,28 @@
+{
+ "case_id": "snakeyaml-himarket",
+ "status": "excluded__transitive_delivery_and_incidental_bump",
+ "assessed_date": "2026-08-15",
+ "assessed_by": "mined-row metadata; no commit fetch needed",
+ "discovery": {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+  "found_by": "mine-commits -> classify -> traversal; open traversal-confirmed row surfaced 2026-08-15"
+ },
+ "links": {
+  "repo": "https://github.com/higress-group/himarket",
+  "adaptation_commit": "https://github.com/higress-group/himarket/commit/72fdbd36"
+ },
+ "the_candidate": {
+  "repo": "higress-group/himarket",
+  "commit": "72fdbd3602f4",
+  "message": "feat: MCP Server lifecycle management, sandbox hosting and third-party import (#233)",
+  "production_files_count": 87,
+  "test_files_count": 0,
+  "traversal": "[transitive] 1.30 -> 2.2 via org.springframework.boot:spring-boot-dependencies:3.2.5, 116 commits before the adaptation"
+ },
+ "why_excluded": {
+  "finding": "Disqualified twice over, independently.",
+  "reason_1_transitive": "snakeyaml arrives through spring-boot-dependencies. Under the 2026-08-15 scoping decision the study covers direct-dependency bumps only, so transitive crossings are excluded at traversal as well as fan-out.",
+  "reason_2_incidental": "An 87-file feature commit adding MCP server lifecycle management, sandbox hosting and third-party import. The snakeyaml version moves as a side effect of a Spring Boot upgrade 116 commits earlier.",
+  "note": "Either reason alone is sufficient; recorded together so the row is not reopened if the transitive rule is ever revisited."
+ }
+}

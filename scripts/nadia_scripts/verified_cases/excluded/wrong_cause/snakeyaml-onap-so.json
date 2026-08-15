@@ -1,0 +1,29 @@
+{
+ "case_id": "snakeyaml-onap-so",
+ "status": "excluded__incidental_bump_in_a_feature_commit",
+ "assessed_date": "2026-08-15",
+ "assessed_by": "mined-row metadata; no commit fetch needed",
+ "discovery": {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+  "found_by": "mine-commits -> classify -> traversal; open traversal-confirmed row surfaced 2026-08-15"
+ },
+ "links": {
+  "repo": "https://github.com/onap/so",
+  "adaptation_commit": "https://github.com/onap/so/commit/69ec1cfb"
+ },
+ "the_candidate": {
+  "repo": "onap/so",
+  "commit": "69ec1cfbf8db",
+  "message": "Migrate SO to Spring Boot 3.0.13 and Jakarta EE",
+  "production_files_count": 218,
+  "test_files_count": 53,
+  "library_referenced_files": [],
+  "traversal": "direct 1.31 -> 2.0 in pom.xml, same commit as the adaptation"
+ },
+ "why_excluded": {
+  "finding": "A 218-file framework migration to Spring Boot 3 and Jakarta EE. snakeyaml moves 1.31 -> 2.0 in passing.",
+  "decisive_evidence": "library_referenced_files is EMPTY -- not one of the 218 changed production files references snakeyaml. The classifier flagged the row on the version change alone.",
+  "secondary": "The crossing also lands on 2.0, which is compile-masked, so even a genuine adaptation here would most likely be a signature fix rather than a behavioural one.",
+  "attribution": "Mined under the codepointlimit break, but 1.31 -> 2.0 passes through 1.32 without anything in the diff touching a limit."
+ }
+}
