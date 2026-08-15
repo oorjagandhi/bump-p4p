@@ -1725,12 +1725,12 @@
      "behavioural": null,
      "compile_break": null,
      "verified": 4,
-     "excluded": 5
+     "excluded": 7
     },
     "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
     "assessed_on": null,
     "reason": null,
-    "unexploited_leads": "2 remaining, both flagged knob-shaped in find_adaptations.py's own docstring and therefore unable to satisfy the oracle: bspfsystems/YamlConfiguration, swagger-api/swagger-parser. Neither diff has been read. The other three open rows were assessed 2026-08-15 and all excluded: datastax/metric-collector (compile break at 2.0, wrong break), higress-group/himarket (transitive + 87-file feature commit), onap/so (218-file Spring Boot 3 migration, no changed file references snakeyaml).",
+    "unexploited_leads": "none — all 7 traversal-confirmed candidates now have case files (4 verified_bbc, 3 excluded... see census breakdown). The last two, bspfsystems/YamlConfiguration and swagger-api/swagger-parser, were read on 2026-08-15 and are both knob-at-default: each sets 3*1024*1024, snakeyaml's own default, so behaviour is identical across the boundary for every input size.",
     "consolidated_from": null,
     "unexploited_leads_method": "Traversal-confirmed rows in output/02_mine/<break>_candidates.jsonl cross-referenced against every repo named in verified_cases/ (including excluded/). A candidate with a case file of ANY status is dispositioned, not open. Recompute rather than trusting this string — the first version of this field omitted the cross-reference and reported an already-excluded candidate (apache/rocketmq-connect) as an open fastjson lead."
    }

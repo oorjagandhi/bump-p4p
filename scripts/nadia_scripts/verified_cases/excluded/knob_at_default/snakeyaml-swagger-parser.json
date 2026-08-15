@@ -1,0 +1,31 @@
+{
+ "case_id": "snakeyaml-swagger-parser",
+ "status": "excluded__knob_exposed_at_library_default",
+ "assessed_date": "2026-08-15",
+ "assessed_by": "commit reading via GitHub API; no differential run",
+ "discovery": {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+  "found_by": "mine-commits -> classify -> traversal; open traversal-confirmed row"
+ },
+ "links": {
+  "repo": "https://github.com/swagger-api/swagger-parser",
+  "adaptation_commit": "https://github.com/swagger-api/swagger-parser/commit/93d1f495"
+ },
+ "the_candidate": {
+  "repo": "swagger-api/swagger-parser",
+  "commit": "93d1f4959ccb",
+  "commit_date": "2023-01-14",
+  "message": "Allow user to override the Code Point Limit required by SnakeYaml",
+  "production_files": [
+   "modules/swagger-parser-v3/src/main/java/io/swagger/v3/parser/util/DeserializationUtils.java"
+  ],
+  "traversal": "confirmed: direct 1.31 -> 1.32 in pom.xml @eafe156d, 119 commits before the adaptation"
+ },
+ "why_excluded": {
+  "finding": "Knob exposure at the library's own default. The commit adds a way for a USER to raise the limit; it does not raise it.",
+  "the_code": "private Integer maxYamlCodePoints = System.getProperty(\"maxYamlCodePoints\") == null ? 3 * 1024 * 1024 : Integer.valueOf(System.getProperty(\"maxYamlCodePoints\"));  -- then loaderOptions.setCodePointLimit(...) is invoked reflectively with that value.",
+  "why_it_cannot_verify": "3 * 1024 * 1024 IS snakeyaml's own default. With no system property set, the configured limit equals the library default, so the code behaves identically at 1.31 and at 1.32 for EVERY input size. A three-state differential has nothing to discriminate: whatever fails in state 2 also fails in state 3.",
+  "commit_body_confirms_it": "'a user may set the system property maxYamlCodePoints in order to override the default 3MiB limit' -- the project describes it as an override mechanism, not a restoration.",
+  "what_would_have_made_it_a_case": "Choosing a default ABOVE 3 MiB, as WorldEdit (64 MB) and infoarchive (10 MB) did. Those verified; this cannot."
+ }
+}

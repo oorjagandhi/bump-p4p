@@ -1,0 +1,27 @@
+{
+ "case_id": "snakeyaml-bspfsystems-yamlconfiguration",
+ "status": "excluded__knob_exposed_at_library_default",
+ "assessed_date": "2026-08-15",
+ "assessed_by": "commit reading via GitHub API; no differential run",
+ "discovery": {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+  "found_by": "mine-commits -> classify -> traversal; open traversal-confirmed row"
+ },
+ "links": {
+  "repo": "https://github.com/bspfsystems/YamlConfiguration",
+  "adaptation_commit": "https://github.com/bspfsystems/YamlConfiguration/commit/b0eb7bbc"
+ },
+ "the_candidate": {
+  "repo": "bspfsystems/YamlConfiguration",
+  "commit": "b0eb7bbcee90",
+  "commit_date": "2022-11-02",
+  "message": "Updates: Removed BSPFYaml custom YAML class; Added new YamlConfigurationOption option `codePointLimit`; SnakeYAML updated to 1.33 (from 1.32)",
+  "traversal": "confirmed: direct 1.30 -> 1.32 in pom.xml @ff0afc57, 1 commit before the adaptation"
+ },
+ "why_excluded": {
+  "finding": "Knob exposure at the library's own default, in a project that is itself a library.",
+  "the_code": "YamlConfigurationOptions gains `private int codePointLimit;` initialised to `3 * 1024 * 1024; // 3 MB`, a getCodePointLimit(), and a setCodePointLimit(int) that rejects values below 1024. YamlConfiguration then calls this.loaderOptions.setCodePointLimit(this.getOptions().getCodePointLimit()).",
+  "why_it_cannot_verify": "The default equals snakeyaml's own 3 MiB, so out of the box nothing changes across the boundary. The setter's documented range is 1 kB to Integer.MAX_VALUE with '3 MB recommended' -- the decision is handed to the plugin author, not made here.",
+  "matches_the_predicted_split": "find_adaptations.py's docstring predicts exactly this from what the project IS: applications raise the limit, libraries and plugins expose a knob and pass the decision downstream. YamlConfiguration is a configuration library for Bukkit/Spigot plugins. Prediction confirmed on reading."
+ }
+}
