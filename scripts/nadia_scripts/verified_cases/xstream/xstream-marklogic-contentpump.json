@@ -1,5 +1,12 @@
 {
   "case_id": "xstream-marklogic-contentpump",
+  "links": {
+    "repo": "https://github.com/marklogic/marklogic-contentpump",
+    "adaptation_commit": "https://github.com/marklogic/marklogic-contentpump/commit/3736c971",
+    "parent_commit": "https://github.com/marklogic/marklogic-contentpump/commit/2b9ebbd57305",
+    "bump_commit": "https://github.com/marklogic/marklogic-contentpump/commit/3736c971",
+    "_bump_commit_note": "bundled: this file records distance_commits = 0, so the version bump is in the adaptation commit itself"
+  },
   "status": "verified_bbc",
   "case_type": "external_mined__real_production_adaptation__invariant_driver_differential",
   "verified_date": "2026-08-06",

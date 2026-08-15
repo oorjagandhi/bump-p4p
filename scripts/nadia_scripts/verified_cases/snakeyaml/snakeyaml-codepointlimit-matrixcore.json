@@ -1,5 +1,11 @@
 {
  "case_id": "snakeyaml-codepointlimit-matrixcore",
+ "links": {
+  "repo": "https://github.com/yoricya/MatrixCore-API",
+  "adaptation_commit": "https://github.com/yoricya/MatrixCore-API/commit/b24bb75af90daa49b4759f69a9bf7c6adc5d2a06",
+  "parent_commit": "https://github.com/yoricya/MatrixCore-API/commit/0994345029c4d127696616de3bab3e8044b03749",
+  "bump_commit": "https://github.com/yoricya/MatrixCore-API/commit/acdb55f9"
+ },
  "status": "verified_bbc",
  "case_type": "external_production_adaptation",
  "verified_date": "2026-08-12",

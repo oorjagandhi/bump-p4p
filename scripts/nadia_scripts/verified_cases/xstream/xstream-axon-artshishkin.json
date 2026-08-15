@@ -1,5 +1,11 @@
 {
   "case_id": "xstream-axon-artshishkin",
+  "links": {
+    "repo": "https://github.com/artshishkin/art-kargopolov-cqrs-saga-axon-microservices",
+    "adaptation_commit": "https://github.com/artshishkin/art-kargopolov-cqrs-saga-axon-microservices/commit/b76d747f8d278fbee27e6e4b82355f5e660bf5f8",
+    "parent_commit": "https://github.com/artshishkin/art-kargopolov-cqrs-saga-axon-microservices/commit/2ccdee8ed0074d6a1bb51dea599903f6779165ef",
+    "bump_commit": "https://github.com/artshishkin/art-kargopolov-cqrs-saga-axon-microservices/commit/3abca3fc6a9f7760222756543fb57c643d30a3c0"
+  },
   "status": "verified_bbc",
   "case_type": "external_production_adaptation",
   "verified_date": "2026-07-07",

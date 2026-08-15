@@ -1,5 +1,11 @@
 {
  "case_id": "snakeyaml-codepointlimit-worldedit",
+ "links": {
+  "repo": "https://github.com/EngineHub/WorldEdit",
+  "adaptation_commit": "https://github.com/EngineHub/WorldEdit/commit/0ef38b529231283ceaeb00b0eaaeb670fb3f0a44",
+  "parent_commit": "https://github.com/EngineHub/WorldEdit/commit/7e61ff19ca27dcf103c65564d298df611c6bf7c3",
+  "bump_commit": "https://github.com/EngineHub/WorldEdit/commit/0ef38b529231283ceaeb00b0eaaeb670fb3f0a44"
+ },
  "status": "verified_bbc",
  "case_type": "external_production_adaptation",
  "verified_date": "2026-08-11",

@@ -1,5 +1,11 @@
 {
  "case_id": "jackson-streamreadconstraints-couchbase",
+ "links": {
+  "repo": "https://github.com/couchbase/couchbase-jvm-clients",
+  "adaptation_commit": "https://github.com/couchbase/couchbase-jvm-clients/commit/77c218722549303f63489f1ad2b51525f5dcea49",
+  "parent_commit": "https://github.com/couchbase/couchbase-jvm-clients/commit/db4239fcd5ee4317639982d49a452015c4a865b4",
+  "bump_commit": "https://github.com/couchbase/couchbase-jvm-clients/commit/77c218722549303f63489f1ad2b51525f5dcea49"
+ },
  "status": "verified_bbc",
  "case_type": "external_production_adaptation",
  "verified_date": "2026-08-12",

@@ -1,5 +1,11 @@
 {
   "case_id": "xstream-axon-saga-einsteinarbert",
+  "links": {
+    "repo": "https://github.com/einsteinarbert/axon-saga-example",
+    "adaptation_commit": "https://github.com/einsteinarbert/axon-saga-example/commit/dddd794b5d0fdbf502802e9fcce664442292a408",
+    "bump_commit": "https://github.com/einsteinarbert/axon-saga-example/commit/fad9b9423e7f9c5e8eb0be6931017851d4a532cf",
+    "_bump_commit_note": "from in_repo_version_transition.bump_commit: ('upgrade version of spring boot', 2022-10-25)"
+  },
   "status": "verified_bbc",
   "case_type": "external_production_adaptation",
   "verified_date": "2026-07-08",

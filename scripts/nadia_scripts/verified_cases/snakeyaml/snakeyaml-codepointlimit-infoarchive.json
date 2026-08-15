@@ -1,5 +1,11 @@
 {
  "case_id": "snakeyaml-codepointlimit-infoarchive",
+ "links": {
+  "repo": "https://github.com/Enterprise-Content-Management/infoarchive-sip-sdk",
+  "adaptation_commit": "https://github.com/Enterprise-Content-Management/infoarchive-sip-sdk/commit/4b617cd8b9ebcf66cd42494eb2384398089eaf6e",
+  "parent_commit": "https://github.com/Enterprise-Content-Management/infoarchive-sip-sdk/commit/c9e9e1e0df543f85d89b6bb1a10a39d00ebce5d9",
+  "bump_commit": "https://github.com/Enterprise-Content-Management/infoarchive-sip-sdk/commit/68d44a35"
+ },
  "status": "verified_bbc",
  "case_type": "external_production_adaptation",
  "verified_date": "2026-08-11",

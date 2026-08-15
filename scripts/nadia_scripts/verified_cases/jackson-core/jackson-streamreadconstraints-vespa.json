@@ -1,5 +1,11 @@
 {
  "case_id": "jackson-streamreadconstraints-vespa",
+ "links": {
+  "repo": "https://github.com/vespa-engine/vespa",
+  "adaptation_commit": "https://github.com/vespa-engine/vespa/commit/ad7aed9bb7b529cc98acf46763cd869523296fbc",
+  "parent_commit": "https://github.com/vespa-engine/vespa/commit/9904aaf25710c6affca4140c22fa99501eb325fd",
+  "bump_commit": "https://github.com/vespa-engine/vespa/commit/dd2a716ef9480e3b673955fcded3573dd6b5f633"
+ },
  "status": "verified_bbc",
  "case_type": "external_production_adaptation",
  "verified_date": "2026-08-13",

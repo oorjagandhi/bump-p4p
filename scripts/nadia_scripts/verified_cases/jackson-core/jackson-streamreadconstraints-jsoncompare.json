@@ -1,5 +1,11 @@
 {
  "case_id": "jackson-streamreadconstraints-jsoncompare",
+ "links": {
+  "repo": "https://github.com/fslev/json-compare",
+  "adaptation_commit": "https://github.com/fslev/json-compare/commit/a1c205786e02042f704aad196fed6717a31d5572",
+  "parent_commit": "https://github.com/fslev/json-compare/commit/409ccb93a08b5880ec325ce7ab14c4ce5669ae81",
+  "bump_commit": "https://github.com/fslev/json-compare/commit/310bf171e6d6929013167665de312f38606a55f6"
+ },
  "status": "verified_bbc",
  "case_type": "external_production_adaptation",
  "verified_date": "2026-08-12",

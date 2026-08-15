@@ -1,5 +1,11 @@
 {
  "case_id": "jackson-streamreadconstraints-arangodb",
+ "links": {
+  "repo": "https://github.com/arangodb/arangodb-java-driver",
+  "adaptation_commit": "https://github.com/arangodb/arangodb-java-driver/commit/5b1b958a5bde17304be05f5d9416c237d3b59ddf",
+  "parent_commit": "https://github.com/arangodb/arangodb-java-driver/commit/2ae5af937350279ef00b795b7c8f884a3d189119",
+  "bump_commit": "https://github.com/arangodb/arangodb-java-driver/commit/1344289bafca7dea3cc48827e755750c218718db"
+ },
  "status": "verified_bbc",
  "case_type": "external_production_adaptation",
  "verified_date": "2026-08-13",

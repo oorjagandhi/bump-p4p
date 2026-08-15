@@ -1,6 +1,12 @@
 
 {
   "case_id": "xstream-spark",
+  "links": {
+    "repo": "https://github.com/igniterealtime/Spark",
+    "adaptation_commit": "https://github.com/igniterealtime/Spark/commit/aad38d68",
+    "parent_commit": "https://github.com/igniterealtime/Spark/commit/3821d04ec08e84fef84f32a39fd6b2ce200166e5",
+    "bump_commit": "https://github.com/igniterealtime/Spark/commit/f0698b7d"
+  },
   "status": "signature_confirmed",
   "status_note": "Real EXTERNAL native-Maven production adaptation to the xstream 1.4.18 default-deny break, in a mature product (Ignite Realtime Spark, XMPP client), found by the pipeline (commit search). Causally clean (tracked issue SPARK-2259, single-line production allowTypes). NOT differential-verifiable standalone: the production class is coupled to a live XMPP session AND swallows the exception (see verification).",
   "case_type": "external_production_adaptation",

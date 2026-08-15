@@ -1,5 +1,11 @@
 {
   "case_id": "xstream-tvrenamer",
+  "links": {
+    "repo": "https://github.com/The-Ant-Forge/TVRenamer",
+    "adaptation_commit": "https://github.com/The-Ant-Forge/TVRenamer/commit/b236f68e",
+    "parent_commit": "https://github.com/The-Ant-Forge/TVRenamer/commit/16803ddb",
+    "bump_commit": "https://github.com/The-Ant-Forge/TVRenamer/commit/fa98c37e"
+  },
   "status": "verified_bbc",
   "status_note": "Real EXTERNAL production adaptation of the xstream 1.4.18 default-deny break, found by GitHub mining and VERIFIED with a full 3-state differential over the repo's untouched production source (Maven harness; the repo's own Gradle+SWT build was bypassed, not the code). Causal link is also explicit in-repo (comment + version).",
   "case_type": "external_production_adaptation",

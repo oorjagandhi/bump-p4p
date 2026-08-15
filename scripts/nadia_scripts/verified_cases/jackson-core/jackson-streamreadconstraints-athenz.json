@@ -1,5 +1,11 @@
 {
  "case_id": "jackson-streamreadconstraints-athenz",
+ "links": {
+  "repo": "https://github.com/AthenZ/athenz",
+  "adaptation_commit": "https://github.com/AthenZ/athenz/commit/82a1f1a2df6f7f7e24f7f79b8b2fc1107607c63b",
+  "parent_commit": "https://github.com/AthenZ/athenz/commit/ffa5cd11659d3eef5d2e2563fd8f2e13046b5872",
+  "bump_commit": "https://github.com/AthenZ/athenz/commit/7c140534"
+ },
  "status": "verified_bbc",
  "case_type": "external_production_adaptation",
  "verified_date": "2026-08-12",

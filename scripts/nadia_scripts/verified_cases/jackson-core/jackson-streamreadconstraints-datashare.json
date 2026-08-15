@@ -1,5 +1,11 @@
 {
  "case_id": "jackson-streamreadconstraints-datashare",
+ "links": {
+  "repo": "https://github.com/ICIJ/datashare",
+  "adaptation_commit": "https://github.com/ICIJ/datashare/commit/2693664cfe4cbc09445baa21fbac6d4bcfff2ce4",
+  "parent_commit": "https://github.com/ICIJ/datashare/commit/6107c1a2ddf4ec99d080a8157e94b8627ae18e3c",
+  "bump_commit": "https://github.com/ICIJ/datashare/commit/2368659234e228363e4c9c06115432c840a1393a"
+ },
  "status": "verified_bbc",
  "case_type": "external_production_adaptation",
  "verified_date": "2026-08-12",

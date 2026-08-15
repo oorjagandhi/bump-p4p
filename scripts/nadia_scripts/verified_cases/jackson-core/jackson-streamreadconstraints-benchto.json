@@ -1,5 +1,11 @@
 {
  "case_id": "jackson-streamreadconstraints-benchto",
+ "links": {
+  "repo": "https://github.com/trinodb/benchto",
+  "adaptation_commit": "https://github.com/trinodb/benchto/commit/322af5ff1e40a500b89170eb0ff257d29bdeb69e",
+  "parent_commit": "https://github.com/trinodb/benchto/commit/89597ae38910b306bbd51e1eadded532885da6b5",
+  "bump_commit": "https://github.com/trinodb/benchto/commit/c05adffaf4f47ab63ebe6efb32fa9dc05b862cf1"
+ },
  "status": "verified_bbc",
  "case_type": "external_production_adaptation",
  "verified_date": "2026-08-12",
