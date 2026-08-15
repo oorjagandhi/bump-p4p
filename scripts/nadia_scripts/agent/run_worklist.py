@@ -389,6 +389,18 @@ def run_one(item: dict, args, ledger: str) -> dict:
             force_rmtree(repo_dir)
 
 
+def is_shape_b(driver_src: str) -> bool:
+    """Does this driver use the two-method born-past-boundary shape?
+
+    seam_a_testgen.md mandates the exact method names `preAdaptation` and `adapted` for
+    Shape B precisely so the harness can recognise it, so matching on the @Test declarations
+    is reading a contract rather than guessing. A driver with only one of the two names (a
+    field called `adapted`, say) is not Shape B.
+    """
+    return all(re.search(rf"@Test\s+(?:public\s+)?\w[\w<>\[\], .]*\s+{name}\s*\(", driver_src)
+               for name in ("preAdaptation", "adapted"))
+
+
 def differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pin_prop="",
                  jdk_key="") -> dict:
     """The 3-state oracle, with the driver supplied rather than generated (Path B seam).
@@ -520,6 +532,55 @@ def differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pi
         return {"outcome": O.OUTCOME_FAILED, "states": summary,
                 "reason": f"no tests executed in {dead} — the differential is void, not "
                           f"negative. Maven said: " + " | ".join(errs or ["(no [ERROR] lines)"])}
+
+    # SHAPE B is scored per METHOD, because a state-level verdict cannot express it.
+    #
+    # A Shape B driver (born-past-boundary clients — see prompts/seam_a_testgen.md) carries
+    # exactly two @Tests: `preAdaptation()`, a stand-in for the library's default behaviour
+    # built from API common to both versions, and `adapted()`, the client's real configured
+    # path. The contract is:
+    #
+    #     preAdaptation @ from -> PASS      preAdaptation @ to -> FAIL+signal
+    #     adapted       @ to   -> PASS      (preAdaptation @ to STAYS FAILING — that is the point)
+    #
+    # The stand-in never recovers; demonstrating that only the production config fixes it IS
+    # the evidence. Scored in aggregate, that deliberate control sinks state 3 and the case
+    # comes back signature_confirmed. openmrs/openmrs-core — verified_bbc by hand — did
+    # exactly that: the break reproduced, the fix worked, and the verdict was still wrong.
+    #
+    # This is the only defect found on 2026-08-15 that manufactures a FALSE verdict rather
+    # than refusing to give one, which is why it is worth a separate branch: on a fresh
+    # candidate nothing downstream would contradict it.
+    if is_shape_b(driver_src):
+        pre_at = lambda s: "preAdaptation" in (s.get("failed_tests") or [])
+        adapted_failed = lambda s: "adapted" in (s.get("failed_tests") or [])
+        detail = {n: sorted(s.get("failed_tests") or [])
+                  for n, s in (("1", s1), ("2", s2), ("3", s3))}
+        if pre_at(s1):
+            return {"outcome": O.OUTCOME_FAILED, "states": summary,
+                    "reason": f"Shape B: preAdaptation already fails at the baseline "
+                              f"({baseline}), so the stand-in does not reconstruct "
+                              f"pre-break behaviour. failed={detail}"}
+        if not pre_at(s2):
+            return {"outcome": O.OUTCOME_SIGNATURE, "states": summary,
+                    "reason": f"Shape B: preAdaptation did not trip at {to_version}. "
+                              f"failed={detail}"}
+        if not O.matches_signal(s2["log"], signal):
+            return {"outcome": O.OUTCOME_SIGNATURE, "states": summary,
+                    "reason": f"Shape B: preAdaptation failed at {to_version} but not with "
+                              f"the signal /{signal}/"}
+        if adapted_failed(s3):
+            return {"outcome": O.OUTCOME_SIGNATURE, "states": summary,
+                    "reason": f"Shape B: the client's configured path still fails at "
+                              f"{state3_version}. failed={detail}"}
+        return {"outcome": O.OUTCOME_VERIFIED, "states": summary,
+                "reason": f"oracle satisfied (Shape B, per-method): preAdaptation PASS@"
+                          f"{baseline} / FAIL+signal@{to_version} / adapted PASS@"
+                          f"{state3_version}. preAdaptation still failing at state 3 is "
+                          f"expected — it is the control. failed={detail}. NOTE: confirm "
+                          f"`adapted()` calls the client's REAL production method rather "
+                          f"than reimplementing the fix in the test; a synthetic adapted() "
+                          f"weakens the case even when the oracle is green."}
 
     tripped = bool(s2["fail"] or s2["err"])
     signalled = tripped and O.matches_signal(s2["log"], signal)
