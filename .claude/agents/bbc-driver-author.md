@@ -85,6 +85,18 @@ Shape B, say so explicitly in your report so the human scores it per-test.
 
 1. **Drive the client's REAL production method**, not a synthetic library call. The break has
    to manifest through the application's own code.
+
+   **This is the rule most likely to produce a confident, worthless verdict, because breaking
+   it still yields the catalogued signal.** A driver that does `new XStream()` directly, feeds
+   it one of the client's domain types, and inlines the adaptation call into the test will
+   show `ForbiddenClassException` in state 2 exactly as a real driver would — `signal_grep`
+   passes, the log looks right, and the run reproduces *the library's* break with a client
+   type as a prop. It measures nothing about the client. Before you trust any verdict, check
+   that the driver names a production class from the diff. If the only client symbol in the
+   driver is a data type, you have tested the library.
+
+   (Seen on openmrs/openmrs-core: the driver never referenced `SimpleXStreamSerializer`,
+   the class the adaptation actually changed. Verdict was void, not negative.)
 2. **Use ONLY API present in BOTH versions.** The adaptation-only call (`allowTypes`,
    `setCodePointLimit`) lives in production code, never in the test — otherwise the driver
    will not compile at the baseline.
@@ -154,6 +166,11 @@ candidates that look unverifiable are environment problems the build states plai
 **Rule 0 — a state with `run == 0` proves nothing.** Zero tests executed is not a negative
 result, it is a void one. Never report a verdict from a state that did not run. Find out why
 Maven stopped and fix that first.
+
+**Rule 0b — read `err`, not just `fail`.** A JUnit *error* (an exception escaping the test) and
+a *failure* (an assertion tripping) are counted separately. A ledger row summarised as
+`fail: 0` can still have `err: 1` and be the most interesting row in the file. Quote all three
+of `run`, `fail`, `err` whenever you report a state.
 
 | Symptom | Look for | Fix |
 |---|---|---|
