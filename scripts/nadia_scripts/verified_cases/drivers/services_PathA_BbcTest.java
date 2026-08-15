@@ -2,39 +2,44 @@ package bbc;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.collectionspace.services.id.IDGeneratorSerializer;
-import org.collectionspace.services.id.SettableIDGenerator;
 import org.junit.Test;
 
+import org.collectionspace.services.id.IDGeneratorSerializer;
+import org.collectionspace.services.id.SettableIDGenerator;
+
 /**
- * Shape A: the production method IDGeneratorSerializer.deserialize(...) already
- * existed at the parent commit; the adaptation only added allowTypeHierarchy(...)
- * calls inside its body.
+ * Reproduces the XStream 1.4.17 -> 1.4.19 behavioural break through the client's
+ * real production serializer.
  *
- * Differential:
- *   parent code + xstream 1.4.17  -> PASS  (default blacklist permits the type)
- *   parent code + xstream 1.4.19  -> FAIL  (default whitelist rejects the type;
- *                                           BadRequestException caused by
- *                                           ForbiddenClassException  == SIGNAL)
- *   adapted code + xstream 1.4.19 -> PASS  (allowTypeHierarchy whitelists it)
+ * XStream switched from a default blacklist to a default whitelist. The client's
+ * deserialize() path drives xstream.fromXML(...), which at 1.4.19 rejects the
+ * SettableIDGenerator / IDGenerator hierarchy with a ForbiddenClassException
+ * unless the production code explicitly whitelists it (allowTypeHierarchy(...)).
+ *
+ * Shape A: IDGeneratorSerializer.deserialize(String) already existed at the
+ * parent; the adaptation only added the allowTypeHierarchy calls inside it.
+ * The SAME test compiles and runs at both parent and adapted code.
+ *
+ *  - parent code + xstream 1.4.17 -> PASS
+ *  - parent code + xstream 1.4.19 -> FAIL (ForbiddenClassException surfaces)
+ *  - adapted code + xstream 1.4.19 -> PASS
  */
 public class BbcTest {
 
   @Test
   public void bbcCase() throws Exception {
-    // Build a fixture using only API common to both 1.4.17 and 1.4.19.
+    // Build the fixture using only API common to 1.4.17 and 1.4.19,
+    // by driving the client's own serialize() production method.
     SettableIDGenerator generator = new SettableIDGenerator();
 
-    // serialize() does not perform any security check, so it succeeds on both versions.
-    String xml = IDGeneratorSerializer.serialize(generator);
-    assertNotNull(xml);
+    String serialized = IDGeneratorSerializer.serialize(generator);
+    assertNotNull(serialized);
 
-    // deserialize() is the real production path under test.
-    // On 1.4.19 without the whitelist this throws a BadRequestException whose cause
-    // is a ForbiddenClassException (the SIGNAL); with the whitelist it succeeds.
-    SettableIDGenerator roundTripped = IDGeneratorSerializer.deserialize(xml);
+    // Real production deserialization path: this is where the XStream default
+    // whitelist trips on 1.4.19 unless the hierarchy is explicitly allowed.
+    SettableIDGenerator roundTripped = IDGeneratorSerializer.deserialize(serialized);
 
-    // Assert the pre-break outcome: the object loads.
+    // Pre-break outcome: the generator survives the round trip.
     assertNotNull(roundTripped);
   }
 }
