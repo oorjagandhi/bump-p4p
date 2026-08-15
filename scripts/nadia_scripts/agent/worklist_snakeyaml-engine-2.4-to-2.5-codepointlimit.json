@@ -1,0 +1,23 @@
+[
+ {
+  "break_id": "snakeyaml-engine-2.4-to-2.5-codepointlimit",
+  "repo": "onthegomap/planetiler",
+  "adapt_sha": "b51be489e5c4",
+  "parent_sha": "ec6b09adf3ad53a9a6a0428ef75656b7ebf68835",
+  "build_system": "maven",
+  "production_files": [
+   "planetiler-core/src/main/java/com/onthegomap/planetiler/util/YAML.java"
+  ],
+  "message": "Load large yaml files (#1039)",
+  "adaptation_date": "2024-09-28",
+  "boundary_status": "confirmed",
+  "crossing": {
+   "boundary": "2.5",
+   "from": "2.4",
+   "to": "2.5",
+   "sha": "83148052b05b",
+   "date": "2022-10-04"
+  },
+  "status": "pending_differential"
+ }
+]

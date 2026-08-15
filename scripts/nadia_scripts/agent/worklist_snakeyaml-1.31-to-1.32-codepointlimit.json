@@ -1,0 +1,130 @@
+[
+ {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+  "repo": "Brokkonaut/GlobalConnectionServer",
+  "adapt_sha": "441ddf356349",
+  "parent_sha": "8d1c5b96dd796b2a9306968af9a9d521d06cbfdb",
+  "build_system": "maven",
+  "production_files": [
+   "src/main/java/de/cubeside/globalserver/plugin/PluginDescription.java"
+  ],
+  "message": "Update dependencies",
+  "adaptation_date": "2023-09-20",
+  "boundary_status": "confirmed",
+  "crossing": {
+   "boundary": "1.32",
+   "from": "1.30",
+   "to": "1.32",
+   "sha": "df6ec3e2adfa",
+   "date": "2022-09-22"
+  },
+  "status": "pending_differential"
+ },
+ {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+  "repo": "EngineHub/CommandHelper",
+  "adapt_sha": "c5a182371e3f",
+  "parent_sha": "0cbc9e05d3c7451690039217c2e118840df744dd",
+  "build_system": "maven",
+  "production_files": [
+   "src/main/java/com/laytonsmith/core/functions/DataTransformations.java"
+  ],
+  "message": "Expose code point limit in yml_decode",
+  "adaptation_date": "2023-08-09",
+  "boundary_status": "confirmed",
+  "crossing": {
+   "boundary": "1.32",
+   "from": "1.31",
+   "to": "1.32",
+   "sha": "6096b1ec1a89",
+   "date": "2022-09-20"
+  },
+  "status": "pending_differential"
+ },
+ {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+  "repo": "PetteriM1/NukkitPetteriM1Edition",
+  "adapt_sha": "9cc88d0e522c",
+  "parent_sha": "3da731dad3b21d6439a03df5defcc297de20794f",
+  "build_system": "maven",
+  "production_files": [
+   "src/main/java/cn/nukkit/utils/Config.java",
+   "src/main/java/cn/nukkit/plugin/PluginBase.java"
+  ],
+  "message": "Backport some fixes from leveldb branch",
+  "adaptation_date": "2024-08-13",
+  "boundary_status": "confirmed",
+  "crossing": {
+   "boundary": "1.32",
+   "from": "1.31",
+   "to": "1.32",
+   "sha": "9d5700010980",
+   "date": "2023-01-04"
+  },
+  "status": "pending_differential"
+ },
+ {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+  "repo": "oracle/weblogic-deploy-tooling",
+  "adapt_sha": "7a25ea7b093d",
+  "parent_sha": "8cbfa80790d3bf35d7dbd87e6dc8a5a48741f446",
+  "build_system": "maven",
+  "production_files": [
+   "core/src/main/java/oracle/weblogic/deploy/yaml/AbstractYamlTranslator.java"
+  ],
+  "message": "Snakeyaml 1.33 and exit handling refactor (#1208)",
+  "adaptation_date": "2022-09-28",
+  "boundary_status": "confirmed",
+  "crossing": {
+   "boundary": "1.32",
+   "from": "1.31",
+   "to": "1.32",
+   "sha": "11a0028dc4ad",
+   "date": "2022-09-13"
+  },
+  "status": "pending_differential"
+ },
+ {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+  "repo": "swagger-api/swagger-parser",
+  "adapt_sha": "93d1f4959ccb",
+  "parent_sha": "3574a634d3c246935ae0cdf1c3d55844664f24d2",
+  "build_system": "maven",
+  "production_files": [
+   "modules/swagger-parser-v3/src/main/java/io/swagger/v3/parser/util/DeserializationUtils.java",
+   "modules/swagger-parser-v3/src/main/java/io/swagger/v3/parser/reference/ReferenceVisitor.java"
+  ],
+  "message": "Allow user to override the Code Point Limit required by SnakeYaml",
+  "adaptation_date": "2023-01-14",
+  "boundary_status": "confirmed",
+  "crossing": {
+   "boundary": "1.32",
+   "from": "1.31",
+   "to": "1.32",
+   "sha": "eafe156df8cb",
+   "date": "2022-09-17"
+  },
+  "status": "pending_differential"
+ },
+ {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+  "repo": "ua-parser/uap-java",
+  "adapt_sha": "68921fc25b69",
+  "parent_sha": "7b5a16a36cb900e6bfdf7dcbda77e83e39b979fe",
+  "build_system": "maven",
+  "production_files": [
+   "src/main/java/ua_parser/Parser.java"
+  ],
+  "message": "= Upgrade versions",
+  "adaptation_date": "2023-01-05",
+  "boundary_status": "confirmed",
+  "crossing": {
+   "boundary": "1.32",
+   "from": "1.26",
+   "to": "1.33",
+   "sha": "68921fc25b69",
+   "date": "2023-01-05"
+  },
+  "status": "pending_differential"
+ }
+]

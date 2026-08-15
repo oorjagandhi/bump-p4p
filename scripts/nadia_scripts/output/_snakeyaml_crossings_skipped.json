@@ -1,0 +1,58 @@
+[
+ {
+  "repo": "BukkitAPI-Translation-Group/Chinese_BukkitAPI",
+  "skip": "library_source",
+  "detail": "BukkitApi/org/bukkit/configuration/file/YamlConfiguration.java is Bukkit's own source, translated -- this repo is a docs translation, not a snakeyaml client",
+  "files": [
+   "BukkitApi/org/bukkit/configuration/file/YamlConfiguration.java"
+  ],
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit"
+ },
+ {
+  "repo": "apache/shardingsphere",
+  "skip": "already_assessed",
+  "detail": "verified_cases/excluded/ineffective_adaptation/snakeyaml-codepointlimit-shardingsphere.json",
+  "files": [
+   "infra/util/src/main/java/org/apache/shardingsphere/infra/util/yaml/constructor/ShardingSphereYamlConstructor.java",
+   "agent/core/src/main/java/org/apache/shardingsphere/agent/core/yaml/AgentYamlEngine.java"
+  ],
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit"
+ },
+ {
+  "repo": "dataplf/shardingsphere",
+  "skip": "duplicate",
+  "detail": "same AgentYamlEngine.java adaptation as apache/shardingsphere, already excluded as ineffective_adaptation",
+  "files": [
+   "agent/core/src/main/java/org/apache/shardingsphere/agent/core/yaml/AgentYamlEngine.java"
+  ],
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit"
+ },
+ {
+  "repo": "jdxia/shardingsphere",
+  "skip": "duplicate",
+  "detail": "same as apache/shardingsphere (ineffective_adaptation)",
+  "files": [
+   "agent/core/src/main/java/org/apache/shardingsphere/agent/core/yaml/AgentYamlEngine.java"
+  ],
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit"
+ },
+ {
+  "repo": "swagger-api/swagger-core",
+  "skip": "test_only",
+  "detail": "adaptation is only in modules/swagger-core/src/test/java (JsonSerializationTest, OpenAPI3_1SerializationTest) -- README rule 2: production code was never forced to change",
+  "files": [
+   "modules/swagger-core/src/test/java/io/swagger/v3/core/serialization/JsonSerializationTest.java",
+   "modules/swagger-core/src/test/java/io/swagger/v3/core/serialization/OpenAPI3_1SerializationTest.java"
+  ],
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit"
+ },
+ {
+  "repo": "trxgithub11/shardingspheregw",
+  "skip": "duplicate",
+  "detail": "same as apache/shardingsphere (ineffective_adaptation)",
+  "files": [
+   "agent/core/src/main/java/org/apache/shardingsphere/agent/core/yaml/AgentYamlEngine.java"
+  ],
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit"
+ }
+]
