@@ -1,0 +1,20 @@
+{
+ "case_id": "json-smart-unchecked-corpus",
+ "status": "excluded__transitive_delivery_and_no_library_code_changed",
+ "case_type": "corpus_disposition__all_remaining_production_adaptations_for_one_break",
+ "assessed_date": "2026-08-16",
+ "assessed_by": "mined-row fields; traversal attempted and not needed",
+ "discovery": {
+  "break_id": "json-smart-2.4.8-to-2.4.9-maxdepth",
+  "found_by": "the 10 production adaptations the census listed under 'Unchecked leads (traversal NEVER run)'"
+ },
+ "scope": "All 10 production-adaptation rows: toscollection/tcommon-studio-se, opensearch-project/OpenSearch, anubhavg-icpl/opensearch (a fork of the former), finos/fluxnova-bpm-platform x4, camunda/camunda x2, wiremock/wiremock. Roughly 5 distinct projects once forks and repeated crossings are collapsed.",
+ "why_excluded": {
+  "finding": "Every row fails two necessary conditions independently, so no traversal verdict could change the outcome.",
+  "reason_1_not_declared_directly": "version_at_commit and version_at_parent are None for all 10 rows: json-smart is not declared in any of these projects' build files. It arrives transitively (commonly via nimbus-jose-jwt). The study covers direct-dependency bumps only.",
+  "reason_2_no_library_code_changed": "library_referenced_files is EMPTY for all 10. Not one changed production file references json-smart, so there is no library-using code that could have been adapted.",
+  "traversal_evidence": "Traversal was run on the three that completed within 240s (tcommon-studio-se, both opensearch rows) and returned `resolution: unresolved` -- BOM/parent-managed, undecided -- for each. The remaining seven timed out on very large monorepos. Under the direct-only scoping rule, unresolved/transitive is out of scope, so the timeouts change nothing.",
+  "consistency_with_the_break": "This matches what the README already records for json-smart under screening rule 4: it is used transitively, 89% of mined commits changed no Java, so nobody has code against it to adapt."
+ },
+ "process_note": "The census listed these as 'work not done rather than a measured negative', and running traversal was the obvious response. It was unnecessary -- the disposing evidence (null declared version, empty library_referenced_files) was already in the candidate rows. Check the mined fields before spending traversal time on large repositories."
+}

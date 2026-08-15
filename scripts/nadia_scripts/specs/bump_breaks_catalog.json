@@ -602,12 +602,12 @@
      "behavioural": 0,
      "compile_break": 0,
      "verified": 0,
-     "excluded": 0
+     "excluded": 1
     },
     "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
-    "assessed_on": null,
+    "assessed_on": "2026-08-16",
     "reason": null,
-    "unexploited_leads": "6 production adaptation(s) never checked for a boundary crossing",
+    "unexploited_leads": "none — all 6 production adaptations disposed 2026-08-16 without traversal: 3 declare 5.2.5 at both commit and parent (born past the 5.0.0 boundary), 3 have no declaration, and library_referenced_files is empty on all 6.",
     "consolidated_from": null,
     "unexploited_leads_method": "Traversal-confirmed rows in output/02_mine/<break>_candidates.jsonl cross-referenced against every repo named in verified_cases/ (including excluded/). A candidate with a case file of ANY status is dispositioned, not open. Recompute rather than trusting this string — the first version of this field omitted the cross-reference and reported an already-excluded candidate (apache/rocketmq-connect) as an open fastjson lead."
    }
@@ -955,12 +955,12 @@
      "behavioural": null,
      "compile_break": null,
      "verified": 0,
-     "excluded": 0
+     "excluded": 1
     },
     "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
-    "assessed_on": null,
+    "assessed_on": "2026-08-16",
     "reason": null,
-    "unexploited_leads": "10 production adaptation(s) never checked for a boundary crossing",
+    "unexploited_leads": "none — all 10 production adaptations disposed 2026-08-16 without traversal: json-smart is never declared directly (version_at_commit null on every row, it arrives via nimbus-jose-jwt), and library_referenced_files is empty on every row. Traversal ran on 3 and returned unresolved/transitive; the rest timed out on large monorepos and could not have changed the outcome.",
     "consolidated_from": null,
     "unexploited_leads_method": "Traversal-confirmed rows in output/02_mine/<break>_candidates.jsonl cross-referenced against every repo named in verified_cases/ (including excluded/). A candidate with a case file of ANY status is dispositioned, not open. Recompute rather than trusting this string — the first version of this field omitted the cross-reference and reported an already-excluded candidate (apache/rocketmq-connect) as an open fastjson lead."
    }

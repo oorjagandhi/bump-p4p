@@ -1,0 +1,19 @@
+{
+ "case_id": "poi-scratchpad-unchecked-corpus",
+ "status": "excluded__born_past_boundary_or_not_declared__and_no_library_code_changed",
+ "case_type": "corpus_disposition__all_remaining_production_adaptations_for_one_break",
+ "assessed_date": "2026-08-16",
+ "assessed_by": "mined-row fields; traversal not required",
+ "discovery": {
+  "break_id": "poi-scratchpad-4.1.2-to-5.x",
+  "found_by": "the 6 production adaptations the census listed under 'Unchecked leads (traversal NEVER run)'"
+ },
+ "scope": "All 6 production-adaptation rows: jadhavspeaks/file_compare_diffrent_ext, ProgrammeVitam/sedatools, morpheus45/gsystem, tpunder/fm-flatfile, MarDream/demand_system x2. Five distinct projects.",
+ "why_excluded": {
+  "finding": "Split between born-past-boundary and not-declared, and all six additionally change no library-referencing code.",
+  "born_past_boundary": "jadhavspeaks/file_compare_diffrent_ext and both MarDream/demand_system rows declare poi-scratchpad 5.2.5 at BOTH the commit and its parent. The boundary is 5.0.0, so these projects were already well past it and never crossed. A restrictive default met by a project born above it is a latent bug, not a break it lived through.",
+  "not_declared": "ProgrammeVitam/sedatools, morpheus45/gsystem and tpunder/fm-flatfile have version_at_commit and version_at_parent None -- no direct declaration, so out of scope under the direct-only rule.",
+  "no_library_code_changed": "library_referenced_files is EMPTY for all six.",
+  "note_on_jadhavspeaks": "This repo is already the subject of verified_cases/.../poi-jadhavspeaks.json for the poi (not poi-scratchpad) break. The poi-scratchpad row is a separate artifact of the same project and does not add a case."
+ }
+}

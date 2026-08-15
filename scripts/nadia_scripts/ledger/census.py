@@ -319,13 +319,18 @@ def main():
     leads = [r for r in table if r["prod"] and r["traversal"] is None]
     if leads:
         print("## Unchecked leads (production adaptations, traversal NEVER run)\n")
-        print("These are the only cells in the table that represent work not done "
-              "rather than a measured negative. Each is a corpus where production "
-              "adaptations were found and then never checked for a boundary crossing.\n")
-        print("| break | production adaptations awaiting a traversal check |")
-        print("|---|---:|")
+        print("A corpus where production adaptations were found and never checked for a "
+              "boundary crossing. Traversal not having run does NOT by itself mean the rows "
+              "are open: a candidate can be disposed on other necessary conditions -- no direct "
+              "declaration, born past the boundary, no changed file referencing the library -- "
+              "in which case no traversal verdict could change the outcome. The `disposed` "
+              "column says whether a case file covers the corpus.\n")
+        print("| break | production adaptations awaiting a traversal check | disposed elsewhere? |")
+        print("|---|---:|---|")
         for r in sorted(leads, key=lambda x: -x["prod"]):
-            print(f"| `{r['break']}` | **{r['prod']}** |")
+            mark = ("**yes** -- see verified_cases/excluded/" if (excluded.get(r["break"]))
+                    else "no -- genuinely open")
+            print(f"| `{r['break']}` | **{r['prod']}** | {mark} |")
         print()
 
     # ── decidability ────────────────────────────────────────────────────────────
