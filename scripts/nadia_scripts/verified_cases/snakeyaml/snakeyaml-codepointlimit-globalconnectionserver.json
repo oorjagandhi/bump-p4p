@@ -1,0 +1,104 @@
+{
+ "case_id": "snakeyaml-codepointlimit-globalconnectionserver",
+ "links": {
+  "repo": "https://github.com/Brokkonaut/GlobalConnectionServer",
+  "adaptation_commit": "https://github.com/Brokkonaut/GlobalConnectionServer/commit/441ddf356349",
+  "parent_commit": "https://github.com/Brokkonaut/GlobalConnectionServer/commit/8d1c5b96dd796b2a9306968af9a9d521d06cbfdb",
+  "bump_commit": "https://github.com/Brokkonaut/GlobalConnectionServer/commit/df6ec3e2adfa"
+ },
+ "status": "verified_bbc",
+ "case_type": "external_production_adaptation",
+ "verified_date": "2026-08-15",
+ "verified_by": "3-state differential run end-to-end by the verification agent, Maven, JDK 17. THE FIRST FULLY HEADLESS CASE: the driver was written by SEAM_A through agent/seams.py (Path A) with no human or in-conversation authoring, and the deterministic stages were driven by agent/run_worklist.py. Verified twice on independent Path A runs.",
+ "discovery": {
+  "break_id": "snakeyaml-1.31-to-1.32-codepointlimit",
+  "worklist": "agent/worklist_snakeyaml-1.31-to-1.32-codepointlimit.json",
+  "discovery_method": "GitHub code search for setCodePointLimit, dated and screened, then traversal-confirmed against the 1.32 boundary."
+ },
+ "library": {
+  "group_id": "org.yaml",
+  "artifact_id": "snakeyaml",
+  "at_version": "2.2",
+  "baseline_used": "1.30",
+  "_baseline_note": "1.30 is the version this client was actually on before it crossed the boundary, read from its own recorded crossing rather than from the catalog's generic runnable_baseline.",
+  "breaking_boundary": "1.32 (3 MiB / 3145728 code-point ceiling imposed by default)",
+  "boundary_type": "minor",
+  "dependency_scope": "compile, declared directly via the <snakeyaml.version> property in pom.xml"
+ },
+ "in_repo_version_transition": {
+  "crossed_boundary": true,
+  "mechanism": "direct bump of <snakeyaml.version> in pom.xml",
+  "bump_commit": "df6ec3e2adfa",
+  "bump_transition": "1.30 -> 1.32",
+  "bump_date": "2022-09-22",
+  "distance_to_adaptation": "just under a year (adaptation 2023-09-20)",
+  "shape": "CROSSING_THEN_LATER_ADAPTATION",
+  "traversal_confirmed_by_pipeline": true,
+  "_note": "The parent commit already declares 1.32, so the client had been living with the ceiling for a year before the fix. State 2 runs exactly that configuration: their pre-adaptation code on the version they were actually shipping."
+ },
+ "bump_provenance": "EXTERNAL_CHANGELOG_NOT_BUMP (snakeyaml-1.31-to-1.32-codepointlimit)",
+ "bump_source": "snakeyaml 1.32; DoS hardening (CVE-2022-38749..38752 family).",
+ "behavioral_break": {
+  "mechanism": "snakeyaml 1.32+ caps incoming documents at 3 MiB (3145728 code points) BY DEFAULT. GlobalConnectionServer read plugin descriptors as `new Yaml(new SafeConstructor()).load(...)` — no LoaderOptions — so the ceiling applied the moment the version crossed 1.32, and any plugin.yml above 3 MiB stopped loading.",
+  "affected_class": "de.cubeside.globalserver.plugin.PluginDescription (production)",
+  "observed_exception": "de.cubeside.globalserver.plugin.PluginDescriptionException: Could not load the plugin.yml in the plugin jar ...: The incoming YAML document exceeds the limit: 3145728 code points. — caused by org.yaml.snakeyaml.error.YAMLException with the same message",
+  "category": "runtime_exception",
+  "compiles_unchanged": true,
+  "blast_radius": "Any plugin whose plugin.yml exceeds 3 MiB. PluginDescription is the single entry point for every plugin the server loads, so a single oversized descriptor breaks plugin loading rather than one feature."
+ },
+ "adaptation": {
+  "repo": "Brokkonaut/GlobalConnectionServer",
+  "repo_note": "A Minecraft-ecosystem connection server with a plugin system; single-module Maven.",
+  "commit": "441ddf356349",
+  "parent": "8d1c5b96dd796b2a9306968af9a9d521d06cbfdb",
+  "date": "2023-09-20",
+  "message": "Update dependencies",
+  "production_files": [
+   "src/main/java/de/cubeside/globalserver/plugin/PluginDescription.java",
+   "src/main/java/de/cubeside/globalserver/GlobalServer.java"
+  ],
+  "diff": "- root = new Yaml(new SafeConstructor()).load(...)\n+ LoaderOptions loaderOptions = new LoaderOptions();\n+ loaderOptions.setCodePointLimit(Integer.MAX_VALUE);\n+ loaderOptions.setNestingDepthLimit(Integer.MAX_VALUE);\n+ root = new Yaml(new SafeConstructor(loaderOptions)).load(...)",
+  "shape": "RAISE_THE_LIMIT — the default production path is restored for every caller with no configuration required, in both PluginDescription and GlobalServer.",
+  "_commit_message_note": "The message is a bare 'Update dependencies' and the commit also bumps log4j and jline. The snakeyaml change is not incidental to it though: the same commit adds LoaderOptions to BOTH yaml call sites and raises two separate limits, which is a deliberate response to the resource caps rather than a mechanical version bump."
+ },
+ "verification": {
+  "method": "3-state differential, one driver source compiled and run unchanged in all three states",
+  "driver": "../drivers/GlobalConnectionServer_PathA_BbcTest.java",
+  "driver_summary": "Builds a real jar containing a plugin.yml of just over 4 MiB (valid name/main/version fields plus one long scalar) and calls the production constructor `new PluginDescription(jar)`. A jar rather than a string fixture because the production path reads from a JarFile entry and nothing else.",
+  "driver_provenance": "Written by SEAM_A headlessly. It found this entry point from the adaptation diff alone — and independently arrived at the same design as the hand-authored Path B driver in this directory (GlobalConnectionServer_BbcTest.java), which was written earlier without either seeing the other.",
+  "jdk": "17",
+  "states": [
+   {"name": "1_baseline", "config": "parent code, snakeyaml 1.30", "result": "PASS", "detail": "Tests run: 1, Failures: 0, Errors: 0"},
+   {"name": "2_new_lib_old_code", "config": "parent code, snakeyaml 1.32", "result": "FAIL", "detail": "Tests run: 1, Errors: 1 — PluginDescriptionException caused by YAMLException: The incoming YAML document exceeds the limit: 3145728 code points."},
+   {"name": "3_adapted", "config": "adaptation commit, snakeyaml 2.2", "result": "PASS", "detail": "Tests run: 1, Failures: 0, Errors: 0"}
+  ],
+  "oracle": "1 PASS / 2 FAIL with the catalogued signal / 3 PASS — satisfied",
+  "reproduced": "Twice, on independent Path A runs. The first needed one SEAM_B fixture revision; the second passed on SEAM_A's first attempt once the framework hint was fixed.",
+  "logs": "_runlogs/Brokkonaut_GlobalConnectionServer_{1_baseline,2_newlib_oldcode,3_adapted}.log",
+  "ledger_row": "output/_snakeyaml_differential.jsonl"
+ },
+ "_why_state_3_runs_at_2_2": "State 3 runs at snakeyaml 2.2, not at the 1.32 boundary, because THE ADAPTATION DOES NOT WORK AT 1.32. It sets the limit on a LoaderOptions handed to `new Yaml(new SafeConstructor(options))`, and at 1.32 that Yaml constructor builds its own default LoaderOptions for the reader — so the constructor's options are ignored and a 4 MiB document still throws. The same code works from 2.x, which is what this commit actually bumped to. Running state 3 at the boundary would measure an adaptation this client never shipped; running it at 2.2 measures the one they did. Confirmed empirically: an earlier run with state 3 pinned to 1.32 failed with the identical signal.",
+ "harness_interventions": [
+  {
+   "what": "A test-scoped junit:junit:4.13.2 dependency was injected into the POM, identically at all three states.",
+   "why": "This client declares no test framework at all — log4j, jline, semver4j, mariadb and snakeyaml, and nothing else — so surefire would run nothing and a differential that runs nothing proves nothing. JUnit 4 rather than Jupiter because Maven's super-POM binds surefire 2.12.4, which cannot run Jupiter; pinning a newer surefire is a much larger change to the client's build than adding one test-scoped jar.",
+   "affects_result": "no — version-neutral with respect to snakeyaml, applied identically to every state"
+  },
+  {
+   "what": "bbc/BbcTest.java was written into src/test/java as an untracked file.",
+   "why": "SEAM_A: the driver has to exist somewhere, and untracked means it survives the checkouts between states.",
+   "affects_result": "no"
+  },
+  {
+   "what": "Maven ran under agent/settings-bbc.xml (Central-only mirror).",
+   "why": "The user-level settings mirror every repository through Central, which breaks any client declaring its own. Not load-bearing for this client, but applied uniformly across the corpus.",
+   "affects_result": "no"
+  }
+ ],
+ "agent_provenance": {
+  "seam_a": "PATH A — headless, agent/seams.py, model claude-opus-4-8, credentials resolved from the machine's `ant auth login` profile. No driver was authored by hand for this case.",
+  "seam_b": "Exercised on the first run: state 2 did not trip, SEAM_B read the build log and revised the fixture, and the retry tripped with the catalogued signal. Not needed on the second run.",
+  "deterministic_stages": "agent/run_worklist.py + agent/orchestrator.py — clone, version-knob probe (7 properties measured, not assumed), three states, oracle",
+  "_significance": "Path A was proven on a re-verification of an existing case in July 2026 (xstream/amirsnw). This is the first NEW case it produced: a client the agent had not been told the answer for."
+ }
+}

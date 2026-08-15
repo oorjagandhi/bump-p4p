@@ -270,8 +270,12 @@ def run_one(item: dict, args, ledger: str) -> dict:
             # come from the zero-arg anthropic.Anthropic() client, which resolves an
             # `ant auth login` profile as readily as ANTHROPIC_API_KEY; see seams.py.
             import seams
-            print(f"  [SEAM_A] generating driver via {seams.MODEL}", flush=True)
-            driver_src = seams.generate_test(brk, cand, repo_dir)
+            # --add-test-dep means WE put the framework on the classpath, so we name it;
+            # otherwise seams detects what the client declares.
+            fw = "junit4" if args.add_test_dep else None
+            print(f"  [SEAM_A] generating driver via {seams.MODEL}"
+                  f"{' (framework: ' + fw + ', harness-supplied)' if fw else ''}", flush=True)
+            driver_src = seams.generate_test(brk, cand, repo_dir, framework=fw)
             row["seam_a"] = f"path_a ({seams.MODEL})"
             drivers_dir = os.path.join(O.NADIA, "verified_cases", "drivers")
             os.makedirs(drivers_dir, exist_ok=True)
@@ -280,6 +284,7 @@ def run_one(item: dict, args, ledger: str) -> dict:
             with open(gen_path, "w", encoding="utf-8", newline="\n") as f:
                 f.write(driver_src)
             row["driver"] = os.path.relpath(gen_path, O.NADIA)
+            args._driver_path = gen_path       # so SEAM_B revisions overwrite the same file
             print(f"  [SEAM_A] {len(driver_src)} chars -> {row['driver']}", flush=True)
         else:
             driver_src = open(args.driver, encoding="utf-8").read()
@@ -364,6 +369,13 @@ def differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pi
             print("  [SEAM_B] gave up: not standalone-reproducible", flush=True)
             break
         driver_src = new_src
+        # Persist the REVISION, not just SEAM_A's first draft. The driver is the evidence for
+        # a verified case, and until this line the saved copy was whatever SEAM_A produced
+        # before SEAM_B corrected it — so a green oracle pointed at a file that had never
+        # passed. The working copy lives in a temp clone that is deleted on the way out.
+        if args.seam_a and getattr(args, "_driver_path", None):
+            with open(args._driver_path, "w", encoding="utf-8", newline="\n") as f:
+                f.write(driver_src)
         s2 = state("2_newlib_oldcode", cand.parent_sha, to_version)
     if attempt:
         # A revised fixture is a different test; state 3 must be re-run against the same source

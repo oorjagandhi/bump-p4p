@@ -56,21 +56,47 @@ def _ask(system: str, user: str, max_tokens: int = 32000) -> str:
     return "".join(b.text for b in resp.content if b.type == "text")
 
 
-def _strip_fences(s: str) -> str:
-    """Unwrap a ```java fence. Tolerates a missing CLOSING fence.
+def _looks_like_java(s: str) -> bool:
+    """Is this a Java compilation unit, as opposed to prose or a quoted build log?"""
+    return bool(re.search(r"\b(class|interface|enum|record)\s+\w", s)) and "package" in s
 
-    The old pattern required both fences, so an unterminated one fell through to `else s`
-    and the literal ```java line was written into the .java file — the second half of the
-    truncation failure above. Now the opening fence is stripped whether or not it closes,
-    and a leading fence that survives is treated as a bug rather than as source.
+
+def _strip_fences(s: str) -> str:
+    """Return the fenced block that is actually the driver source.
+
+    Taking the FIRST fence is wrong, and SEAM_B is where that shows. Asked to diagnose a
+    non-trip, the model reasonably quotes the failing build output before giving the
+    corrected fixture — so the first fenced block is a log, not source. On
+    Brokkonaut/GlobalConnectionServer that quote was written to BbcTest.java verbatim,
+    producing a four-line file whose contents were compiler errors. It then failed to
+    compile with those same errors, which fed the next SEAM_B attempt: a self-reinforcing
+    loop that burns every retry without ever testing the client.
+
+    So: consider every fenced block (plus the unfenced remainder, for replies that give
+    bare source), keep the ones that parse as a compilation unit, and prefer the LAST —
+    the model's final answer follows its explanation. Refuse rather than write anything
+    that is not Java: log text on disk as a .java file is indistinguishable, downstream,
+    from a client that cannot build.
     """
-    m = re.search(r"```(?:java)?\s*(.*?)```", s, re.S)      # fenced, properly closed
-    if not m:
-        m = re.search(r"```(?:java)?\s*(.*)\Z", s, re.S)    # fence opened, never closed
-    out = (m.group(1) if m else s).strip() + "\n"
-    if out.lstrip().startswith("```"):
-        raise RuntimeError("SEAM output still starts with a code fence after stripping")
-    return out
+    blocks = re.findall(r"```(?:java)?\s*(.*?)```", s, re.S)
+    unterminated = re.search(r"```(?:java)?\s*([^`]*)\Z", s, re.S)
+    if unterminated:
+        blocks.append(unterminated.group(1))
+
+    # Fenced blocks first, last one wins. Only if none of them is a compilation unit do we
+    # fall back to the whole reply, for models that answer with bare source. Trying the
+    # whole reply first would always win — it contains the fenced source as a substring —
+    # and would write the surrounding prose into the .java file.
+    for block in reversed(blocks):
+        candidate = block.strip()
+        if _looks_like_java(candidate):
+            return candidate + "\n"
+    if not blocks and _looks_like_java(s):
+        return s.strip() + "\n"
+
+    raise RuntimeError(
+        "SEAM output contains no Java compilation unit — refusing to write it as a "
+        f"driver. First 200 chars: {s.strip()[:200]!r}")
 
 
 def _load(name: str) -> str:
@@ -103,21 +129,31 @@ def _detect_framework(repo_dir: str) -> str:
     return "jupiter (JUnit5)"   # modern-Maven default when neither signal is present
 
 
-def _gather(cand, repo_dir: str) -> dict:
+def _gather(cand, repo_dir: str, framework: str | None = None) -> dict:
     diff = _git(["show", cand.adapt_sha, "--", *(cand.production_files or [])], repo_dir)
     prod = ""
     for f in (cand.production_files or [])[:2]:
         p = os.path.join(repo_dir, f)
         if os.path.exists(p):
             prod += f"// {f}\n" + open(p, encoding="utf-8", errors="ignore").read()[:4000] + "\n\n"
-    return {"diff": diff[:6000], "prod": prod[:6000], "framework": _detect_framework(repo_dir)}
+    # An explicit `framework` overrides detection. _detect_framework reads what the CLIENT
+    # declares, which is the wrong answer when the harness supplies the framework itself:
+    # Brokkonaut/GlobalConnectionServer declares no test dependency at all, so detection
+    # fell through to its modern-Maven default of Jupiter while run_worklist's
+    # --add-test-dep had injected JUnit 4 (Maven's default surefire cannot run Jupiter).
+    # SEAM_A then wrote `import org.junit.jupiter.api.Test` against a JUnit 4 classpath and
+    # nothing compiled. Whoever puts the framework on the classpath names it.
+    return {"diff": diff[:6000], "prod": prod[:6000],
+            "framework": framework or _detect_framework(repo_dir)}
 
 
 # ---- the seams ------------------------------------------------------------
 
-def generate_test(brk: dict, cand, repo_dir: str) -> str:
-    """SEAM_A: return compilable JUnit source for bbc.BbcTest driving the real production path."""
-    inp = _gather(cand, repo_dir)
+def generate_test(brk: dict, cand, repo_dir: str, framework: str | None = None) -> str:
+    """SEAM_A: return compilable JUnit source for bbc.BbcTest driving the real production path.
+
+    Pass `framework` when the harness, not the client, supplies the test framework."""
+    inp = _gather(cand, repo_dir, framework)
     lib, v = brk["library"], brk.get("verify", {})
     user = (
         f"BREAK: {lib['group_id']}:{lib['artifact_id']} "
