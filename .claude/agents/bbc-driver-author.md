@@ -138,6 +138,7 @@ Maven stopped and fix that first.
 | `run == 0`, "forked VM terminated without properly saying goodbye" | `--add-opens` on JDK 8 | already gated; check the JDK is right for this client |
 | `run == 0`, compile errors citing `javax.xml.bind` | project predates JAXB removal | `--jdk 8` |
 | `run == 0`, an antrun/enforcer goal failed | **grep the POM for `<fail unless="env.` and for `RequireProperty`** | pass each with `--env K=V`; the messages usually name their own defaults |
+| `run == 0` but the driver COMPILED and no error is printed | **which surefire PROVIDER is active?** TestNG anywhere on the module's classpath makes surefire select the TestNG provider, which runs JUnit-3-style `junit.framework.TestCase` classes and *silently executes 0* JUnit-4-annotated ones | match the style the repo's OWN tests use (collectionspace's extend `junit.framework.TestCase`), or force the JUnit provider. The framework on the classpath is NOT the same question as the provider that will run it — rule 3 is necessary but not sufficient |
 | `run == 0`, needs a specific install (Oracle Home, WLST) | a genuinely absent dependency | report as an environment blocker and stop — do not fake it |
 | Build system is Gradle | `build.gradle`/`.kts` and no `pom.xml` | out of scope for this Maven runner; report and stop |
 
