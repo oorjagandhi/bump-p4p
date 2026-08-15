@@ -1,0 +1,152 @@
+[
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "artshishkin/art-kargopolov-cqrs-saga-axon-microservices",
+  "adapt_sha": "b76d747f8d278fbee27e6e4b82355f5e660bf5f8",
+  "parent_sha": "2ccdee8ed0074d6a1bb51dea599903f6779165ef",
+  "build_system": "maven",
+  "module": "core",
+  "production_files": [
+   "core/src/main/java/net/shyshkin/study/cqrs/estore/core/config/XStreamConfig.java"
+  ],
+  "message": "",
+  "crossing": {
+   "boundary": "1.4.18",
+   "from": "1.4.17",
+   "to": "1.4.19",
+   "sha": "3abca3fc6a9f7760222756543fb57c643d30a3c0"
+  },
+  "status": "reverify",
+  "known_outcome": "verified_bbc",
+  "case_file": "verified_cases\\xstream\\xstream-axon-artshishkin.json"
+ },
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "einsteinarbert/axon-saga-example",
+  "adapt_sha": "dddd794b5d0fdbf502802e9fcce664442292a408",
+  "parent_sha": "fad9b9423e7f9c5e8eb0be6931017851d4a532cf",
+  "build_system": "maven",
+  "module": "order-service",
+  "production_files": [
+   "order-service/src/main/java/com/progressivecoder/ordermanagement/orderservice/config/XStreamAutoConfiguration.java"
+  ],
+  "message": "",
+  "crossing": {
+   "boundary": "1.4.18",
+   "from": "1.4.17",
+   "to": "1.4.19",
+   "sha": "fad9b9423e7f9c5e8eb0be6931017851d4a532cf ('upgrade version of spring boot', 2022-10-25)"
+  },
+  "status": "reverify",
+  "known_outcome": "verified_bbc",
+  "case_file": "verified_cases\\xstream\\xstream-axon-saga-einsteinarbert.json"
+ },
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "collectionspace/services",
+  "adapt_sha": "6593d7fb",
+  "parent_sha": "844efa816e9b",
+  "build_system": "maven",
+  "module": "services/id/service",
+  "production_files": [
+   "services/id/service/src/main/java/org/collectionspace/services/id/IDGeneratorSerializer.java"
+  ],
+  "message": "Bump xstream from 1.4.10 to 1.4.19 in /services/id/service",
+  "crossing": {
+   "boundary": "1.4.18",
+   "from": "1.4.10",
+   "to": "1.4.19",
+   "sha": null
+  },
+  "status": "reverify",
+  "known_outcome": "verified_bbc",
+  "case_file": "verified_cases\\xstream\\xstream-collectionspace-services.json"
+ },
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "marklogic/marklogic-contentpump",
+  "adapt_sha": "3736c971",
+  "parent_sha": "2b9ebbd57305",
+  "build_system": "maven",
+  "module": "",
+  "production_files": [
+   "src/main/java/com/marklogic/contentpump/DocumentMetadata.java"
+  ],
+  "message": "Upgrading xstream version & whitelisting classes for deserialization",
+  "crossing": {
+   "boundary": "1.4.18",
+   "from": "1.4.16",
+   "to": "1.4.18",
+   "sha": null
+  },
+  "status": "reverify",
+  "known_outcome": "verified_bbc",
+  "case_file": "verified_cases\\xstream\\xstream-marklogic-contentpump.json"
+ },
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "openmrs/openmrs-core",
+  "adapt_sha": "f8232475",
+  "parent_sha": "f4d8a38bc920",
+  "build_system": "maven",
+  "module": "api",
+  "production_files": [
+   "api/src/main/java/org/openmrs/serialization/SimpleXStreamSerializer.java",
+   "api/src/main/java/org/openmrs/api/impl/AdministrationServiceImpl.java",
+   "api/src/main/java/org/openmrs/api/AdministrationService.java"
+  ],
+  "message": "TRUNK-6188 Upgrade xstream and migrate to whitelisting (#4377)",
+  "crossing": {
+   "boundary": "1.4.18",
+   "from": "1.4.17",
+   "to": "1.4.20",
+   "sha": null
+  },
+  "status": "reverify",
+  "known_outcome": "verified_bbc",
+  "case_file": "verified_cases\\xstream\\xstream-openmrs-core.json"
+ },
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "The-Ant-Forge/TVRenamer",
+  "adapt_sha": "b236f68e",
+  "parent_sha": "16803ddb",
+  "build_system": "maven",
+  "module": "",
+  "production_files": [
+   "src/main/java/org/tvrenamer/controller/UserPreferencesPersistence.java"
+  ],
+  "message": "",
+  "crossing": {
+   "boundary": "1.4.18",
+   "from": "1.4.9",
+   "to": "1.4.20",
+   "sha": "fa98c37e"
+  },
+  "status": "reverify",
+  "known_outcome": "verified_bbc",
+  "case_file": "verified_cases\\xstream\\xstream-tvrenamer.json"
+ },
+ {
+  "break_id": "xstream-1.4.17-to-1.4.19-forbiddenclass",
+  "repo": "voyanttools/trombone",
+  "adapt_sha": "c84fc06c",
+  "parent_sha": "d03c123773d1",
+  "build_system": "maven",
+  "module": "",
+  "production_files": [
+   "src/main/java/org/voyanttools/trombone/util/FlexibleParameters.java",
+   "src/main/java/org/voyanttools/trombone/tool/util/ToolSerializer.java"
+  ],
+  "message": "xstream: add whitelist security",
+  "crossing": {
+   "boundary": "1.4.18",
+   "from": "1.4.16",
+   "to": "1.4.18",
+   "sha": null
+  },
+  "status": "reverify",
+  "known_outcome": "verified_bbc",
+  "case_file": "verified_cases\\xstream\\xstream-voyanttools-trombone.json"
+ }
+]
