@@ -189,7 +189,26 @@ Each folder has its own `README.md` explaining that stage in plain terms.
 | `scratchpad/` | the per-case verification harnesses — **not disposable**, see its README |
 | `_runlogs/` | run logs (gitignored) |
 
-### Before picking a break to mine, check three things
+### Before picking a break to mine, check its `assessment` first
+
+Every entry in `specs/bump_breaks_catalog.json` carries one `assessment` block. **Read it
+before anything else** — it says whether the break has already been mined and what happened.
+
+| `assessment.status` | meaning |
+|---|---|
+| `yielded_cases` | produced verified cases; see `measured.verified` |
+| `dead_screened_out` | mined and diagnosed as unable to yield — `reason` says why |
+| `measured_zero` | mined, produced nothing, and **nobody recorded why** |
+| `not_mined` | never run |
+
+`assessment.unexploited_leads` is the only field that means *work remaining* rather than a
+finding. Four breaks currently have one.
+
+This field exists because the same information used to live under four different key names
+(`yield_status`, `_outcome_<date>`, `rejection_finding`, `verify_status`), and checking only one
+of them caused a break to be mined twice.
+
+### Then check three things
 
 Each was paid for with a wasted mining run, and each is checkable in minutes:
 

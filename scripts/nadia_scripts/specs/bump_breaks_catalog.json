@@ -47,6 +47,23 @@
     "java": 11,
     "jvm_add_opens": [],
     "signal_grep": "IllegalArgumentException.*is not a file|requireFile"
+   },
+   "assessment": {
+    "status": "measured_zero",
+    "measured": {
+     "rows_examined": 50,
+     "production": 0,
+     "traversal_confirmed": null,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -115,6 +132,23 @@
     "java": 11,
     "jvm_add_opens": [],
     "signal_grep": "AssertionError|WrongTypeOfReturnValue"
+   },
+   "assessment": {
+    "status": "measured_zero",
+    "measured": {
+     "rows_examined": 20,
+     "production": 0,
+     "traversal_confirmed": null,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -211,6 +245,23 @@
     "what_changed": "logback 1.4.0 moves to the SLF4J 2.x ServiceLoader binding and drops org.slf4j.impl.StaticLoggerBinder. A client still pinned to slf4j-api 1.7.x binds nothing: LoggerFactory silently falls back to a NOP logger, so logging output disappears rather than erroring. Where the old binder class is referenced directly, or a 1.7-era appender/config API is used, it fails harder.",
     "expected_signal_hint": "logging output silently becomes empty (NOP logger substituted), or NoClassDefFoundError/ClassNotFoundException on org.slf4j.impl.StaticLoggerBinder, or an SLF4J binding warning on stderr instead of the expected log record",
     "signal_pattern": "StaticLoggerBinder|NOPLogger|NoClassDefFoundError|Failed to load class|SLF4J"
+   },
+   "assessment": {
+    "status": "not_mined",
+    "measured": {
+     "rows_examined": 0,
+     "production": null,
+     "traversal_confirmed": null,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -289,6 +340,23 @@
     "java": 11,
     "jvm_add_opens": [],
     "signal_grep": "AssertionError"
+   },
+   "assessment": {
+    "status": "measured_zero",
+    "measured": {
+     "rows_examined": 20,
+     "production": 0,
+     "traversal_confirmed": null,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -351,6 +419,23 @@
     "java": 11,
     "jvm_add_opens": [],
     "signal_grep": "ClassNotFoundException: [A-Za-z.]+"
+   },
+   "assessment": {
+    "status": "measured_zero",
+    "measured": {
+     "rows_examined": 6,
+     "production": 6,
+     "traversal_confirmed": 0,
+     "behavioural": 0,
+     "compile_break": 0,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -417,6 +502,23 @@
     "jvm_add_opens": [],
     "signal_grep": "ClassNotFoundException: [A-Za-z.]+|RecordFormatException",
     "note": "Break is parser-internal/classpath (AgileEncryptionInfoBuilder) — differential likely needs the real repo build, not a mimic."
+   },
+   "assessment": {
+    "status": "measured_zero",
+    "measured": {
+     "rows_examined": 6,
+     "production": 6,
+     "traversal_confirmed": 0,
+     "behavioural": 0,
+     "compile_break": 0,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -484,6 +586,23 @@
     "java": 11,
     "jvm_add_opens": [],
     "signal_grep": "ClassNotFoundException: [A-Za-z.]+"
+   },
+   "assessment": {
+    "status": "measured_zero",
+    "measured": {
+     "rows_examined": 6,
+     "production": 6,
+     "traversal_confirmed": null,
+     "behavioural": 0,
+     "compile_break": 0,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": "6 production adaptation(s) awaiting a traversal check",
+    "consolidated_from": null
    }
   },
   {
@@ -530,6 +649,23 @@
     "java": 11,
     "jvm_add_opens": [],
     "signal_grep": "ComparisonFailure|AssertionError"
+   },
+   "assessment": {
+    "status": "measured_zero",
+    "measured": {
+     "rows_examined": 20,
+     "production": 0,
+     "traversal_confirmed": null,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -609,6 +745,23 @@
     "what_changed": "jsoup 1.15.x changed HTML output and text extraction behaviour: pretty-print indentation and whitespace normalisation were reworked, text-node trimming around inline/block boundaries changed, and Safelist/cleaning output shifted accordingly. Client code compiles unchanged; the break shows up as a different output string, not an exception. Adaptations typically switch to wholeText(), set outputSettings().prettyPrint(false) or indentAmount/maxPaddingWidth, or update expected strings.",
     "expected_signal_hint": "an assertion failure (AssertionError / ComparisonFailure) on the exact HTML or extracted-text string produced by the client; whitespace, newlines or indentation differ; no exception is thrown",
     "signal_pattern": "ComparisonFailure|AssertionError|AssertionFailedError|expected:.*but was:"
+   },
+   "assessment": {
+    "status": "not_mined",
+    "measured": {
+     "rows_examined": 0,
+     "production": null,
+     "traversal_confirmed": null,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -701,6 +854,23 @@
     "what_changed": "XStream changed its security model from a blacklist (deny a few known-dangerous types, allow everything else) to a whitelist (allow only a small set of built-in types, deny everything else). Client code that unmarshals its own domain types without first calling allowTypes / allowTypesByWildcard / addPermission still compiles and still marshals correctly, but now throws at unmarshal time. Marshalling (object -> XML) is unaffected; the break is on the read path.",
     "expected_signal_hint": "com.thoughtworks.xstream.security.ForbiddenClassException (wrapped in a ConversionException / CannotResolveClassException) raised from fromXML/unmarshal on a client domain type",
     "signal_pattern": "ForbiddenClassException|NoTypePermission|security framework of XStream not initialized|no security framework configured"
+   },
+   "assessment": {
+    "status": "yielded_cases",
+    "measured": {
+     "rows_examined": 9,
+     "production": 9,
+     "traversal_confirmed": 4,
+     "behavioural": 8,
+     "compile_break": 0,
+     "verified": 7,
+     "excluded": 4
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -765,6 +935,23 @@
     "java": 11,
     "signal_grep": "non natural depths|ParseException",
     "note": "NOT yet verified. Break is clean+deterministic (deeply-nested JSON). Adaptation is likely config/depth or input restructuring, so mining signature is weak; good agent target to attempt."
+   },
+   "assessment": {
+    "status": "measured_zero",
+    "measured": {
+     "rows_examined": 200,
+     "production": 10,
+     "traversal_confirmed": null,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": "10 production adaptation(s) awaiting a traversal check",
+    "consolidated_from": null
    }
   },
   {
@@ -817,11 +1004,30 @@
     "signal_grep": "is not a string|JSONException",
     "note": "Boundary pinned EMPIRICALLY 2026-08-04 by running JSONObject(\"{\\\"id\\\":0}\").getString(\"id\") against real jars: 20090211 COERCES (returns \"0\"); 20131018 and every later release THROW. The boundary is 20131018, not the catalogued to_version 20230227. Only the exception WORDING changed after that: '... not a string.' (<=20190722) -> '... is not a string' (20200518+) -> '... is not a string (class java.lang.Integer : 0)' (20220924+). Previously this field read 'the release that added strict getString coercion', which has no digits, so _parse_ver returned None and _crosses_boundary was False for EVERY candidate — traversal could never confirm anything for this break, silently."
    },
-   "yield_status": {
-    "assessed": "2026-08-04",
-    "can_yield_witnessed_crossings": false,
+   "assessment": {
+    "status": "dead_screened_out",
+    "measured": {
+     "rows_examined": 50,
+     "production": 31,
+     "traversal_confirmed": 0,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": "2026-08-04",
     "reason": "The boundary is 20131018 (Oct 2013). Every one of the 31 mined production adaptations that has a resolved version is above it (earliest 20160810), so no mineable client can have crossed it — they are all born past the boundary. The adaptations are real responses to org.json's strictness, but not to a transition the client lived through.",
-    "implication": "A break is only mineable for witnessed crossings if the boundary is recent enough that clients still cross it. Check the boundary DATE before mining, not just its existence."
+    "unexploited_leads": null,
+    "consolidated_from": [
+     "yield_status"
+    ],
+    "detail": {
+     "assessed": "2026-08-04",
+     "can_yield_witnessed_crossings": false,
+     "reason": "The boundary is 20131018 (Oct 2013). Every one of the 31 mined production adaptations that has a resolved version is above it (earliest 20160810), so no mineable client can have crossed it — they are all born past the boundary. The adaptations are real responses to org.json's strictness, but not to a transition the client lived through.",
+     "implication": "A break is only mineable for witnessed crossings if the boundary is recent enough that clients still cross it. Check the boundary DATE before mining, not just its existence."
+    }
    }
   },
   {
@@ -870,19 +1076,27 @@
     "java": 11,
     "signal_grep": "SqlException|Syntax error|reserved keyword",
     "note": "NOT yet verified. Framework-mediated (Hibernate) + adaptation often config (JDBC URL MODE/NON_KEYWORDS) or schema; may need the app's DB. Medium priority."
+   },
+   "assessment": {
+    "status": "measured_zero",
+    "measured": {
+     "rows_examined": 2,
+     "production": 2,
+     "traversal_confirmed": 0,
+     "behavioural": 0,
+     "compile_break": 0,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
    "break_id": "snakeyaml-1.x-to-2.0-safeconstructor",
-   "yield_status": {
-    "assessed": "2026-08-07",
-    "can_yield_witnessed_crossings": true,
-    "can_yield_BBC_cases": "ALMOST NEVER — a COMPILE break masks the behavioural one for most clients",
-    "reason": "snakeyaml 2.0 removed EVERY constructor overload that does not take a LoaderOptions. Measured with javap: Constructor at 1.32 offers (), (LoaderOptions), (Class), (Class, LoaderOptions), (TypeDescription); at 2.0 ONLY the LoaderOptions-bearing variants survive. SafeConstructor at 1.32 offers () and (LoaderOptions); at 2.0 only (LoaderOptions). So any client that explicitly constructs a Constructor or SafeConstructor — the common 1.x idiom — fails at javac when it crosses to 2.x and NEVER REACHES the runtime tag-inspection change. The behavioural break is real but is shadowed by a syntactic one on the same classes.",
-    "who_can_still_witness_it": "Only clients that never construct a Constructor/SafeConstructor explicitly — i.e. plain `new Yaml()` — compile cleanly at 2.x and can therefore hit the deny-by-default tag behaviour at runtime. That is the snakeyaml-mongoose / KartaEmeraldCurrency idiom, and those clients were already on 2.x (born past the boundary), which is why they sit in excluded/mechanism_only/.",
-    "evidence": "All THREE traversal-confirmed candidates found across both mining axes are compile breaks: adityajoy-1902/Dashboard-V-2 (Constructor(Class) narrowed to Constructor(LoaderOptions)), snork-alt/beanszoo (no-arg super() on a Constructor subclass), GoogleCloudPlatform/appengine-plugins (no-arg SafeConstructor()). Three for three, three different removed overloads.",
-    "implication": "A break is only mineable for BBC cases if the same release does not also break compilation on the API the break lives behind. Check the boundary version for REMOVED/NARROWED signatures on the affected classes before mining — screen_compile_break.py answers this from jars alone, with no client build, and would have predicted this corpus's outcome before any of the mining was done."
-   },
    "provenance": "EXTERNAL_ADVISORY_NOT_BUMP",
    "_provenance_note": "This entry is NOT from BUMP. It was discovered by mine_advisories.py from the OSV Maven security-advisory feed (GHSA-mjmj-j48q-9wg2 / CVE-2022-1471), NOT from a BUMP TEST_FAILURE reproduction. There is no BUMP breaking_commit; 'clients' is empty until mining finds real client adaptations.",
    "library": {
@@ -907,7 +1121,6 @@
    },
    "spec": null,
    "verified_case": "../verified_cases/snakeyaml-mongoose.json",
-   "verify_status": "VERIFIED_BBC 2026-07-20 — 3-state differential green (1.33 PASS / 2.0 FAIL 'Global tag is not allowed' / adapted PASS) on scratchpad/snakeyaml-mongoose-harness. Real signature_confirmed clients: telaminai/mongoose-plugins@9e5916e1, Minekarta-Studio/KartaEmeraldCurrency@8bb46ffa, quarkusio/quarkus@06a8c629. Mining yield: 275 commits / 199 repos. FIRST external-advisory-mined break proven end-to-end.",
    "clients": [],
    "characterization": {
     "failing_tests": [],
@@ -970,13 +1183,42 @@
     "jvm_add_opens": [],
     "signal_grep": "Global tag is not allowed|ConstructorException|could not determine a constructor",
     "note": "VERIFIED — see verify_status (3-state differential green 2026-07-20). Clean default-deny (direct xstream analogue). Adaptation = explicit Constructor / LoaderOptions.setTagInspector. First EXTERNAL-mined break fed through the pipeline."
+   },
+   "assessment": {
+    "status": "dead_screened_out",
+    "measured": {
+     "rows_examined": 200,
+     "production": 37,
+     "traversal_confirmed": 7,
+     "behavioural": 35,
+     "compile_break": 9,
+     "verified": 0,
+     "excluded": 5
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": "2026-08-07",
+    "reason": "snakeyaml 2.0 removed EVERY constructor overload that does not take a LoaderOptions. Measured with javap: Constructor at 1.32 offers (), (LoaderOptions), (Class), (Class, LoaderOptions), (TypeDescription); at 2.0 ONLY the LoaderOptions-bearing variants survive. SafeConstructor at 1.32 offers () and (LoaderOptions); at 2.0 only (LoaderOptions). So any client that explicitly constructs a Constructor or SafeConstructor — the common 1.x idiom — fails at javac when it crosses to 2.x and NEVER REACHES the runtime tag-inspection change. The behavioural break is real but is shadowed by a syntactic one on the same classes.",
+    "unexploited_leads": "7 traversal-confirmed candidate(s) never taken to a differential",
+    "consolidated_from": [
+     "verify_status",
+     "yield_status"
+    ],
+    "detail": {
+     "assessed": "2026-08-07",
+     "can_yield_witnessed_crossings": true,
+     "can_yield_BBC_cases": "ALMOST NEVER — a COMPILE break masks the behavioural one for most clients",
+     "reason": "snakeyaml 2.0 removed EVERY constructor overload that does not take a LoaderOptions. Measured with javap: Constructor at 1.32 offers (), (LoaderOptions), (Class), (Class, LoaderOptions), (TypeDescription); at 2.0 ONLY the LoaderOptions-bearing variants survive. SafeConstructor at 1.32 offers () and (LoaderOptions); at 2.0 only (LoaderOptions). So any client that explicitly constructs a Constructor or SafeConstructor — the common 1.x idiom — fails at javac when it crosses to 2.x and NEVER REACHES the runtime tag-inspection change. The behavioural break is real but is shadowed by a syntactic one on the same classes.",
+     "who_can_still_witness_it": "Only clients that never construct a Constructor/SafeConstructor explicitly — i.e. plain `new Yaml()` — compile cleanly at 2.x and can therefore hit the deny-by-default tag behaviour at runtime. That is the snakeyaml-mongoose / KartaEmeraldCurrency idiom, and those clients were already on 2.x (born past the boundary), which is why they sit in excluded/mechanism_only/.",
+     "evidence": "All THREE traversal-confirmed candidates found across both mining axes are compile breaks: adityajoy-1902/Dashboard-V-2 (Constructor(Class) narrowed to Constructor(LoaderOptions)), snork-alt/beanszoo (no-arg super() on a Constructor subclass), GoogleCloudPlatform/appengine-plugins (no-arg SafeConstructor()). Three for three, three different removed overloads.",
+     "implication": "A break is only mineable for BBC cases if the same release does not also break compilation on the API the break lives behind. Check the boundary version for REMOVED/NARROWED signatures on the affected classes before mining — screen_compile_break.py answers this from jars alone, with no client build, and would have predicted this corpus's outcome before any of the mining was done.",
+     "verify_status": "VERIFIED_BBC 2026-07-20 — 3-state differential green (1.33 PASS / 2.0 FAIL 'Global tag is not allowed' / adapted PASS) on scratchpad/snakeyaml-mongoose-harness. Real signature_confirmed clients: telaminai/mongoose-plugins@9e5916e1, Minekarta-Studio/KartaEmeraldCurrency@8bb46ffa, quarkusio/quarkus@06a8c629. Mining yield: 275 commits / 199 repos. FIRST external-advisory-mined break proven end-to-end."
+    }
    }
   },
   {
    "break_id": "jackson-databind-default-typing-ptv",
    "provenance": "EXTERNAL_ADVISORY_NOT_BUMP",
    "status": "REJECTED_NOT_A_CLEAN_BEHAVIOURAL_BREAK",
-   "rejection_finding": "Investigated 2026-07-20 (mined 241 commits/208 repos; inspected real diffs incl. madgeek-arc/resource-catalogue@7f625e24, omprakash201194/kin-keeper@89eb519c). Jackson default-typing does NOT exhibit the 'same code, new version, now throws' property: (1) the permissive idiom enableDefaultTyping()/LaissezFaire stayed permissive through the deprecation window; (2) BasicPolymorphicTypeValidator/activateDefaultTyping appear overwhelmingly in Spring Redis-cache serialization config (greenfield — modern jackson requires a PTV there by design) and in iterative allowlist tuning, NOT version-upgrade break fixes; (3) remaining hits are CVE dependency-bumps (no code change) and Jackson 2->3 migrations. Sits on the BLOCKLIST/API-MIGRATION side of the deserialize tier, not the DEFAULT-DENY side. Kept as a documented NEGATIVE result. Do not re-attempt.",
    "_provenance_note": "NOT from BUMP. Discovered by mine_advisories.py from the OSV Maven advisory feed (jackson-databind CWE-502 default-typing / polymorphic-deserialization CVE series). No BUMP breaking_commit; clients empty until mining finds real adaptations.",
    "library": {
     "group_id": "com.fasterxml.jackson.core",
@@ -1026,6 +1268,28 @@
     "jvm_add_opens": [],
     "signal_grep": "InvalidDefinitionException|InvalidTypeIdException|PolymorphicTypeValidator|not a subtype",
     "note": "NOT yet verified. Watch the API-migration confound (enableDefaultTyping deprecated->removed). The clean behavioural face is: polymorphic JSON that 2.9 deserialized now denied by the default validator."
+   },
+   "assessment": {
+    "status": "dead_screened_out",
+    "measured": {
+     "rows_examined": null,
+     "production": null,
+     "traversal_confirmed": null,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": "Investigated 2026-07-20 (mined 241 commits/208 repos; inspected real diffs incl. madgeek-arc/resource-catalogue@7f625e24, omprakash201194/kin-keeper@89eb519c). Jackson default-typing does NOT exhibit the 'same code, new version, now throws' property: (1) the permissive idiom enableDefaultTyping()/LaissezFaire stayed permissive through the deprecation window; (2) BasicPolymorphicTypeValidator/activateDefaultTyping appear overwhelmingly in Spring Redis-cache serialization config (greenfield — modern jackson requires a PTV there by design) and in iterative allowlist tuning, NOT version-upgrade br",
+    "unexploited_leads": null,
+    "consolidated_from": [
+     "rejection_finding"
+    ],
+    "detail": {
+     "rejection_finding": "Investigated 2026-07-20 (mined 241 commits/208 repos; inspected real diffs incl. madgeek-arc/resource-catalogue@7f625e24, omprakash201194/kin-keeper@89eb519c). Jackson default-typing does NOT exhibit the 'same code, new version, now throws' property: (1) the permissive idiom enableDefaultTyping()/LaissezFaire stayed permissive through the deprecation window; (2) BasicPolymorphicTypeValidator/activateDefaultTyping appear overwhelmingly in Spring Redis-cache serialization config (greenfield — modern jackson requires a PTV there by design) and in iterative allowlist tuning, NOT version-upgrade break fixes; (3) remaining hits are CVE dependency-bumps (no code change) and Jackson 2->3 migrations. Sits on the BLOCKLIST/API-MIGRATION side of the deserialize tier, not the DEFAULT-DENY side. Kept as a documented NEGATIVE result. Do not re-attempt."
+    }
    }
   },
   {
@@ -1049,7 +1313,6 @@
    },
    "spec": null,
    "verified_case": "../verified_cases/jackson-streamreadconstraints.json",
-   "verify_status": "VERIFIED_BBC 2026-07-20 — 3-state differential green (2.14.2 PASS / 2.15.0 FAIL 'StreamConstraintsException: Depth (1001) exceeds the maximum allowed nesting depth (1000)' / adapted PASS) on scratchpad/jackson-streamconstraints-harness. Real signature_confirmed clients: dotCMS/core@b30dfa31, cibseven/cibseven@81a8d2b2, centiservice/mats3@79e05ec1, ESSI-Lab/DAB@9385e949. Mining yield: 184 commits / 159 repos.",
    "clients": [],
    "characterization": {
     "failing_tests": [],
@@ -1078,7 +1341,30 @@
     "signal_grep": "StreamConstraintsException|exceeds the maximum allowed",
     "note": "Clean same-code-now-throws limit break (json-smart max-depth analogue). Parent uses plain new ObjectMapper() (stable across 2.14/2.15); adapted uses the 2.15-only StreamReadConstraints API (separate compile profile)."
    },
-   "_outcome_2026_08_12": "SEARCHED, NOT MINED. The richest population any break has shown -- 99 commits on maxStringLength alone, with maxNestingDepth, maxNumberLength and maxNameLength still untouched -- and no usable candidate, for a reason that is a finding about the METHOD rather than about jackson.\n\nTHE SEARCH HAS A RECENCY BIAS THAT WORKS AGAINST US. Adaptation commits by year: 2021:1, 2023:2, 2025:13, 2026:83. Eighty-three of ninety-nine from the current year, three years after the boundary. That is not how adaptation behaves; it is GitHub's commit index favouring recent activity. Cases live NEAR the boundary by definition, so the primary discovery tool systematically under-samples exactly where they are. This is a better explanation for the snakeyaml 1.26 zero than build-file restructuring alone, and it applies to every boundary older than a year or two.\n\nThe three unambiguous raises are all born past: mmaudet/eu-dss-module (200M, on jackson 2.18.2, one pom commit ever), mkarjun/LCS (100M, on 2.21.4), havochvatten/MSP-Symphony (MAX_VALUE, jackson transitive, untraceable). All fixed in 2025-2026.\n\nOnly two commits fall in the 2023 crossing window. FortnoxAB/reactive-wizard pins maxStringLength to exactly the 20M default rather than raising above it -- not a recovery. TwoHeadsDragon/metersphere raises to 200,000,000 in three production files in June 2023, two months after 2.15.0, which is the right shape -- but it is a zero-star COPY of metersphere/metersphere (13k stars), the upstream never carries the change at any of those three paths, and jackson is transitive there with no declared version to walk. Weak citation plus untraceable crossing: not worth a build.\n\nWORTH RETURNING TO if the recency bias is worked around -- e.g. code search plus file-history walking, which reaches repos commit search cannot index at all. The population is genuinely large and the boundary (2023-04) is newer than the one that produced three cases."
+   "assessment": {
+    "status": "yielded_cases",
+    "measured": {
+     "rows_examined": 7,
+     "production": null,
+     "traversal_confirmed": null,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 7,
+     "excluded": 1
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": "SEARCHED, NOT MINED. The richest population any break has shown -- 99 commits on maxStringLength alone, with maxNestingDepth, maxNumberLength and maxNameLength still untouched -- and no usable candidate, for a reason that is a finding about the METHOD rather than about jackson.\n\nTHE SEARCH HAS A RECENCY BIAS THAT WORKS AGAINST US. Adaptation commits by year: 2021:1, 2023:2, 2025:13, 2026:83. Eighty-three of ninety-nine from the current year, three years after the boundary. That is not how adaptation behaves; it is GitHub's commit index favouring recent activity. Cases live NEAR the boundary by definition, so the primary discovery tool systematically under-samples exactly where they are. This is a better explanation for the snakeyaml 1.26 zero than build-file restructuring alone, and it applies to every boundary older than a year or two.\n\nThe three unambiguous raises are all born past: mmaudet/eu-dss-module (200M, on jackson 2.18.2, one pom commit ever), mkarjun/LCS (100M, on 2.21.4), havochvatten/MSP-Symphony (MAX_VALUE, jackson transitive, untraceable). All fixed in 2025-2026.\n\nOnly two commits fall in the 2023 crossing window. FortnoxAB/reactive-wizard pins maxStringLength to exa",
+    "unexploited_leads": null,
+    "consolidated_from": [
+     "_outcome_2026_08_12",
+     "verify_status"
+    ],
+    "detail": {
+     "_outcome_2026_08_12": "SEARCHED, NOT MINED. The richest population any break has shown -- 99 commits on maxStringLength alone, with maxNestingDepth, maxNumberLength and maxNameLength still untouched -- and no usable candidate, for a reason that is a finding about the METHOD rather than about jackson.\n\nTHE SEARCH HAS A RECENCY BIAS THAT WORKS AGAINST US. Adaptation commits by year: 2021:1, 2023:2, 2025:13, 2026:83. Eighty-three of ninety-nine from the current year, three years after the boundary. That is not how adaptation behaves; it is GitHub's commit index favouring recent activity. Cases live NEAR the boundary by definition, so the primary discovery tool systematically under-samples exactly where they are. This is a better explanation for the snakeyaml 1.26 zero than build-file restructuring alone, and it applies to every boundary older than a year or two.\n\nThe three unambiguous raises are all born past: mmaudet/eu-dss-module (200M, on jackson 2.18.2, one pom commit ever), mkarjun/LCS (100M, on 2.21.4), havochvatten/MSP-Symphony (MAX_VALUE, jackson transitive, untraceable). All fixed in 2025-2026.\n\nOnly two commits fall in the 2023 crossing window. FortnoxAB/reactive-wizard pins maxStringLength to exactly the 20M default rather than raising above it -- not a recovery. TwoHeadsDragon/metersphere raises to 200,000,000 in three production files in June 2023, two months after 2.15.0, which is the right shape -- but it is a zero-star COPY of metersphere/metersphere (13k stars), the upstream never carries the change at any of those three paths, and jackson is transitive there with no declared version to walk. Weak citation plus untraceable crossing: not worth a build.\n\nWORTH RETURNING TO if the recency bias is worked around -- e.g. code search plus file-history walking, which reaches repos commit search cannot index at all. The population is genuinely large and the boundary (2023-04) is newer than the one that produced three cases.",
+     "verify_status": "VERIFIED_BBC 2026-07-20 — 3-state differential green (2.14.2 PASS / 2.15.0 FAIL 'StreamConstraintsException: Depth (1001) exceeds the maximum allowed nesting depth (1000)' / adapted PASS) on scratchpad/jackson-streamconstraints-harness. Real signature_confirmed clients: dotCMS/core@b30dfa31, cibseven/cibseven@81a8d2b2, centiservice/mats3@79e05ec1, ESSI-Lab/DAB@9385e949. Mining yield: 184 commits / 159 repos."
+    }
+   }
   },
   {
    "break_id": "fastjson-1.2.80-to-1.2.83-autotype",
@@ -1133,14 +1419,33 @@
     "signal_grep": "autoType is not support|AutoTypeException|JSONException",
     "note": "NOT yet verified. Break is deny-by-default autoType; adaptation is an explicit allowlist call, the cleanest mining signature after xstream."
    },
-   "yield_status": {
-    "assessed": "2026-08-15",
-    "can_yield_witnessed_crossings": "UNKNOWN — mining could not produce a usable candidate set",
-    "can_yield_BBC_cases": "NO, as minable today — the recovery identifier is unsearchable and the searchable identifier is the wrong direction",
+   "assessment": {
+    "status": "dead_screened_out",
+    "measured": {
+     "rows_examined": 200,
+     "production": 35,
+     "traversal_confirmed": 1,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": "2026-08-15",
     "reason": "find_adaptations.py run over four identifiers. addAccept: GitHub commit search tokenizes it and matches the English word 'accept' (Android licenses, Accept headers, TCP accept, invitations) — 187 of the dated hits are 2026 noise, raise=0. ParserConfig: collides across languages — neogeny/TatSu (Python), netdata (Go), koxudaxi/datamodel-code-generator (Python), elmarco/usbredir-proto (Rust) — raise=0, 87 needs_reading almost all noise. setAutoTypeSupport: precise but only 5 distinct commits, all 2026, and all static-analysis rule sets or exploit labs (Kunlun-M, CodeAudit, fastjson-jsontype-rce-lab) rather than client adaptations. safeMode: precise AND finds real fastjson clients (jd-opensource/joyrpc, lWoHvYe/unicorn, zoloz-pte-ltd, Evan-Sukhoi/SUSTechCampus) — but enabling safeMode is HARDENING, which by the raise/lower/knob rule can never produce a pass/fail/pass differential. raise=0 across all four.",
-    "hypothesis_refuted": "The 'fastjson clients are on Gitee, invisible to GitHub commit search' hypothesis is WRONG — safeMode surfaced plenty of real GitHub-hosted fastjson clients. The problem is identifier properties, not population visibility.",
-    "possible_leads_unpursued": "lWoHvYe/unicorn ('fastjson-autoType白名单机制。待转换为safeMode' — an autoType whitelist, the right shape) and Evan-Sukhoi/SUSTechCampus (message names com.alibaba.fastjson.JSONException). Both scored needs_reading by a classifier tuned for numeric limits, and neither has been traversed to 1.2.83.",
-    "implication": "Add an identifier screen to candidate ranking: the recovery-shaped adaptation call must be BOTH a distinctive search token AND in the re-permit/raise direction. mining.signal_quality rates the exception, not the search term — this entry is rated 'clean' and is unmineable. Cheap to test: run the identifier through commit search and check what fraction of hits are the right language."
+    "unexploited_leads": "1 traversal-confirmed candidate(s) never taken to a differential",
+    "consolidated_from": [
+     "yield_status"
+    ],
+    "detail": {
+     "assessed": "2026-08-15",
+     "can_yield_witnessed_crossings": "UNKNOWN — mining could not produce a usable candidate set",
+     "can_yield_BBC_cases": "NO, as minable today — the recovery identifier is unsearchable and the searchable identifier is the wrong direction",
+     "reason": "find_adaptations.py run over four identifiers. addAccept: GitHub commit search tokenizes it and matches the English word 'accept' (Android licenses, Accept headers, TCP accept, invitations) — 187 of the dated hits are 2026 noise, raise=0. ParserConfig: collides across languages — neogeny/TatSu (Python), netdata (Go), koxudaxi/datamodel-code-generator (Python), elmarco/usbredir-proto (Rust) — raise=0, 87 needs_reading almost all noise. setAutoTypeSupport: precise but only 5 distinct commits, all 2026, and all static-analysis rule sets or exploit labs (Kunlun-M, CodeAudit, fastjson-jsontype-rce-lab) rather than client adaptations. safeMode: precise AND finds real fastjson clients (jd-opensource/joyrpc, lWoHvYe/unicorn, zoloz-pte-ltd, Evan-Sukhoi/SUSTechCampus) — but enabling safeMode is HARDENING, which by the raise/lower/knob rule can never produce a pass/fail/pass differential. raise=0 across all four.",
+     "hypothesis_refuted": "The 'fastjson clients are on Gitee, invisible to GitHub commit search' hypothesis is WRONG — safeMode surfaced plenty of real GitHub-hosted fastjson clients. The problem is identifier properties, not population visibility.",
+     "possible_leads_unpursued": "lWoHvYe/unicorn ('fastjson-autoType白名单机制。待转换为safeMode' — an autoType whitelist, the right shape) and Evan-Sukhoi/SUSTechCampus (message names com.alibaba.fastjson.JSONException). Both scored needs_reading by a classifier tuned for numeric limits, and neither has been traversed to 1.2.83.",
+     "implication": "Add an identifier screen to candidate ranking: the recovery-shaped adaptation call must be BOTH a distinctive search token AND in the re-permit/raise direction. mining.signal_quality rates the exception, not the search term — this entry is rated 'clean' and is unmineable. Cheap to test: run the identifier through commit search and check what fraction of hits are the right language."
+    }
    }
   },
   {
@@ -1191,6 +1496,23 @@
     "java": 11,
     "signal_grep": "Unknown property|NoSuchMethodException",
     "note": "Boundary pinned empirically (see why_it_breaks). Probe: PropertyUtils.getProperty(bean,\"class\") returns on 1.9.3, throws on 1.9.4."
+   },
+   "assessment": {
+    "status": "measured_zero",
+    "measured": {
+     "rows_examined": 200,
+     "production": 23,
+     "traversal_confirmed": 1,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": "1 traversal-confirmed candidate(s) never taken to a differential",
+    "consolidated_from": null
    }
   },
   {
@@ -1240,6 +1562,23 @@
     "java": 11,
     "signal_grep": "could not determine a constructor for the tag|ConstructorException",
     "note": "Boundary pinned empirically (see why_it_breaks). Probe: Serialization.unmarshal of YAML containing !!java.util.HashMap returns a Map on 5.0.2 and throws ConstructorException on 5.0.3."
+   },
+   "assessment": {
+    "status": "measured_zero",
+    "measured": {
+     "rows_examined": 200,
+     "production": 22,
+     "traversal_confirmed": 0,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -1289,6 +1628,23 @@
     "java": 11,
     "signal_grep": "setIpAddressFromPasvResponse|passive|PASV",
     "note": "Boundary pinned empirically (see why_it_breaks). Probe subclasses FTPClient, calls the protected _parsePassiveModeReply on a fixed PASV reply, and reads getPassiveHost() -- no server required."
+   },
+   "assessment": {
+    "status": "measured_zero",
+    "measured": {
+     "rows_examined": 200,
+     "production": 6,
+     "traversal_confirmed": 0,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -1339,6 +1695,23 @@
     "java": 11,
     "signal_grep": "exceeds the limit|code points|YAMLException",
     "note": "Boundary pinned empirically (see why_it_breaks). Probe: plain `new Yaml()` loading a 4 MB scalar document returns on 1.31 and throws on 1.32."
+   },
+   "assessment": {
+    "status": "yielded_cases",
+    "measured": {
+     "rows_examined": 870,
+     "production": 66,
+     "traversal_confirmed": 8,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 4,
+     "excluded": 2
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -1386,6 +1759,23 @@
     "java": 11,
     "signal_grep": "exceeds the limit|code points|YamlEngineException",
     "note": "Boundary pinned empirically (see why_it_breaks). Probe: new Load(LoadSettings.builder().build()).loadFromString(4 MB doc) returns on 2.4 and throws on 2.5."
+   },
+   "assessment": {
+    "status": "yielded_cases",
+    "measured": {
+     "rows_examined": null,
+     "production": null,
+     "traversal_confirmed": null,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 1,
+     "excluded": 1
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": null,
+    "reason": null,
+    "unexploited_leads": null,
+    "consolidated_from": null
    }
   },
   {
@@ -1433,17 +1823,38 @@
     "signal_grep": "Number of aliases|exceeds the specified max|YAMLException",
     "note": "Boundary pinned empirically (see why_it_breaks). Probe: a document with 60 aliases to a collection loads on 1.25 and throws on 1.26. NOTE the default is 50, so `--default-value 50` when running find_adaptations.py: a client raising it above 50 is recovering, one lowering it is hardening."
    },
-   "_outcome_2026_08_12": "WORKED, NO CASES -- and the reason is the boundary's AGE, which is worth carrying to any future target. find_adaptations.py found 27 commits: 4 raises, 5 knobs at the default 50, 5 hardening, 7 needing a read. The raises are genuine, but the crossings evaporate:\n  CatServer            born past  -- stayed at 1.27 across its whole history\n  jdxia/shardingsphere crossed 1.16 -> 1.30 (2022-02), but that is a fork of apache and the alias fix is 2024, two years later\n  Mirantis, kangarko   no declared version anywhere (Jenkins shared library / managed)\n  liquibase            genuine raise to Integer.MAX_VALUE with a symptom-matching message ('YAML changelogs with many references', 2025-05-30), but NO crossing is locatable: liquibase-core/pom.xml shows snakeyaml 1.24 in 2019 then drops the declaration, and liquibase-standard/pom.xml only begins in 2023 at 2.0. The 1.25 -> 1.26 transition falls in a gap left by module restructuring.\n\n1.26 shipped in 2020, three years before the code-point limit. By now essentially every client is on 2.x, and those that did cross did so long ago in build files that have since been reorganised. The code-point break yielded three cases because it was recent enough that crossings were still traceable; this one is not.\n\nA SEPARATE POINT the liquibase commit makes well: their limit did not change, their DATA grew past it. A fixed limit met by growing input is not a behavioural breaking change, however genuine the resulting fix looks. Worth distinguishing from 'born past the boundary' -- the client may well have crossed, but the crossing changed nothing for them at the time.",
-   "yield_status": {
-    "assessed": "2026-08-15",
-    "can_yield_witnessed_crossings": false,
-    "can_yield_BBC_cases": "NO — boundary too old; every adaptation found was born past it or transitive-delivered",
+   "assessment": {
+    "status": "dead_screened_out",
+    "measured": {
+     "rows_examined": null,
+     "production": null,
+     "traversal_confirmed": null,
+     "behavioural": null,
+     "compile_break": null,
+     "verified": 0,
+     "excluded": 0
+    },
+    "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
+    "assessed_on": "2026-08-15",
     "reason": "Boundary 1.25->1.26 is from 2020. find_adaptations.py (--identifier setMaxAliasesForCollections, run 2026-08-12) produced 27 distinct commits, 11 worth reading, 4 clean 'raise' verdicts. Traversal on the 10 decidable ones: 0 confirmed. 5 born at/above the boundary (CatServer, owl-performance, both jenkinsci/pipeline-utility-steps-plugin commits, and one more), 5 undecided-transitive (Mirantis/pipeline-library, kangarko/Foundation, link-it/govcat, circe/circe-yaml, HyacinthHaru/HikariCanvas). liquibase/liquibase timed out twice at 240s on history depth.",
-    "compile_gate": "PASSES — javap diff of snakeyaml 1.25 vs 1.26 over Yaml, LoaderOptions, Constructor, SafeConstructor shows ZERO removals; 1.26 only ADDS (setMaxAliasesForCollections and the LoaderOptions-bearing overloads). The constructor removals that mask the 2.0 break do not exist at 1.26. So this break died on recency, not on compile masking — a distinct failure mode from snakeyaml-1.x-to-2.0.",
-    "transitive_note": "The 5 undecided rows are excluded under the 2026-08-15 direct-only scoping decision, not merely unresolved. Recorded as a labelled excluded count for the rarity denominator.",
-    "implication": "Screen boundary DATE before mining. rank_candidates.py already encodes recency as a filter; it was not consulted at pick time. A boundary more than ~3 years old is unlikely to have live traversals however clean its signal.",
-    "corroborates": "Independently re-derived on 2026-08-15 WITHOUT seeing _outcome_2026_08_12 on the same entry, which had already reached the same verdict on 2026-08-12 by the same route. Two assessments agree. The duplicated effort happened because assessments are recorded under TWO different key names (yield_status vs _outcome_<date>) and only yield_status was checked. Consolidate on yield_status. The earlier record additionally makes a point this one missed: a FIXED limit met by GROWING data is not a behavioural break, however genuine the resulting fix looks — distinct from born-past-boundary, and worth carrying as its own exclusion category."
+    "unexploited_leads": null,
+    "consolidated_from": [
+     "_outcome_2026_08_12",
+     "yield_status"
+    ],
+    "detail": {
+     "assessed": "2026-08-15",
+     "can_yield_witnessed_crossings": false,
+     "can_yield_BBC_cases": "NO — boundary too old; every adaptation found was born past it or transitive-delivered",
+     "reason": "Boundary 1.25->1.26 is from 2020. find_adaptations.py (--identifier setMaxAliasesForCollections, run 2026-08-12) produced 27 distinct commits, 11 worth reading, 4 clean 'raise' verdicts. Traversal on the 10 decidable ones: 0 confirmed. 5 born at/above the boundary (CatServer, owl-performance, both jenkinsci/pipeline-utility-steps-plugin commits, and one more), 5 undecided-transitive (Mirantis/pipeline-library, kangarko/Foundation, link-it/govcat, circe/circe-yaml, HyacinthHaru/HikariCanvas). liquibase/liquibase timed out twice at 240s on history depth.",
+     "compile_gate": "PASSES — javap diff of snakeyaml 1.25 vs 1.26 over Yaml, LoaderOptions, Constructor, SafeConstructor shows ZERO removals; 1.26 only ADDS (setMaxAliasesForCollections and the LoaderOptions-bearing overloads). The constructor removals that mask the 2.0 break do not exist at 1.26. So this break died on recency, not on compile masking — a distinct failure mode from snakeyaml-1.x-to-2.0.",
+     "transitive_note": "The 5 undecided rows are excluded under the 2026-08-15 direct-only scoping decision, not merely unresolved. Recorded as a labelled excluded count for the rarity denominator.",
+     "implication": "Screen boundary DATE before mining. rank_candidates.py already encodes recency as a filter; it was not consulted at pick time. A boundary more than ~3 years old is unlikely to have live traversals however clean its signal.",
+     "corroborates": "Independently re-derived on 2026-08-15 WITHOUT seeing _outcome_2026_08_12 on the same entry, which had already reached the same verdict on 2026-08-12 by the same route. Two assessments agree. The duplicated effort happened because assessments are recorded under TWO different key names (yield_status vs _outcome_<date>) and only yield_status was checked. Consolidate on yield_status. The earlier record additionally makes a point this one missed: a FIXED limit met by GROWING data is not a behavioural break, however genuine the resulting fix looks — distinct from born-past-boundary, and worth carrying as its own exclusion category.",
+     "_outcome_2026_08_12": "WORKED, NO CASES -- and the reason is the boundary's AGE, which is worth carrying to any future target. find_adaptations.py found 27 commits: 4 raises, 5 knobs at the default 50, 5 hardening, 7 needing a read. The raises are genuine, but the crossings evaporate:\n  CatServer            born past  -- stayed at 1.27 across its whole history\n  jdxia/shardingsphere crossed 1.16 -> 1.30 (2022-02), but that is a fork of apache and the alias fix is 2024, two years later\n  Mirantis, kangarko   no declared version anywhere (Jenkins shared library / managed)\n  liquibase            genuine raise to Integer.MAX_VALUE with a symptom-matching message ('YAML changelogs with many references', 2025-05-30), but NO crossing is locatable: liquibase-core/pom.xml shows snakeyaml 1.24 in 2019 then drops the declaration, and liquibase-standard/pom.xml only begins in 2023 at 2.0. The 1.25 -> 1.26 transition falls in a gap left by module restructuring.\n\n1.26 shipped in 2020, three years before the code-point limit. By now essentially every client is on 2.x, and those that did cross did so long ago in build files that have since been reorganised. The code-point break yielded three cases because it was recent enough that crossings were still traceable; this one is not.\n\nA SEPARATE POINT the liquibase commit makes well: their limit did not change, their DATA grew past it. A fixed limit met by growing input is not a behavioural breaking change, however genuine the resulting fix looks. Worth distinguishing from 'born past the boundary' -- the client may well have crossed, but the crossing changed nothing for them at the time."
+    }
    }
   }
- ]
+ ],
+ "_assessment": "EVERY break carries exactly one `assessment` block. Read it BEFORE spending a mining run. This field exists because assessments were previously scattered across yield_status, _outcome_<date>, rejection_finding and verify_status, and checking only one of them caused the same break to be mined twice on 2026-08-15. status: yielded_cases | dead_screened_out | measured_zero | not_mined. `measured` is copied from output/reports/CENSUS.md (regenerated by ledger/census.py) — if the two disagree, the census wins. `unexploited_leads` is the ONLY field that means work remaining rather than a finding: candidates that reached traversal or production-adaptation status and were never taken further. `reason` and `detail` carry the prose from whichever key it was consolidated from, named in `consolidated_from`. measured_zero WITHOUT a reason means the numbers are known but nobody recorded WHY it yielded nothing — not the same as dead_screened_out, which carries a diagnosis."
 }
