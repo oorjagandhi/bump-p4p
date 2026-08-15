@@ -91,5 +91,41 @@
       }
     ],
     "conclusion": "Confirmed behavioural break with a production-side adaptation. An ID-generator round trip that succeeds at 1.4.10 is refused at 1.4.19 with otherwise-unchanged code, and the two allowTypeHierarchy calls added to the production deserialize method restore it. Driver invariant across all three states, so the production change is the only difference between state 2 and state 3."
+  },
+
+  "reverification": {
+    "date": "2026-08-15",
+    "performed_by": "bbc-driver-author subagent (registered .claude/agents definition, first invocation under the real registration)",
+    "outcome": "verified_bbc",
+    "agrees_with_original": true,
+    "driver": "verified_cases/drivers/collectionspace-services_agent_BbcTest.java",
+    "ledger_row": "scripts/nadia_scripts/output/_reverify_xstream_differential.jsonl (last row)",
+    "state_logs": "scripts/nadia_scripts/_runlogs/collectionspace_services_{1_baseline,2_newlib_oldcode,3_adapted}.log",
+
+    "blind_conditions": "The agent was forbidden from reading anything under verified_cases/. It knew only known_outcome=verified_bbc from the worklist row, plus the run ledger. Every environment fact below was rederived from the repository and the build.",
+
+    "independently_rediscovered": [
+      "the nine antrun check-environment-vars variables (grepped from the root POM in one pass)",
+      "JDK 8, from the javax.xml.bind compile failure",
+      "the Windows long-path wall -- solved differently, by cloning to a short path C:\\bw rather than setting core.longpaths",
+      "the TestNG surefire provider, and JUnit-3 method naming",
+      "printing the resolved xstream version per state as an anti-vacuous-pass control, which is the same class of check that caught the original false pass"
+    ],
+
+    "states": [
+      { "name": "1_baseline", "config": "parent code (844efa81) + xstream 1.4.10", "result": "PASS", "tests": "run=1 failures=0 errors=0", "printed_jar_version": "1.4.10" },
+      { "name": "2_newlib_oldcode", "config": "parent code (844efa81) + xstream 1.4.18", "result": "FAIL", "tests": "run=1 failures=1 errors=0", "printed_jar_version": "1.4.18", "detail": "BadRequestException wrapping com.thoughtworks.xstream.security.ForbiddenClassException: org.collectionspace.services.id.SettableIDGenerator" },
+      { "name": "3_adapted", "config": "adapted code (6593d7fb) + xstream 1.4.18", "result": "PASS", "tests": "run=1 failures=0 errors=0", "printed_jar_version": "1.4.18" }
+    ],
+
+    "caveat_version_differs_from_original": "The re-verification ran states 2 and 3 at xstream 1.4.18, NOT the 1.4.19 the client actually shipped. 1.4.18 is the break boundary and is the harness default for the new-library state. The break and the fix are both the 1.4.18 default-deny change, so the finding holds -- but this is not a byte-identical re-run of the 2026-08-07 verification, which used 1.4.19 in both states. Any claim that the two runs are the same experiment should be qualified accordingly.",
+
+    "caveat_undisclosed_by_ledger": "The run required MAVEN_ARGS=-Daether.enhancedLocalRepository.trackingFilename=_bbc.repositories, exported across the probe and all three states. maven-eu.nuxeo.org no longer resolves in DNS; the nuxeo artifacts are cached locally but their _remote.repositories tracks them to repo id cspace-nuxeo-vendor-releases while this commit's root POM declares nuxeo-public-releases, so resolver 1.9 reports '(present, but unavailable)' and attempts a download that cannot succeed. The tracking-filename override makes the enhanced local repo manager treat the cached artifacts as locally installed. This intervention is NOT captured in the ledger row and is recorded here by hand. Note this is an environment-decay finding: the original 2026-08-07 run did not need it, and the case is now un-reproducible from a cold local repo.",
+
+    "caveat_local_repo": "Unlike the original verification, this run used the default ~/.m2 rather than -Dmaven.repo.local=C:/bump-p4p/.bbc_m2, and deleted roughly 2,671 stale *.lastUpdated failure markers there (created by its own -U probe against the dead nuxeo host). Failure markers only, no artifacts -- but it is a side effect on the global repository and a loss of the isolation the original run had.",
+
+    "driver_differences_from_original": "Same shape (A) and same production entry point. The agent's driver uses StringIDGeneratorPart('BBC-') + YearIDGeneratorPart('2023') where the original used StringIDGeneratorPart('E') + NumericIDGeneratorPart('1'); asserts the round-tripped generator re-serializes to identical XML in addition to preserving the ID; prints the resolved jar version and the full cause chain to stdout. Class is bbc.BbcTest extends junit.framework.TestCase, method testBbcCase().",
+
+    "value": "The re-verification's finding is not the verdict -- that was already known. It is the eleventh harness failure mode, recorded in .claude/agents/bbc-driver-author.md: the previous attempt's state 2 did not trip because the version pin was never armed (a reused --keep workdir passes the probe with nothing to do, and each git checkout -f restores the bare <version> literal), so state 2 ran the same 1.4.10 jar as state 1. That scores signature_confirmed -- a void state that reads as a clean negative fact about the client. More dangerous than the tenth mode, which at least shows run=0."
   }
 }

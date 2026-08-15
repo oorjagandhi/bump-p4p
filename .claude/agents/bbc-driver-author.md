@@ -95,6 +95,11 @@ Shape B, say so explicitly in your report so the human scores it per-test.
 4. **Assert the pre-break outcome** — the value that survives, the object that loads — so the
    failing state surfaces the signal and the passing states pass.
 5. Class is `bbc.BbcTest` in `<module>/src/test/java/bbc/`. Deterministic inputs.
+   **Exception, when the module runs under the TestNG provider** (see rule 3 and the Recovery
+   table): that provider discovers JUnit-3 `junit.framework.TestCase` subclasses, and JUnit-3
+   discovery only picks up methods whose name starts with `test`. There, extend `TestCase` and
+   name the method `testBbcCase()` — the `@Test`-annotated `bbcCase()` this rule otherwise asks
+   for would be silently skipped. The provider decides the naming; say which you used and why.
 6. Prefer `package bbc;`. If the entry point is package-private, use the class's own package
    instead and say so in your report.
 7. Output a compilable `.java` file and nothing else. No fences, no prose in the file.
@@ -106,6 +111,26 @@ Shape B, say so explicitly in your report so the human scores it per-test.
 State 2 was supposed to FAIL and passed. Diagnose the **fixture** — never weaken the
 assertion to force a result.
 
+**Rule 0 — prove the library version actually differed BEFORE you touch the fixture.** State 2
+that ran the same jar as state 1 is a void state, not a negative one, and it is far more
+dangerous than `run == 0` because the oracle scores it `signature_confirmed` — a clean-looking
+fact about the client that is really a fact about your workdir. Nothing downstream will
+contradict it. Two ways to prove the version:
+
+- Have the driver print it: `XStream.class.getPackage().getImplementationVersion()`, or the
+  equivalent for the library at hand. It costs one line, appears in every state's log, and is
+  the only check that survives a silently reverted POM.
+- Read `version_pinned` in the ledger row. **If the row has `version_props` but no
+  `version_pinned` key, the version knob was never armed** and all three states ran the
+  client's own POM version.
+
+The trap that produces this: when the library is a bare `<version>` literal rather than a
+property, the harness must rewrite it to `${bbc.<lib>.version}` before any `-D` can move it.
+The probe arms that automatically — but **a reused `--keep` workdir is already pinned, so the
+second probe passes with nothing to do, leaves `pin_version` False, and every subsequent
+`git checkout -f <sha>` restores the literal.** If you probe twice into the same `--workdir`,
+pass `--pin-version` explicitly.
+
 1. **Input too small.** Limits have thresholds. Size the fixture above the default but below
    the production override, so state 2 fails and state 3 passes.
 2. **Dedup collapses the fixture.** Identical values get de-duplicated (shared strings). Use
@@ -113,7 +138,8 @@ assertion to force a result.
 3. **A different guard trips first.** Compressible content can hit a zip-bomb guard before a
    byte cap. Use incompressible content so the target guard is the one that fires.
 4. **A streaming path avoids the allocation.** Route through the path that buffers.
-5. **The version did not actually change.** Confirm from the probe output, not assumption.
+5. **The version did not actually change.** See Rule 0 above — this is the first thing to
+   rule out, not the fifth.
 6. **Environment coupling.** If reaching the break needs a live session or framework
    bootstrap, it is not standalone-reproducible. Say so plainly and stop — that is a
    `signature_confirmed`, and it is a legitimate result, not a failure to try hard enough.
@@ -132,6 +158,8 @@ Maven stopped and fix that first.
 | Symptom | Look for | Fix |
 |---|---|---|
 | Probe says version "does not work", resolves a fixed version | is the version a hardcoded `<version>` literal? | the probe auto-pins it to a property and re-probes; if it still fails, the library may be transitive |
+| `run == 1` in all three states, state 2 passes | **did the pin arm?** `version_props` present but `version_pinned` absent in the ledger row means it did not — a reused `--keep` workdir is already pinned, so a second probe finds nothing to do and leaves the knob off, and each `git checkout -f` restores the bare `<version>` literal | pass `--pin-version` explicitly, and print the resolved version from the driver. See "When state 2 does not trip", Rule 0 — this scores `signature_confirmed`, so it will NOT announce itself |
+| A repo the POM declares no longer resolves in DNS | `curl` the host; compare the repo id in the artifact's cached `_remote.repositories` against the ids the POM declares | if the artifacts are cached but tracked to a different repo id, resolver 1.9 calls them `(present, but unavailable)`. `MAVEN_ARGS=-Daether.enhancedLocalRepository.trackingFilename=_bbc.repositories` makes the local repo manager treat them as locally installed. `-Dmaven.legacyLocalRepo=true` does NOT work on Maven 3.9.x. **Export it for the probe and all three states, and report it — the ledger row does not capture it** |
 | Probe says "resolved None" | did the build actually run? | read the Maven error — a reactor sibling snapshot may need `mvn install -DskipTests` first |
 | Library arrives transitively | no `<dependency>` for it anywhere | **out of scope** — transitive candidates are excluded from differentials by decision; report and stop |
 | `run == 0`, `UnmappableCharacterException` | non-UTF-8 resources | already handled — UTF-8 is forced on every invocation |
