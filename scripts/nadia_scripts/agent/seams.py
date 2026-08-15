@@ -182,6 +182,13 @@ def diagnose_nontrip(brk: dict, cand, current_test: str, state2_log: str,
         "or the literal token 'GIVE_UP: <reason>' if not standalone-reproducible."
     )
     out = _ask(_load("seam_b_diagnose.md"), user)
-    if out.strip().startswith("GIVE_UP"):
+    # Look for the token anywhere near the start, not just as a strict prefix. On
+    # collectionspace/services SEAM_B diagnosed the non-trip correctly — the reactor died in
+    # maven-antrun's check-environment-vars before any test ran — and said so, but wrote the
+    # token as `GIVE_UP: coupling` in backticks. A startswith() check missed it, the reply
+    # fell through to _strip_fences, and a legitimate give-up surfaced as a crash that
+    # discarded the diagnosis. A give-up is a RESULT; it must never be harder to report than
+    # an answer.
+    if re.match(r"[`*\s]*GIVE_UP", out, re.I) or "GIVE_UP" in out[:200].upper():
         return None
     return _strip_fences(out)

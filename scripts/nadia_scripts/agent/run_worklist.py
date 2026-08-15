@@ -264,7 +264,8 @@ def run_one(item: dict, args, ledger: str) -> dict:
            "baseline": baseline, "baseline_provenance": baseline_why,
            "test_dep_injected": bool(args.add_test_dep),
            "module": item.get("module", "") or None,
-           "mvn_args": args.mvn_arg or None}
+           "mvn_args": args.mvn_arg or None,
+           "build_env": dict(args.env or []) or None}
     # Re-verification rows carry the answer they are being checked against, so the ledger
     # scores itself instead of needing the case files opened alongside it.
     if item.get("known_outcome"):
@@ -447,7 +448,7 @@ def differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pi
             inject_test_dep(os.path.join(repo_dir, cand.module or "", "pom.xml"))
         print(f"  [state {name}] {brk['library']['artifact_id']}={version}", flush=True)
         s = O.run_state(repo_dir, jdk, test_class, at(version), add_opens=add_opens,
-                        extra_args=args.mvn_arg)
+                        extra_args=args.mvn_arg, extra_env=dict(args.env or []))
         with open(os.path.join(logs, f"{slug}_{name}.log"), "w", encoding="utf-8") as f:
             f.write(s["log"])
         print(f"  [state {name}] run={s['run']} fail={s['fail']} err={s['err']}", flush=True)
@@ -553,6 +554,10 @@ def main():
     ap.add_argument("--seam-a", action="store_true",
                     help="PATH A: generate the driver headlessly via seams.py instead of "
                          "--driver, and answer non-trips with SEAM_B")
+    ap.add_argument("--env", action="append", type=lambda kv: tuple(kv.split("=", 1)),
+                    metavar="KEY=VALUE",
+                    help="environment variable the client's build requires, e.g. "
+                         "--env CSPACE_INSTANCE_ID=_default; applied to every state")
     ap.add_argument("--seam-b-retries", type=int, default=3,
                     help="max SEAM_B fixture revisions when state 2 does not trip (Path A only)")
     ap.add_argument("--test", default="bbc.BbcTest")

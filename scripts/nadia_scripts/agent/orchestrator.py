@@ -94,7 +94,7 @@ def clone(repo: str, sha: str, dest: str):
 
 
 def run_state(repo_dir: str, jdk: str, test: str, version_props: dict, heap="-Xmx2g", add_opens=None,
-              extra_args=None) -> dict:
+              extra_args=None, extra_env=None) -> dict:
     """One differential state: mvn clean test with the given -D overrides. Returns surefire summary.
 
     `extra_args` is passed through to Maven untouched, for build-shape flags a candidate needs
@@ -106,8 +106,15 @@ def run_state(repo_dir: str, jdk: str, test: str, version_props: dict, heap="-Xm
     # files that are not Cp1252-decodable, so `clean test` died with UnmappableCharacterException
     # before compiling anything — every state run=0, and without the run==0 guard that would
     # have read as a finding about a case already verified by hand.
+    # extra_env: build-required environment variables. Some reactors refuse to build without
+    # them and say so precisely — collectionspace/services fails an antrun `check-environment-vars`
+    # goal with "Required environment variable CSPACE_INSTANCE_ID has not been set. Use
+    # '_default' as a default value", i.e. it names both the variable and the value. Supplying
+    # it is not a thumb on the scale: it is applied identically to all three states, and
+    # without it no state builds at all.
     env = dict(os.environ, JAVA_HOME=jdk,
-               MAVEN_OPTS=os.environ.get("MAVEN_OPTS", "") + " -Dfile.encoding=UTF-8")
+               MAVEN_OPTS=os.environ.get("MAVEN_OPTS", "") + " -Dfile.encoding=UTF-8",
+               **(extra_env or {}))
     argline = heap + ("".join(" " + o for o in (add_opens or [])))
     cmd = mvn_base() + ["clean", "test", f"-Dtest={test}", f"-DargLine={argline}",
                         "-Dsurefire.failIfNoSpecifiedTests=false",
