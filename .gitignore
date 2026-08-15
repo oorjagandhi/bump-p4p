@@ -49,7 +49,7 @@ __pycache__/
 ### Scripts / local output ###
 scripts/nadia_scripts/__pycache__/
 scripts/nadia_scripts/bbc-work/
-scripts/nadia_scripts/output/.m2-cache/
+scripts/nadia_scripts/output/**/.m2-cache/
 scripts/nadia_scripts/.m2-cache/
 scripts/nadia_scripts/.m2-bbc/
 
@@ -80,12 +80,12 @@ scripts/nadia_scripts/scratchpad/**/target/
 ### BBC mining: search resume state. Deliberately NOT committed -- BBC_RESUME
 ### defaults to on, so a committed checkpoint would make a fresh run silently
 ### resume someone else's stale search instead of mining.
-scripts/nadia_scripts/output/*_mine_checkpoint.jsonl
-scripts/nadia_scripts/output/*_classify_checkpoint.jsonl
-scripts/nadia_scripts/output/candidate_ranking_progress*.jsonl
+scripts/nadia_scripts/output/**/*_mine_checkpoint.jsonl
+scripts/nadia_scripts/output/**/*_classify_checkpoint.jsonl
+scripts/nadia_scripts/output/**/candidate_ranking_progress*.jsonl
 
 # population probe resume state — same reason as the other checkpoints
-scripts/nadia_scripts/output/population_probe_progress_*.jsonl
+scripts/nadia_scripts/output/**/population_probe_progress_*.jsonl
 
 # hand-run verification workspace (shallow clones + build output)
 .bbc_work/

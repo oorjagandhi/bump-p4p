@@ -6,7 +6,7 @@ all, start with [`README.md`](README.md) — this document assumes a target has 
 chosen and describes how the stages work.
 
 > For the whole pipeline in one place — including the **code-search route**
-> (`find_adaptations --via code-search` → `date_hits` → `screen_dated` → `find_crossing` →
+> (`find_adaptations --via code-search` → `archive/date_hits` → `archive/screen_dated` → `find_crossing` →
 > a hand-written harness), which is what produced the jackson-core cases and is not
 > described here — see [`PIPELINE_END_TO_END.md`](PIPELINE_END_TO_END.md).
 
@@ -28,7 +28,7 @@ Breaks now come from two sources, and the catalog records which via `provenance`
   behaviour flips — before any mining is spent.
 
 Two stages now run *before* this pipeline, and cost minutes rather than the day a mine
-costs: `discover/rank_candidates.py` / `discover/screen_majors.py` reject boundaries that remove public API
+costs: `discover/rank_candidates.py` / `archive/screen_majors.py` reject boundaries that remove public API
 (a compile break shadows the behavioural one), and a manual sources-jar diff confirms the
 new restriction is active by default rather than relaxed or opt-in. See `README.md`.
 
@@ -133,7 +133,7 @@ A confirmed BBC:
 
 ## Per-break readiness
 
-**See [`output/CENSUS.md`](output/CENSUS.md)** — it is generated from the artifacts by
+**See [`output/reports/CENSUS.md`](output/reports/CENSUS.md)** — it is generated from the artifacts by
 `ledger/census.py`, so unlike a table here it cannot drift out of date. It gives, per
 break: rows examined, production adaptations, traversal-confirmed, behavioural vs compile
 break, verified, and excluded — plus an undecided-resolution table and a decidability
@@ -151,8 +151,8 @@ distinction the census depends on:
 - **genuine negative** — versions resolved, no crossing; the client was born past the
   boundary
 - **undecided** — the version is BOM- or parent-managed and the HTTP POM walk cannot
-  resolve it. An *unknown*. Extract with `traversal/extract_undecided.py` and decide with
-  `traversal/resolve_undecided.py`, which asks `mvn dependency:tree` directly.
+  resolve it. An *unknown*. Extract with `archive/extract_undecided.py` and decide with
+  `archive/resolve_undecided.py`, which asks `mvn dependency:tree` directly.
 
 The undecided share varies enormously by ecosystem: beanutils gave 19 undecided against 3
 genuine negatives; kubernetes-client gave 22 against 0, because every fabric8 client takes

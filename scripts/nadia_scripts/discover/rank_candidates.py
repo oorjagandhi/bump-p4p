@@ -47,9 +47,12 @@ Usage:
 import pathlib as _pl, sys as _sys
 _NS_ROOT = _pl.Path(__file__).resolve().parent.parent
 for _d in (_NS_ROOT, *(_NS_ROOT / _s for _s in
-           ('discover', 'mine', 'traversal', 'screen', 'verify'))):
+           ('discover', 'mine', 'traversal', 'screen', 'verify', 'archive', 'ledger', 'agent'))):
     if str(_d) not in _sys.path:
         _sys.path.insert(0, str(_d))
+
+from paths import out, str_out
+
 
 
 import argparse
@@ -67,7 +70,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 HERE = Path(__file__).resolve().parent.parent
 OUT = HERE / "output"
-CAND = OUT / "advisory_candidates.json"
+CAND = out("advisory_candidates.json")
 SEARCH = "https://search.maven.org/solrsearch/select"
 CENTRAL = "https://repo1.maven.org/maven2"
 JARS = HERE / "scratchpad" / "rankjars"
@@ -323,8 +326,8 @@ def main():
     # running --tier validate after --tier deserialize would have published the 82
     # deserialize verdicts under a validate heading. A tier's report must contain that
     # tier's measurements and nothing else.
-    prog = OUT / f"candidate_ranking_progress_{args.tier}.jsonl"
-    legacy = OUT / "candidate_ranking_progress.jsonl"
+    prog = out(f"candidate_ranking_progress_{args.tier}.jsonl")
+    legacy = out("candidate_ranking_progress.jsonl")
     if args.tier == "deserialize" and legacy.exists() and not prog.exists():
         legacy.rename(prog)          # the pre-tier run was a deserialize run
     results, done_pkgs = [], set()
@@ -438,8 +441,8 @@ def main():
     dest.write_text("\n".join(lines) + "\n", encoding="utf-8")
     # Per tier, for the same reason the progress file is: a validate run must not
     # overwrite the deserialize measurements with a different tier's verdicts.
-    ranking_json = (OUT / "candidate_ranking.json" if args.tier == "deserialize"
-                    else OUT / f"candidate_ranking_{args.tier}.json")
+    ranking_json = (out("candidate_ranking.json") if args.tier == "deserialize"
+                    else out(f"candidate_ranking_{args.tier}.json"))
     ranking_json.write_text(
         json.dumps({"mineable": mineable, "blocked": blocked}, indent=2),
         encoding="utf-8")

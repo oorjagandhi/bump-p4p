@@ -31,6 +31,15 @@ Usage:
   python run_worklist.py <worklist.json> --repo owner/name --probe-only --keep
 """
 from __future__ import annotations
+
+import pathlib as _pl, sys as _sys
+_NS_ROOT = _pl.Path(__file__).resolve().parent.parent
+if str(_NS_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_NS_ROOT))
+
+from paths import out, str_out
+
+
 import argparse, json, os, re, shutil, stat, subprocess, sys, tempfile, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -55,7 +64,7 @@ def ledger_path(worklist_path: str) -> str:
     """output/_<lib>_differential.jsonl, matching the corpus files already in output/."""
     base = os.path.basename(worklist_path)
     lib = "snakeyaml" if "snakeyaml" in base else base.replace("worklist_", "").split("-")[0]
-    return os.path.join(OUT, f"_{lib}_differential.jsonl")
+    return str_out(f"_{lib}_differential.jsonl")
 
 
 def already_done(ledger: str) -> dict:

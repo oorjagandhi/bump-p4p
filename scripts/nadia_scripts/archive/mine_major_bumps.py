@@ -42,9 +42,12 @@ Output:
 import pathlib as _pl, sys as _sys
 _NS_ROOT = _pl.Path(__file__).resolve().parent.parent
 for _d in (_NS_ROOT, *(_NS_ROOT / _s for _s in
-           ('discover', 'mine', 'traversal', 'screen', 'verify'))):
+           ('discover', 'mine', 'traversal', 'screen', 'verify', 'archive', 'ledger', 'agent'))):
     if str(_d) not in _sys.path:
         _sys.path.insert(0, str(_d))
+
+from paths import out, str_out
+
 
 import argparse
 import json
@@ -208,7 +211,7 @@ def write_outputs(all_rows):
     OUT_DIR.mkdir(exist_ok=True)
     all_rows.sort(key=rank_key)
 
-    jsonl = OUT_DIR / "major_bumps_candidates.jsonl"
+    jsonl = out("major_bumps_candidates.jsonl")
     with jsonl.open("w", encoding="utf-8") as f:
         for row in all_rows:
             f.write(json.dumps(row) + "\n")
@@ -236,7 +239,7 @@ def write_outputs(all_rows):
             f"[{r['bump_commit'][:8]}]({r['bump_url']}) | "
             f"[{r['adaptation_commit'][:8]}]({r['adaptation_url']}) |"
         )
-    md = OUT_DIR / "MAJOR_BUMPS_SHORTLIST.md"
+    md = out("MAJOR_BUMPS_SHORTLIST.md")
     md.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     print(f"\n[write] {len(all_rows)} confirmed bump+adaptation rows")

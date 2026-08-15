@@ -40,9 +40,12 @@ Usage:
 import pathlib as _pl, sys as _sys
 _NS_ROOT = _pl.Path(__file__).resolve().parent.parent
 for _d in (_NS_ROOT, *(_NS_ROOT / _s for _s in
-           ('discover', 'mine', 'traversal', 'screen', 'verify'))):
+           ('discover', 'mine', 'traversal', 'screen', 'verify', 'archive', 'ledger', 'agent'))):
     if str(_d) not in _sys.path:
         _sys.path.insert(0, str(_d))
+
+from paths import out, str_out
+
 
 
 import argparse
@@ -111,7 +114,7 @@ def main():
     boundary = (brk.get("verify") or {}).get("break_boundary")
     print(f"[closeout] {gid}:{aid} boundary={boundary}")
 
-    src = OUT / f"{args.break_id}_UNDECIDED_MVNRECHECK.jsonl"
+    src = out(f"{args.break_id}_UNDECIDED_MVNRECHECK.jsonl")
     if not src.exists():
         sys.exit(f"no recheck output at {src}")
     rows = [json.loads(l) for l in src.read_text(encoding="utf-8").splitlines() if l.strip()]
@@ -127,7 +130,7 @@ def main():
     print(f"[closeout] {len(todo)} retryable at reactor root, "
           f"{len(skipped)} not retryable (mvn/git errors, unchanged)\n")
 
-    dst = OUT / f"{args.break_id}_TRAVERSAL_CLOSEOUT.jsonl"
+    dst = out(f"{args.break_id}_TRAVERSAL_CLOSEOUT.jsonl")
     done = set()
     if dst.exists() and os.environ.get("BBC_RESUME", "1").lower() not in ("0", "false", "no"):
         for line in dst.read_text(encoding="utf-8").splitlines():

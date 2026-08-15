@@ -47,9 +47,12 @@ Usage:
 import pathlib as _pl, sys as _sys
 _NS_ROOT = _pl.Path(__file__).resolve().parent.parent
 for _d in (_NS_ROOT, *(_NS_ROOT / _s for _s in
-           ('discover', 'mine', 'traversal', 'screen', 'verify'))):
+           ('discover', 'mine', 'traversal', 'screen', 'verify', 'archive', 'ledger', 'agent'))):
     if str(_d) not in _sys.path:
         _sys.path.insert(0, str(_d))
+
+from paths import out, str_out
+
 
 
 import argparse
@@ -389,7 +392,7 @@ def main():
 
     # Checkpoint per commit: each row is a diff fetch, and a kill must not discard the
     # pass. Same lesson as the mine, the classify loop and the undecided resolver.
-    ck = OUT / f"{args.break_id}_ADAPTATIONS.jsonl"
+    ck = out(f"{args.break_id}_ADAPTATIONS.jsonl")
     done = set()
     if ck.exists():
         for line in ck.read_text(encoding="utf-8").splitlines():

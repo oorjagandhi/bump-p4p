@@ -51,9 +51,12 @@ Env: GH_TOKEN required for mine-commits / classify (GitHub search + contents API
 import pathlib as _pl, sys as _sys
 _NS_ROOT = _pl.Path(__file__).resolve().parent.parent
 for _d in (_NS_ROOT, *(_NS_ROOT / _s for _s in
-           ('discover', 'mine', 'traversal', 'screen', 'verify'))):
+           ('discover', 'mine', 'traversal', 'screen', 'verify', 'archive', 'ledger', 'agent'))):
     if str(_d) not in _sys.path:
         _sys.path.insert(0, str(_d))
+
+from paths import out, str_out
+
 
 
 import argparse
@@ -221,7 +224,7 @@ def _dedup_by_commit(rows, token):
 # checkpoints to disk as it goes and resumes from where it stopped.
 
 def _checkpoint_path(brk):
-    return HERE / "output" / f"{brk['break_id']}_mine_checkpoint.jsonl"
+    return out(f"{brk['break_id']}_mine_checkpoint.jsonl")
 
 
 def _load_checkpoint(path):
@@ -977,7 +980,7 @@ def summarize():
     for b in cat["breaks"]:
         bid = b["break_id"]
         sig = b.get("mining", {}).get("signal_quality", "?")
-        f = HERE / "output" / f"{bid}_candidates.jsonl"
+        f = out(f"{bid}_candidates.jsonl")
         if not f.exists():
             lines.append(f"| {bid} | {sig} | _not run_ | – | – | – |")
             continue
@@ -1009,7 +1012,7 @@ def summarize():
         else:
             detail.append("- (no native-Maven production candidates)")
         detail.append("")
-    out = HERE / "output" / "ALL_candidates_summary.md"
+    out = out("ALL_candidates_summary.md")
     out.write_text("\n".join(lines + detail), encoding="utf-8")
     print("\n".join(lines))
     print(f"\n[summarize] wrote {out.relative_to(HERE)}")
@@ -1247,7 +1250,7 @@ def mine_verify(break_id):
         (gold if t["traversal_confirmed"] else other).append(c)
         mark = "GOLD" if t["traversal_confirmed"] else "----"
         print(f" [{mark}] {c['repo']}@{c['sha'][:8]}  ({c.get('build_system')})  {t['reason']}")
-    out_file = HERE / "output" / f"{break_id}_traversal_candidates.jsonl"
+    out_file = out(f"{break_id}_traversal_candidates.jsonl")
     out_file.parent.mkdir(exist_ok=True)
     with out_file.open("w", encoding="utf-8") as fh:
         for c in gold + other:
@@ -1279,7 +1282,7 @@ def run(break_id):
     # times. Same flaw, one stage later. Now every DECISION is checkpointed, not just
     # the survivors: a resume must not re-classify a row it already rejected, or the
     # rejects cost as much on every restart as they did the first time.
-    ck_path = HERE / "output" / f"{break_id}_classify_checkpoint.jsonl"
+    ck_path = out(f"{break_id}_classify_checkpoint.jsonl")
     ck_path.parent.mkdir(exist_ok=True)
     resume = os.environ.get("BBC_RESUME", "1").lower() not in ("0", "false", "no")
     done, results = set(), []
@@ -1346,7 +1349,7 @@ def run(break_id):
         for f in c["production_files"][:3]:
             print(f"                     {f}")
     # persist candidates so a run's results are a durable artifact, not just stdout
-    out_file = HERE / "output" / f"{break_id}_candidates.jsonl"
+    out_file = out(f"{break_id}_candidates.jsonl")
     out_file.parent.mkdir(exist_ok=True)
     with out_file.open("w", encoding="utf-8") as fh:
         for c in results:

@@ -33,6 +33,13 @@ Every emitted number carries the file it came from. A stage that was never run p
 manufacture evidence.
 """
 
+import pathlib as _pl, sys as _sys
+_NS_ROOT = _pl.Path(__file__).resolve().parent.parent
+if str(_NS_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_NS_ROOT))
+
+from paths import out, str_out
+
 import json
 import sys
 from collections import Counter
@@ -96,7 +103,7 @@ def rows(path):
 def first_existing(break_id, *suffixes):
     """Resolve a stage to its most authoritative artifact, in the given precedence."""
     for suffix in suffixes:
-        p = OUT / f"{break_id}_{suffix}"
+        p = out(f"{break_id}_{suffix}")
         if p.exists():
             return p
     return None
@@ -201,7 +208,7 @@ def _infer_break(d):
 
 def main():
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-    bpath = OUT / "boundary_dates.json"
+    bpath = out("boundary_dates.json")
     bdates = json.loads(bpath.read_text(encoding="utf-8")) if bpath.exists() else {}
     verified, excluded = load_cases()
     table, provenance, notes = [], [], []
@@ -216,7 +223,7 @@ def main():
         # counts from one gives a numerator whose denominator is a different number.
         # xstream's run predates the checkpoint (added 2026-08-07), so it still falls
         # back to the older screened corpus -- provenance below names which file was used.
-        ck_p = OUT / f"{bid}_classify_checkpoint.jsonl"
+        ck_p = out(f"{bid}_classify_checkpoint.jsonl")
         trav_p = (ck_p if ck_p.exists() else
                   first_existing(bid,
                                  "traversal_RECHECK_SCREENED.jsonl",
@@ -331,7 +338,7 @@ def main():
     dec_rows = []
     for r in table:
         bid = r["break"]
-        rp = OUT / f"{bid}_UNDECIDED_MVNRECHECK.jsonl"
+        rp = out(f"{bid}_UNDECIDED_MVNRECHECK.jsonl")
         if not rp.exists():
             continue
         rs = rows(rp) or []
@@ -345,7 +352,7 @@ def main():
         # negatives -- the artifact was in the project, just not in the module we pointed
         # Maven at. Its verdicts supersede the recheck's for the rows it decided; ignoring
         # this file would report those 5 as still-undecided and understate what was measured.
-        cp = OUT / f"{bid}_TRAVERSAL_CLOSEOUT.jsonl"
+        cp = out(f"{bid}_TRAVERSAL_CLOSEOUT.jsonl")
         if cp.exists():
             for x in rows(cp) or []:
                 v = (x.get("traversal") or {}).get("closeout", {}).get("verdict")

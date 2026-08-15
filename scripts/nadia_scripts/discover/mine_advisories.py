@@ -28,9 +28,11 @@ pipeline by hand-writing its catalog entry, then `bbc_e2e.py run <break_id>`.
 import pathlib as _pl, sys as _sys
 _NS_ROOT = _pl.Path(__file__).resolve().parent.parent
 for _d in (_NS_ROOT, *(_NS_ROOT / _s for _s in
-           ('discover', 'mine', 'traversal', 'screen', 'verify'))):
+           ('discover', 'mine', 'traversal', 'screen', 'verify', 'archive', 'ledger', 'agent'))):
     if str(_d) not in _sys.path:
         _sys.path.insert(0, str(_d))
+
+from paths import out, str_out
 
 import json
 import os
@@ -216,7 +218,7 @@ def main():
     log(f"[3] refined: dropped {n_apps} application/product rows -> {len(deduped)} library candidates")
 
     os.makedirs(OUT_DIR, exist_ok=True)
-    with open(os.path.join(OUT_DIR, "advisory_candidates.json"), "w", encoding="utf-8") as f:
+    with open(str_out("advisory_candidates.json"), "w", encoding="utf-8") as f:
         json.dump(deduped, f, indent=1)
 
     # markdown shortlist (top 40)
@@ -244,7 +246,7 @@ def main():
             f"| {i} | {r['tier']} | {r['score']} | `{r['package']}` | {r['break_boundary_fixed']} | "
             f"{','.join(r['cwes'])} | {cve} | {r['summary'].replace('|','/')} |"
         )
-    with open(os.path.join(OUT_DIR, "ADVISORY_SHORTLIST.md"), "w", encoding="utf-8") as f:
+    with open(str_out("ADVISORY_SHORTLIST.md"), "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
 
     # console: top 25 libraries, tier-ranked

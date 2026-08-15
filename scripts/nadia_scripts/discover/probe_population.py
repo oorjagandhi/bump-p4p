@@ -54,9 +54,12 @@ Usage:
 import pathlib as _pl, sys as _sys
 _NS_ROOT = _pl.Path(__file__).resolve().parent.parent
 for _d in (_NS_ROOT, *(_NS_ROOT / _s for _s in
-           ('discover', 'mine', 'traversal', 'screen', 'verify'))):
+           ('discover', 'mine', 'traversal', 'screen', 'verify', 'archive', 'ledger', 'agent'))):
     if str(_d) not in _sys.path:
         _sys.path.insert(0, str(_d))
+
+from paths import out, str_out
+
 
 
 import argparse
@@ -206,8 +209,8 @@ def main():
     ap.add_argument("--out")
     args = ap.parse_args()
 
-    src = (OUT / "candidate_ranking.json" if args.tier == "deserialize"
-           else OUT / f"candidate_ranking_{args.tier}.json")
+    src = (out("candidate_ranking.json") if args.tier == "deserialize"
+           else out(f"candidate_ranking_{args.tier}.json"))
     if not src.exists():
         sys.exit(f"no ranking at {src} — run rank_candidates.py --tier {args.tier} first")
     rows = json.loads(src.read_text(encoding="utf-8"))["mineable"]
@@ -222,7 +225,7 @@ def main():
     # Checkpoint per library. Each row costs jar downloads plus several rate-limited
     # GitHub searches, so a kill must not discard the whole pass -- the same lesson the
     # search loop, classify loop, undecided resolver and ranking stage each paid for.
-    ck = OUT / f"population_probe_progress_{args.tier}.jsonl"
+    ck = out(f"population_probe_progress_{args.tier}.jsonl")
     done, results = set(), []
     if ck.exists():
         for line in ck.read_text(encoding="utf-8").splitlines():
@@ -305,9 +308,9 @@ def main():
         for x in no_api:
             lines.append(f"| `{x['package']}` | {x['predecessor']} → {x['boundary']} |")
 
-    dest = HERE / (args.out or f"output/POPULATION_PROBE_{args.tier.upper()}.md")
+    dest = Path(args.out) if args.out else out(f"POPULATION_PROBE_{args.tier.upper()}.md")
     dest.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    (OUT / f"population_probe_{args.tier}.json").write_text(
+    out(f"population_probe_{args.tier}.json").write_text(
         json.dumps(results, indent=2), encoding="utf-8")
     print(f"\n[probe] population={len(live)} none={len(dead)} no_new_api={len(no_api)}")
     print(f"[probe] saved -> {dest}")

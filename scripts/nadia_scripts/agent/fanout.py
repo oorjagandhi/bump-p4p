@@ -14,6 +14,13 @@ Usage:
   python fanout.py <break_id>      # worklist for one break -> agent/worklist_<break_id>.json
   python fanout.py --run           # also verify candidates that have a seam provider
 """
+import pathlib as _pl, sys as _sys
+_NS_ROOT = _pl.Path(__file__).resolve().parent.parent
+if str(_NS_ROOT) not in _sys.path:
+    _sys.path.insert(0, str(_NS_ROOT))
+
+from paths import out, str_out
+
 import os, sys, json, glob, collections
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import orchestrator as O
@@ -91,7 +98,7 @@ def candidates_for(break_id, dropped=None):
 
     `dropped`, if a list, collects candidates rejected by the boundary check so callers
     can report them (never drop silently — a hidden drop reads as 'nothing there')."""
-    exact = os.path.join(OUT, f"{break_id}_candidates.jsonl")
+    exact = str_out(f"{break_id}_candidates.jsonl")
     files = [exact] if os.path.exists(exact) else []
     done = recorded_repos()
     to_version = BOUNDARY.get(break_id)
