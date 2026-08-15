@@ -1,0 +1,38 @@
+{
+ "case_id": "commons-beanutils-easy-props",
+ "status": "excluded__adaptation_not_caused_by_the_library_bump",
+ "case_type": "external_mined_candidate__sole_traversal_confirmed_row_for_commons_beanutils",
+ "assessed_date": "2026-08-15",
+ "assessed_by": "commit reading via GitHub API; no differential run",
+ "discovery": {
+  "break_id": "commons-beanutils-1.9.3-to-1.9.4-classproperty",
+  "found_by": "bbc_e2e mine-commits -> classify -> traversal; surfaced 2026-08-15 as the only open traversal-confirmed beanutils row"
+ },
+ "links": {
+  "repo": "https://github.com/j-easy/easy-props",
+  "adaptation_commit": "https://github.com/j-easy/easy-props/commit/b723efb7",
+  "bump_commit": "https://github.com/j-easy/easy-props/commit/8b58bbac"
+ },
+ "the_candidate": {
+  "repo": "j-easy/easy-props",
+  "commit": "b723efb7472cd7c9e57f12720d1d68701b48291b",
+  "parent": "4e2b32aa78f18f063e92875293dde31e47fe2fed",
+  "message": "Add ability to inject properties in non public classes",
+  "commit_date": "2020-03-01",
+  "production_files": [
+   "src/main/java/org/jeasy/props/PropertyInjector.java"
+  ],
+  "traversal": "confirmed: direct bump 1.9.2 -> 1.9.4 in pom.xml @8b58bbac (2020-03-01), only 5 commits before the adaptation",
+  "why_it_looked_strong": "Everything structural was right: a direct crossing of the exact boundary, five commits' distance, one production file, and a NEW test added in the same commit. On metadata alone this was the most promising open row in the catalog."
+ },
+ "why_excluded": {
+  "finding": "The change replaces commons-beanutils with plain reflection for a reason the project states explicitly, and that reason is not the 1.9.4 behavioural change.",
+  "the_diff": "PropertyInjector.setProperty(Object value, String name, Object target) calling PropertyUtils.setProperty(target, name, value) becomes setProperty(Object value, Field field, Object target) doing field.setAccessible(true); field.set(target, value). The PropertyUtils import is dropped; the ConvertUtils import stays, so the dependency itself remains.",
+  "stated_motive": "'Until now, Easy Props relied on Apache commons-beanutils to set properties on target objects. This requires the object class to be public and to provide a public setter. I believe this is because Apache commons-beanutils is targeted at JavaBeans...'",
+  "why_that_is_not_the_break": "The JavaBeans constraint the commit removes -- public class, public setter -- held at 1.9.2 exactly as at 1.9.4. It is not a behaviour that changed at the boundary. The 1.9.4 change is narrower: SuppressPropertiesBeanIntrospector.SUPPRESS_CLASS is registered by default, so the property NAMED 'class' stops being introspectable (CVE-2019-10086).",
+  "the_new_test_confirms_it": "TestPropertyInjectionInNonPublicClass injects into a `private static class MyBean` with a private field and no setter. That would have failed at 1.9.2 too. The test demonstrates a new capability, not a restored one.",
+  "why_a_differential_could_not_discriminate": "Easy-props injects user-annotated fields by name. None of them is called 'class', so PropertyUtils.setProperty is unaffected by SUPPRESS_CLASS at 1.9.4. State 2 (parent code + 1.9.4) would PASS, and the oracle needs it to fail."
+ },
+ "consequence": "commons-beanutils-1.9.3-to-1.9.4-classproperty now has ZERO open traversal-confirmed candidates. Its single mined row is dispositioned.",
+ "note_on_the_break": "This is the second signal that the classproperty break has a very small blast radius, matching the README's screening rule 5: xstream's filter hits every fromXML, whereas beanutils' hits only the property named 'class'. A client has to be reading that specific property to notice at all."
+}

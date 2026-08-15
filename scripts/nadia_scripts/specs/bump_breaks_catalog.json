@@ -1515,7 +1515,7 @@
     "note": "Boundary pinned empirically (see why_it_breaks). Probe: PropertyUtils.getProperty(bean,\"class\") returns on 1.9.3, throws on 1.9.4."
    },
    "assessment": {
-    "status": "measured_zero",
+    "status": "dead_screened_out",
     "measured": {
      "rows_examined": 200,
      "production": 23,
@@ -1523,12 +1523,12 @@
      "behavioural": null,
      "compile_break": null,
      "verified": 0,
-     "excluded": 0
+     "excluded": 1
     },
     "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
-    "assessed_on": null,
-    "reason": null,
-    "unexploited_leads": "traversal-confirmed, no case file, never taken to a differential: j-easy/easy-props",
+    "assessed_on": "2026-08-15",
+    "reason": "Mined 200 rows, 23 production adaptations, 1 traversal-confirmed, 0 verified. The one crossing was feature work, not a break response. Consistent with the break's small blast radius: SUPPRESS_CLASS affects only the property NAMED 'class', so a client must be reading that specific property to notice at all (README screening rule 5).",
+    "unexploited_leads": "none — the single traversal-confirmed candidate (j-easy/easy-props) was assessed 2026-08-15 and excluded: it replaces PropertyUtils with reflection to support non-public classes, a constraint that held at 1.9.2 as well, not a response to the SUPPRESS_CLASS default.",
     "consolidated_from": null,
     "unexploited_leads_method": "Traversal-confirmed rows in output/02_mine/<break>_candidates.jsonl cross-referenced against every repo named in verified_cases/ (including excluded/). A candidate with a case file of ANY status is dispositioned, not open. Recompute rather than trusting this string — the first version of this field omitted the cross-reference and reported an already-excluded candidate (apache/rocketmq-connect) as an open fastjson lead."
    }
