@@ -1,0 +1,27 @@
+{
+ "case_id": "snakeyaml-apache-linkis-1596145e",
+ "status": "excluded__incidental_bump_in_a_feature_commit",
+ "assessed_date": "2026-08-16",
+ "assessed_by": "mined-row metadata; no commit fetch required",
+ "discovery": {
+  "break_id": "snakeyaml-1.x-to-2.0-safeconstructor",
+  "found_by": "mine-commits -> classify -> traversal; open traversal-confirmed row"
+ },
+ "links": {
+  "repo": "https://github.com/apache/linkis",
+  "adaptation_commit": "https://github.com/apache/linkis/commit/1596145e"
+ },
+ "the_candidate": {
+  "repo": "apache/linkis",
+  "commit": "1596145e193e",
+  "message": "Master feature (#5293)",
+  "production_files_count": 141,
+  "library_referenced_files": [],
+  "traversal": "[direct] 1.33 -> 2.0 in pom.xml @fa008fb2, 38 commits before this commit"
+ },
+ "why_excluded": {
+  "finding": "A 141-file feature merge. Same repo and same crossing as bce24744, 38 commits after the bump.",
+  "decisive_evidence": "library_referenced_files is EMPTY: not one of the changed production files references snakeyaml. An adaptation to a library's behavioural break has to live in code that USES the library. If no changed file mentions it, the version move is incidental to whatever the commit is really doing.",
+  "note": "Two rows from one repo and one crossing. The mine emits a row per matching commit, so a long-lived project can contribute several rows for the same bump; they are one negative, not two."
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "case_id": "snakeyaml-apache-linkis-bce24744",
+ "status": "excluded__incidental_bump_in_a_feature_commit",
+ "assessed_date": "2026-08-16",
+ "assessed_by": "mined-row metadata; no commit fetch required",
+ "discovery": {
+  "break_id": "snakeyaml-1.x-to-2.0-safeconstructor",
+  "found_by": "mine-commits -> classify -> traversal; open traversal-confirmed row"
+ },
+ "links": {
+  "repo": "https://github.com/apache/linkis",
+  "adaptation_commit": "https://github.com/apache/linkis/commit/bce24744"
+ },
+ "the_candidate": {
+  "repo": "apache/linkis",
+  "commit": "bce247444da9",
+  "message": "[1.9.0 release] [PES][EC][publicservice][spark] feat: ResultSet field processing",
+  "production_files_count": 53,
+  "library_referenced_files": [],
+  "traversal": "[direct] 1.33 -> 2.0 in pom.xml @fa008fb2, 58 commits before this commit"
+ },
+ "why_excluded": {
+  "finding": "A 53-file release/feature commit. The snakeyaml crossing happened 58 commits earlier and is unrelated.",
+  "decisive_evidence": "library_referenced_files is EMPTY: not one of the changed production files references snakeyaml. An adaptation to a library's behavioural break has to live in code that USES the library. If no changed file mentions it, the version move is incidental to whatever the commit is really doing."
+ }
+}

@@ -1206,12 +1206,12 @@
      "behavioural": 35,
      "compile_break": 9,
      "verified": 0,
-     "excluded": 5
+     "excluded": 8
     },
     "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
     "assessed_on": "2026-08-07",
     "reason": "snakeyaml 2.0 removed EVERY constructor overload that does not take a LoaderOptions. Measured with javap: Constructor at 1.32 offers (), (LoaderOptions), (Class), (Class, LoaderOptions), (TypeDescription); at 2.0 ONLY the LoaderOptions-bearing variants survive. SafeConstructor at 1.32 offers () and (LoaderOptions); at 2.0 only (LoaderOptions). So any client that explicitly constructs a Constructor or SafeConstructor — the common 1.x idiom — fails at javac when it crosses to 2.x and NEVER REACHES the runtime tag-inspection change. The behavioural break is real but is shadowed by a syntactic one on the same classes.",
-    "unexploited_leads": "traversal-confirmed, no case file, never taken to a differential: apache/linkis; kafka-ops/julie",
+    "unexploited_leads": "none — all traversal-confirmed candidates now have case files. The last two, kafka-ops/julie and apache/linkis (two rows, one crossing), were assessed 2026-08-16 and excluded: julie is transitive via jackson-dataformat-yaml, and all three rows have an EMPTY library_referenced_files, i.e. not one changed production file references snakeyaml.",
     "consolidated_from": [
      "verify_status",
      "yield_status"

@@ -1,0 +1,28 @@
+{
+ "case_id": "snakeyaml-kafka-ops-julie",
+ "status": "excluded__transitive_delivery_and_incidental_bump",
+ "assessed_date": "2026-08-16",
+ "assessed_by": "mined-row metadata; no commit fetch required",
+ "discovery": {
+  "break_id": "snakeyaml-1.x-to-2.0-safeconstructor",
+  "found_by": "mine-commits -> classify -> traversal; open traversal-confirmed row"
+ },
+ "links": {
+  "repo": "https://github.com/kafka-ops/julie",
+  "adaptation_commit": "https://github.com/kafka-ops/julie/commit/3fae19d8"
+ },
+ "the_candidate": {
+  "repo": "kafka-ops/julie",
+  "commit": "3fae19d852fc",
+  "message": "While you were gone... (#566)",
+  "production_files_count": 11,
+  "library_referenced_files": [],
+  "traversal": "[transitive] 1.31 -> 2.0 via com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2, same commit"
+ },
+ "why_excluded": {
+  "finding": "Disqualified twice, independently.",
+  "reason_1_transitive": "snakeyaml arrives through jackson-dataformat-yaml. The study covers direct-dependency bumps only (2026-08-15 scoping decision).",
+  "reason_2_no_library_code_changed": "library_referenced_files is EMPTY: not one of the changed production files references snakeyaml. An adaptation to a library's behavioural break has to live in code that USES the library. If no changed file mentions it, the version move is incidental to whatever the commit is really doing.",
+  "note": "The commit message is a catch-all merge, which is consistent with both."
+ }
+}
