@@ -370,10 +370,34 @@ def differential(brk, cand, repo_dir, jdk, props, baseline, driver_src, args, pi
         # or the three states are no longer comparable.
         s3 = state("3_adapted", cand.adapt_sha, state3_version)
 
-    s1 = state("1_baseline", None, baseline)
+    # Check the parent out EXPLICITLY rather than relying on the tree still sitting where
+    # state 2 left it. It does not after a SEAM_B revision: the state-3 re-run above moves
+    # the tree to adapt_sha, so a state 1 that passed sha=None compiled the ADAPTED sources
+    # against the baseline library. On Brokkonaut/GlobalConnectionServer that surfaced as
+    # `cannot find symbol: setCodePointLimit` in GlobalServer.java — the adaptation's own
+    # call, against snakeyaml 1.30 where it does not exist yet — and the oracle read it as
+    # "baseline did not pass cleanly", i.e. blamed the client for a bug in this function.
+    s1 = state("1_baseline", cand.parent_sha, baseline)
 
     summary = [{"name": n, "run": s["run"], "fail": s["fail"], "err": s["err"]}
                for n, s in (("1_baseline", s1), ("2_newlib_oldcode", s2), ("3_adapted", s3))]
+
+    # DID THE TEST ACTUALLY RUN? A state that executed no tests is not evidence of
+    # anything, and the oracle below cannot tell it apart from a state that ran and
+    # passed -- both have fail=0, err=0. oracle/weblogic-deploy-tooling is the case
+    # that proved it: its build enforces a `unit-test-wlst-dir` property pointing at an
+    # Oracle Home, so maven-enforcer failed before compiling, every state reported
+    # run=0, and the ledger recorded "signature_confirmed / state 2 did not trip" -- a
+    # missing Oracle install rendered as a finding about the client's code. Same shape
+    # as a dead GH_TOKEN scoring candidates `no_call_in_diff`.
+    if s1["run"] == 0 or s2["run"] == 0 or s3["run"] == 0:
+        dead = [n for n, s in (("1_baseline", s1), ("2_newlib_oldcode", s2),
+                               ("3_adapted", s3)) if s["run"] == 0]
+        errs = [l.strip() for l in s2["log"].splitlines() if "[ERROR]" in l][:3]
+        return {"outcome": O.OUTCOME_FAILED, "states": summary,
+                "reason": f"no tests executed in {dead} — the differential is void, not "
+                          f"negative. Maven said: " + " | ".join(errs or ["(no [ERROR] lines)"])}
+
     tripped = bool(s2["fail"] or s2["err"])
     signalled = tripped and O.matches_signal(s2["log"], signal)
 

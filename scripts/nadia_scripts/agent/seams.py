@@ -23,22 +23,54 @@ def _client():
     return anthropic.Anthropic()
 
 
-def _ask(system: str, user: str, max_tokens: int = 8000) -> str:
-    """One Claude turn. Adaptive thinking + high effort for code-generation quality."""
-    resp = _client().messages.create(
+def _ask(system: str, user: str, max_tokens: int = 32000) -> str:
+    """One Claude turn. Adaptive thinking + high effort for code-generation quality.
+
+    STREAMED, and with a much larger budget than the 8000 this used to carry, because
+    `max_tokens` caps thinking AND response text together. On the first real Path A run
+    (oracle/weblogic-deploy-tooling, 2026-08-15) adaptive thinking consumed most of an
+    8000-token budget and the Java came back cut off mid-comment. The truncated source
+    was written to disk and handed to Maven, which of course failed to compile it — so a
+    token-budget mistake presented as a candidate that "does not build". Streaming keeps
+    a budget this size from tripping the SDK's non-streaming HTTP timeout.
+
+    A `max_tokens` stop is now an ERROR rather than a shorter string: half a driver is
+    never the right answer, and letting it through turns a harness fault into a finding
+    about the client.
+    """
+    with _client().messages.stream(
         model=MODEL,
         max_tokens=max_tokens,
         thinking={"type": "adaptive"},
         output_config={"effort": "high"},
         system=system,
         messages=[{"role": "user", "content": user}],
-    )
+    ) as stream:
+        resp = stream.get_final_message()
+    if resp.stop_reason == "max_tokens":
+        raise RuntimeError(
+            f"SEAM output truncated at max_tokens={max_tokens} (model={MODEL}). "
+            f"Raise the budget; do not use the partial result.")
+    if resp.stop_reason == "refusal":
+        raise RuntimeError(f"SEAM refused: {getattr(resp, 'stop_details', None)}")
     return "".join(b.text for b in resp.content if b.type == "text")
 
 
 def _strip_fences(s: str) -> str:
-    m = re.search(r"```(?:java)?\s*(.*?)```", s, re.S)
-    return (m.group(1) if m else s).strip() + "\n"
+    """Unwrap a ```java fence. Tolerates a missing CLOSING fence.
+
+    The old pattern required both fences, so an unterminated one fell through to `else s`
+    and the literal ```java line was written into the .java file — the second half of the
+    truncation failure above. Now the opening fence is stripped whether or not it closes,
+    and a leading fence that survives is treated as a bug rather than as source.
+    """
+    m = re.search(r"```(?:java)?\s*(.*?)```", s, re.S)      # fenced, properly closed
+    if not m:
+        m = re.search(r"```(?:java)?\s*(.*)\Z", s, re.S)    # fence opened, never closed
+    out = (m.group(1) if m else s).strip() + "\n"
+    if out.lstrip().startswith("```"):
+        raise RuntimeError("SEAM output still starts with a code fence after stripping")
+    return out
 
 
 def _load(name: str) -> str:
