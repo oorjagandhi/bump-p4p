@@ -1,0 +1,1768 @@
+{
+  "mineable": [
+    {
+      "package": "org.http4k:http4k-format-xml",
+      "boundary": "6.50.0.0",
+      "predecessor": "6.49.0.0",
+      "released": null,
+      "score": 13,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-7mj5-hjjj-8rgw",
+      "summary": "http4k has a potential XXE (XML External Entity Injection) vulnerability",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "tools.jackson.core:jackson-core",
+      "boundary": "3.1.1",
+      "predecessor": "3.1.0",
+      "released": null,
+      "score": 13,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-2m67-wjpj-xhg9",
+      "summary": "Jackson Core: Document length constraint bypass in blocking, async, and DataInput parsers",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.assertj:assertj-core",
+      "boundary": "3.27.7",
+      "predecessor": "3.27.6",
+      "released": null,
+      "score": 12,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-rqfh-9r24-8c9r",
+      "summary": "AssertJ has XML External Entity (XXE) vulnerability when parsing untrusted XML via isXmlEqualTo assertion",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.github.robothy:local-s3-rest",
+      "boundary": "1.21",
+      "predecessor": "1.20",
+      "released": "2025-03",
+      "score": 11,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-g6wm-2v64-wq36",
+      "summary": "LocalS3 CreateBucketConfiguration Endpoint XML External Entity (XXE) Injection",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.netty:netty-codec-dns",
+      "boundary": "4.2.13.Final",
+      "predecessor": "4.2.12.Final",
+      "released": null,
+      "score": 11,
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-cm33-6792-r9fm",
+      "summary": "Netty has a DNS Codec Input Validation Bypass (Encoder + Decoder)",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.netty:netty-codec-redis",
+      "boundary": "4.2.15.Final",
+      "predecessor": "4.2.14.Final",
+      "released": null,
+      "score": 11,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-3244-j874-rhc2",
+      "summary": "Netty: Memory Exhaustion in RedisArrayAggregator due to Deeply Nested Arrays",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.netty:netty-common",
+      "boundary": "4.1.115.Final",
+      "predecessor": "4.1.114.Final",
+      "released": "2024-11",
+      "score": 11,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-xq3w-v528-46rv",
+      "summary": "Denial of Service attack on windows app using netty",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.openremote:openremote-manager",
+      "boundary": "1.22.0",
+      "predecessor": "1.21.0",
+      "released": null,
+      "score": 11,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-g24f-mgc3-jwwc",
+      "summary": "OpenRemote has XXE in Velbus Asset Import",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.ivy:ivy",
+      "boundary": "2.5.2",
+      "predecessor": "2.5.1",
+      "released": "2023-08",
+      "score": 11,
+      "cwes": [
+        "CWE-611",
+        "CWE-91"
+      ],
+      "ghsa": "GHSA-2jc4-r94c-rp7h",
+      "summary": "Apache Ivy External Entity Reference vulnerability",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.msgpack:msgpack-core",
+      "boundary": "0.9.11",
+      "predecessor": "0.9.10",
+      "released": null,
+      "score": 11,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-cw39-r4h6-8j3x",
+      "summary": "MessagePack for Java Vulnerable to Remote DoS via Malicious EXT Payload Allocation",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.postgresql:postgresql",
+      "boundary": "42.7.11",
+      "predecessor": "42.7.10",
+      "released": null,
+      "score": 11,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-98qh-xjc8-98pq",
+      "summary": "pgjdbc: Unbounded PBKDF2 iterations in SCRAM authentication allows CPU exhaustion DoS",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.micronaut:micronaut-context",
+      "boundary": "4.10.22",
+      "predecessor": "4.10.21",
+      "released": null,
+      "score": 10,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-8hjv-92q9-g4xj",
+      "summary": "Micronaut has unbounded `formattersCache` in `TimeConverterRegistrar` that Allows Memory Exhaustion via `Accep",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.netty:netty-codec-compression",
+      "boundary": "4.2.13.Final",
+      "predecessor": "4.2.12.Final",
+      "released": null,
+      "score": 10,
+      "cwes": [
+        "CWE-400",
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-mj4r-2hfc-f8p6",
+      "summary": "Netty Lz4FrameDecoder is vulnerable to resource exhaustion",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.netty:netty-codec-http2",
+      "boundary": "4.2.15.Final",
+      "predecessor": "4.2.14.Final",
+      "released": null,
+      "score": 10,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-5x3r-wrvg-rp6q",
+      "summary": "Netty HTTP/2: Advertised MAX_CONCURRENT_STREAMS are not enforced",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.netty:netty-codec-stomp",
+      "boundary": "4.2.16.Final",
+      "predecessor": "4.2.15.Final",
+      "released": null,
+      "score": 10,
+      "cwes": [
+        "CWE-400",
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-vhch-2wf3-m8rp",
+      "summary": "Netty: Denial of Service via Unbounded Headers in StompSubframeDecoder",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.openremote:openremote-agent",
+      "boundary": "1.24.2",
+      "predecessor": "1.24.1",
+      "released": null,
+      "score": 10,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-7v6w-c3f4-9wpq",
+      "summary": "OpenRemote has an incomplete fix for CVE-2026-40882: XXE in KNXProtocol.startAssetImport() allows arbitrary fi",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.qameta.allure.plugins:xunit-xml-plugin",
+      "boundary": "2.34.1",
+      "predecessor": "2.34.0",
+      "released": "2025-06",
+      "score": 10,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-h7qf-qmf3-85qg",
+      "summary": "Allure Report allows Improper XXE Restriction via DocumentBuilderFactory",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.undertow:undertow-core",
+      "boundary": "2.2.19.Final",
+      "predecessor": "2.2.18.Final",
+      "released": "2022-08",
+      "score": 10,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-95rf-557x-44g5",
+      "summary": "Undertow vulnerable to Dos via Large AJP request",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.opennlp:opennlp-tools",
+      "boundary": "2.5.9",
+      "predecessor": "2.5.8",
+      "released": "2026-04",
+      "score": 10,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-4v8g-86x5-3vrc",
+      "summary": "Apache OpenNLP DictionaryEntryPersistor Vulnerable to XML External Entity (XXE) via Unsanitized Dictionary Par",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.poi:poi-scratchpad",
+      "boundary": "5.2.1",
+      "predecessor": "5.2.0",
+      "released": "2022-02",
+      "score": 10,
+      "cwes": [
+        "CWE-20",
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-mqvp-7rrg-9jxc",
+      "summary": "Improper Input Validation and Allocation of Resources Without Limits or Throttling in poi-scratchpad",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.cyclonedx:cyclonedx-core-java",
+      "boundary": "9.0.4",
+      "predecessor": "9.0.3",
+      "released": "2024-06",
+      "score": 10,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-683x-4444-jxh8",
+      "summary": "Improper Restriction of XML External Entity Reference in org.cyclonedx:cyclonedx-core-java",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.eclipse.leshan:leshan-core",
+      "boundary": "1.5.0",
+      "predecessor": "1.4.2",
+      "released": "2023-08",
+      "score": 10,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-wc9j-gc65-3cm7",
+      "summary": "DDFFileParser is vulnerable to XXE Attacks",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.eclipse.milo:sdk-server",
+      "boundary": "0.6.8",
+      "predecessor": "0.6.7",
+      "released": "2022-09",
+      "score": 10,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-fph9-f5r6-vhqf",
+      "summary": "Eclipse Milo vulnerable to Resource Exhaustion (Denial of Service)",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.neo4j.procedure:apoc",
+      "boundary": "4.4.0.14",
+      "predecessor": "4.4.0.13",
+      "released": "2023-02",
+      "score": 10,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-9vx8-f5c4-862x",
+      "summary": "XML External Entity (XXE) vulnerability in apoc.import.graphml",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "ca.uhn.hapi.fhir:org.hl7.fhir.utilities",
+      "boundary": "6.9.10",
+      "predecessor": "6.9.9",
+      "released": null,
+      "score": 9,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-2f55-g35j-5jmf",
+      "summary": "HAPI FHIR: XXE in XsltUtilities.saxonTransform via unhardened Saxon TransformerFactory",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "com.powsybl:powsybl-commons",
+      "boundary": "6.7.2",
+      "predecessor": "6.7.1",
+      "released": "2025-06",
+      "score": 9,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-qpj9-qcwx-8jv2",
+      "summary": "PowSyBl Core XML Reader allows XXE and SSRF",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "commons-io:commons-io",
+      "boundary": "2.14.0",
+      "predecessor": "2.13.0",
+      "released": "2023-09",
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-78wr-2p64-hpwj",
+      "summary": "Apache Commons IO: Possible denial of service attack on untrusted input to XmlStreamReader",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "de.gematik.refv.commons:commons",
+      "boundary": "2.5.1",
+      "predecessor": "2.5.0",
+      "released": "2024-09",
+      "score": 9,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-68j8-fp38-p48q",
+      "summary": "Gematik Referenzvalidator has an XXE vulnerability that can lead to a Server Side Request Forgery attack",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.micronaut:micronaut-inject",
+      "boundary": "4.10.22",
+      "predecessor": "4.10.21",
+      "released": null,
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-3rfq-4wpf-qqw3",
+      "summary": "Micronaut has Unbounded `bundleCache` in `ResourceBundleMessageSource` that Allows Memory Exhaustion via `Acce",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.netty:netty-codec-http",
+      "boundary": "4.1.108.Final",
+      "predecessor": "4.1.107.Final",
+      "released": "2024-03",
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-5jpm-x58v-624v",
+      "summary": "Netty's HttpPostRequestDecoder can OOM",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.netty:netty-codec-http3",
+      "boundary": "4.2.15.Final",
+      "predecessor": "4.2.14.Final",
+      "released": null,
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-4grm-h2qv-h6w6",
+      "summary": "Netty HTTP/3 QPACK Blocked Streams Memory Exhaustion",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.netty:netty-codec-mqtt",
+      "boundary": "4.2.13.Final",
+      "predecessor": "4.2.12.Final",
+      "released": null,
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-jfg9-48mv-9qgx",
+      "summary": "Netty MQTT: Resource exhaustion in MqttDecoder",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.netty:netty-transport-sctp",
+      "boundary": "4.2.15.Final",
+      "predecessor": "4.2.14.Final",
+      "released": null,
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-5xrh-qmmq-w6ch",
+      "summary": "Netty: SCTP reassembly nests buffers without bound",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.iotdb:flink-tsfile-connector",
+      "boundary": "0.13.3",
+      "predecessor": "0.13.2",
+      "released": "2022-10",
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-g6hg-4v3c-6jq7",
+      "summary": "Apache IoTDB subject to ReDOS with Java 8",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.neethi:neethi",
+      "boundary": "3.2.2",
+      "predecessor": "3.2.1",
+      "released": "2026-04",
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-g36m-9g3m-2vmp",
+      "summary": "Apache Neethi is vulnerable to a Denial of Service attack through algorithmic complexity in policy normalizati",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.struts:struts2-core",
+      "boundary": "2.5.31",
+      "predecessor": "2.5.30",
+      "released": "2023-06",
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-4g42-gqrg-4633",
+      "summary": "Apache Struts vulnerable to memory exhaustion",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.systemds:systemds",
+      "boundary": "2.2.2",
+      "predecessor": "2.2.1",
+      "released": "2022-06",
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-m43h-hfrq-x8wx",
+      "summary": "SystemDS CPU exhaustion vulnerability",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.apache.tomcat.embed:tomcat-embed-core",
+      "boundary": "9.0.118",
+      "predecessor": "9.0.117",
+      "released": "2026-05",
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-gx5v-xp9w-j4cg",
+      "summary": "Apache Tomcat: Unbounded read in WebDAV LOCK and  PROPFIND handling",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.bouncycastle:bcpg-jdk14",
+      "boundary": "1.84",
+      "predecessor": "1.83",
+      "released": null,
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-cj8j-37rh-8475",
+      "summary": "Bouncy Castle Uncontrolled Resource Consumption vulnerability",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.codehaus.jettison:jettison",
+      "boundary": "1.5.2",
+      "predecessor": "1.5.1",
+      "released": "2022-11",
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-x27m-9w8j-5vcw",
+      "summary": "Jettison memory exhaustion",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.eclipse.jetty:jetty-server",
+      "boundary": "12.0.9",
+      "predecessor": "12.0.8",
+      "released": "2024-05",
+      "score": 9,
+      "cwes": [
+        "CWE-400",
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-g8m5-722r-8whq",
+      "summary": "Eclipse Jetty's ThreadLimitHandler.getRemote() vulnerable to remote DoS attacks",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.eclipse.jetty:jetty-xml",
+      "boundary": "10.0.16",
+      "predecessor": "10.0.15",
+      "released": "2023-08",
+      "score": 9,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-58qw-p7qm-5rvh",
+      "summary": "Eclipse Jetty XmlParser allows arbitrary DOCTYPE declarations",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.elasticsearch.plugin:x-pack-core",
+      "boundary": "8.19.8",
+      "predecessor": "8.19.7",
+      "released": null,
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-gphj-4h6p-37xq",
+      "summary": "Elasticsearch privileged authenticated users can cause DoS through Excessive Resource Allocation",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.elasticsearch.plugin:x-pack-security",
+      "boundary": "8.19.9",
+      "predecessor": "8.19.8",
+      "released": null,
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-qf7c-7r9h-mm92",
+      "summary": "Elasticsearch has Excessive Allocation of Resources via Submission of Oversized User Settings Data",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.jline:jline-remote-telnet",
+      "boundary": "4.2.1",
+      "predecessor": "4.2.0",
+      "released": null,
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-2r2c-cx56-8933",
+      "summary": "JLine3 Telnet server: Unauthenticated Remote DoS via Unbounded Telnet NAWS Terminal Geometry",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.opencastproject:opencast-elasticsearch-impl",
+      "boundary": "13.10",
+      "predecessor": "13.8",
+      "released": "2023-08",
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-jh6x-7xfg-9cq2",
+      "summary": "Searching Opencast may cause a denial of service",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.springframework:spring-expression",
+      "boundary": "5.3.17",
+      "predecessor": "5.3.16",
+      "released": "2022-03",
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-558x-2xjg-6232",
+      "summary": "Allocation of Resources Without Limits or Throttling in Spring Framework",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.springframework:spring-messaging",
+      "boundary": "5.3.20",
+      "predecessor": "5.3.19",
+      "released": "2022-05",
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-rqph-vqwm-22vc",
+      "summary": "Allocation of Resources Without Limits or Throttling in Spring Framework",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.springframework:spring-web",
+      "boundary": "5.3.38",
+      "predecessor": "5.3.37",
+      "released": "2024-08",
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-2rmj-mq67-h97g",
+      "summary": "Spring Framework DoS via conditional HTTP request",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.typelevel:jawn-parser_2.12",
+      "boundary": "1.3.2",
+      "predecessor": "1.3.1",
+      "released": "2022-01",
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-vc89-hccf-rq55",
+      "summary": "Hash collision in typelevel jawn",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "org.xerial.snappy:snappy-java",
+      "boundary": "1.1.10.1",
+      "predecessor": "1.1.10.0",
+      "released": "2023-06",
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-qcwq-55hx-v3vh",
+      "summary": "snappy-java's unchecked chunk length leads to DoS",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "ca.uhn.hapi.fhir:org.hl7.fhir.convertors",
+      "boundary": "6.4.0",
+      "predecessor": "6.3.32",
+      "released": "2024-10",
+      "score": 8,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-4cf2-cxp3-rjr7",
+      "summary": "HAPI FHIR XML External Entity (XXE) vulnerability",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "ca.uhn.hapi.fhir:org.hl7.fhir.dstu2",
+      "boundary": "6.9.9",
+      "predecessor": "6.9.8",
+      "released": null,
+      "score": 8,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-7cmj-v6x8-frvv",
+      "summary": "org.hl7.fhir.core: ReDoS via FHIRPath matches()/replaceMatches() in FHIR Validator HTTP Endpoint",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "ca.uhn.hapi.fhir:org.hl7.fhir.dstu2016may",
+      "boundary": "6.3.23",
+      "predecessor": "6.3.22",
+      "released": "2024-08",
+      "score": 8,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-6cr6-ph3p-f5rf",
+      "summary": "XXE vulnerability in XSLT transforms in `org.hl7.fhir.core`",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "ca.uhn.hapi.fhir:org.hl7.fhir.dstu3",
+      "boundary": "6.4.0",
+      "predecessor": "6.3.32",
+      "released": "2024-10",
+      "score": 8,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-gr3c-q7xf-47vh",
+      "summary": "XXE vulnerability in XSLT parsing in `org.hl7.fhir.core`",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "cn.hutool:hutool-core",
+      "boundary": "5.8.11",
+      "predecessor": "5.8.10",
+      "released": "2022-12",
+      "score": 8,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-47vx-fqr5-j2gw",
+      "summary": "HuTool vulnerable to Uncontrolled Resource Consumption",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "com.cedarsoftware:json-io",
+      "boundary": "4.14.1",
+      "predecessor": "4.14.0",
+      "released": "2023-09",
+      "score": 8,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-779h-3r69-4f5p",
+      "summary": "json-io vulnerable to stack exhaustion",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "com.fasterxml.jackson.dataformat:jackson-dataformat-toml",
+      "boundary": "2.15.0",
+      "predecessor": "2.14.3",
+      "released": "2023-04",
+      "score": 8,
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-rg2c-cfxv-qp6f",
+      "summary": "Denial of service in jackson-dataformat-toml",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "com.github.junrar:junrar",
+      "boundary": "7.4.1",
+      "predecessor": "7.4.0",
+      "released": "2022-01",
+      "score": 8,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-m6cj-93v6-cvr5",
+      "summary": "Junrar vulnerable to infinite loop via extracting carefully crafted RAR archive",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "com.google.protobuf:protobuf-java",
+      "boundary": "3.16.3",
+      "predecessor": "3.16.1",
+      "released": "2022-09",
+      "score": 8,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-4gg5-vx3j-xwc7",
+      "summary": "Protobuf Java vulnerable to Uncontrolled Resource Consumption",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "com.nimbusds:nimbus-jose-jwt",
+      "boundary": "9.37.2",
+      "predecessor": "9.37.1",
+      "released": "2023-12",
+      "score": 8,
+      "cwes": [
+        "CWE-400",
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-gvpg-vgmx-xg6w",
+      "summary": "Denial of Service in Connect2id Nimbus JOSE+JWT",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "fr.opensagres.xdocreport:fr.opensagres.xdocreport.document",
+      "boundary": "2.0.4",
+      "predecessor": "2.0.3",
+      "released": "2022-08",
+      "score": 8,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-7jc7-g598-2p64",
+      "summary": "XDocReport affected by an XML External Entity (XXE) vulnerability",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "fr.turri:aXMLRPC",
+      "boundary": "1.12.1",
+      "predecessor": "1.12.0",
+      "released": "2022-11",
+      "score": 8,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-g4r8-28fp-f255",
+      "summary": "aXMLRPC XML External Entity vulnerability",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.micronaut:micronaut-http-server",
+      "boundary": "4.10.17",
+      "predecessor": "4.10.16",
+      "released": null,
+      "score": 8,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-2hcp-gjrf-7fhc",
+      "summary": "Micronaut Framework vulnerable to a Denial of Service in HTML error response caching",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.netty:netty-handler",
+      "boundary": "4.1.94.Final",
+      "predecessor": "4.1.93.Final",
+      "released": "2023-06",
+      "score": 8,
+      "cwes": [
+        "CWE-400",
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-6mjq-h674-j845",
+      "summary": "netty-handler SniHandler 16MB allocation",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.quarkus:quarkus-rest",
+      "boundary": "3.20.5",
+      "predecessor": "3.20.4",
+      "released": null,
+      "score": 8,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-5rfx-cp42-p624",
+      "summary": "Quarkus REST has potential worker thread starvation when HTTP connection is closed while waiting to write",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "io.vertx:vertx-core",
+      "boundary": "4.5.27",
+      "predecessor": "4.5.26",
+      "released": null,
+      "score": 8,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-3g76-f9xq-8vp6",
+      "summary": "Vert.x has a DoS via unbounded server-side SNI SslContext cache growth",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "net.sourceforge.htmlcleaner:htmlcleaner",
+      "boundary": "2.29",
+      "predecessor": "2.28",
+      "released": "2023-06",
+      "score": 8,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-jv4x-j47q-6qvp",
+      "summary": "htmlcleaner vulnerable to stack exhaustion",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    },
+    {
+      "package": "net.sourceforge.htmlunit:neko-htmlunit",
+      "boundary": "2.61.0",
+      "predecessor": "2.60.0",
+      "released": "2022-04",
+      "score": 8,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-6jmm-mp6w-4rrg",
+      "summary": "OutOfMemory Exception by specifically crafted processing instruction in NekoHtml Parser",
+      "removed_signatures": 0,
+      "removed_classes": 0,
+      "samples": [],
+      "verdict": "MINEABLE"
+    }
+  ],
+  "blocked": [
+    {
+      "package": "com.arcadedb:arcadedb-engine",
+      "boundary": "26.6.1",
+      "predecessor": "26.5.1",
+      "released": null,
+      "score": 12,
+      "cwes": [
+        "CWE-776"
+      ],
+      "ghsa": "GHSA-8w86-m9h8-hvqg",
+      "summary": "ArcadeDB: IMPORT DATABASE allows SSRF and arbitrary local file read by authenticated users",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "com.arcadedb.query.sql.parser.Bucket: public java.lang.String toString(java.lang.String);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "com.typesafe.play:play_2.13",
+      "boundary": "2.8.16",
+      "predecessor": "2.8.15",
+      "released": "2022-06",
+      "score": 11,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-v8x6-59g4-5g3w",
+      "summary": "Denial of service binding form from JSON in Play Framework",
+      "removed_signatures": 3,
+      "removed_classes": 0,
+      "samples": [
+        "play.api.mvc.DefaultPlayBodyParsers: public play.api.data.FormBinding formBinding(long);",
+        "play.api.mvc.PlayBodyParsers: public default play.api.data.FormBinding formBinding(long);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "com.amazon.ion:ion-java",
+      "boundary": "1.10.5",
+      "predecessor": "1.10.4",
+      "released": "2023-09",
+      "score": 10,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-264p-99wq-f4j6",
+      "summary": "Ion Java StackOverflow vulnerability",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "com.amazon.ion.impl._Private_IonWriterBase: public com.amazon.ion.impl._Private_IonWriterBase();"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "com.datadoghq:dd-java-agent",
+      "boundary": "1.62.0",
+      "predecessor": "1.61.1",
+      "released": null,
+      "score": 10,
+      "cwes": [
+        "CWE-770",
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-74xj-wh4w-vqxc",
+      "summary": "dd-trace-java: Improper parsing of W3C baggage headers may lead to DoS",
+      "removed_signatures": 9,
+      "removed_classes": 0,
+      "samples": [
+        "datadog.trace.api.Config: public boolean isTraceAgentV05Enabled();",
+        "datadog.trace.bootstrap.otlp.common.OtlpAttributeVisitor: public static int BOOLEAN;"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "commons-fileupload:commons-fileupload",
+      "boundary": "1.5",
+      "predecessor": "1.4",
+      "released": null,
+      "score": 10,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-hfrx-6qgj-fp6c",
+      "summary": "Apache Commons FileUpload denial of service vulnerability",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.commons.fileupload.util.mime.ParseException: public org.apache.commons.fileupload.util.mime.ParseException(java.lang.String);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "io.opentelemetry:opentelemetry-api",
+      "boundary": "1.62.0",
+      "predecessor": "1.61.0",
+      "released": null,
+      "score": 10,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-rcgg-9c38-7xpx",
+      "summary": "OpenTelemetry Java SDK has Unbounded Memory Allocation in W3C Baggage Propagation",
+      "removed_signatures": 0,
+      "removed_classes": 1,
+      "samples": [],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.tomcat:tomcat-coyote",
+      "boundary": "11.0.0-M12",
+      "predecessor": "11.0.0-M11",
+      "released": "2023-10",
+      "score": 10,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-qppj-fm5r-hxr3",
+      "summary": "HTTP/2 Stream Cancellation Attack",
+      "removed_signatures": 2,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.coyote.ActionCode: public static org.apache.coyote.ActionCode IS_PUSH_SUPPORTED;"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.eclipse.jetty.ee10:jetty-ee10-servlets",
+      "boundary": "12.0.3",
+      "predecessor": "12.0.2",
+      "released": "2023-10",
+      "score": 10,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-j26w-f9rq-mr2q",
+      "summary": "Eclipse Jetty has a denial of service vulnerability on DosFilter",
+      "removed_signatures": 0,
+      "removed_classes": 1,
+      "samples": [],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.neo4j.procedure:apoc-core",
+      "boundary": "5.5.0",
+      "predecessor": "5.4.1",
+      "released": "2023-02",
+      "score": 10,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-6wxg-wh7f-rqpr",
+      "summary": "XML External Entity (XXE) vulnerability in apoc.import.graphml",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "apoc.meta.Meta: public long getSampleForLabelCount(long, long);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.yaml:snakeyaml",
+      "boundary": "1.31",
+      "predecessor": "1.30",
+      "released": "2022-08",
+      "score": 10,
+      "cwes": [
+        "CWE-400",
+        "CWE-776"
+      ],
+      "ghsa": "GHSA-3mc7-4q67-w48m",
+      "summary": "Uncontrolled Resource Consumption in snakeyaml",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "org.yaml.snakeyaml.resolver.ResolverTuple: public org.yaml.snakeyaml.resolver.ResolverTuple(org.yaml.snakeyaml.nodes.Tag, java.util.r"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "com.drewnoakes:metadata-extractor",
+      "boundary": "2.18.0",
+      "predecessor": "2.17.0",
+      "released": "2022-05",
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-4v6p-cxf9-98rf",
+      "summary": "Allocation of Resources Without Limits or Throttling in metadata-extractor",
+      "removed_signatures": 13,
+      "removed_classes": 17,
+      "samples": [
+        "com.drew.metadata.mp4.Mp4BoxHandler: public boolean shouldAcceptBox(com.drew.metadata.mp4.boxes.Box);",
+        "com.drew.metadata.mp4.media.Mp4SoundHandler: public void processMediaInformation(com.drew.lang.SequentialReader, com.drew.metadata.mp4.",
+        "com.drew.metadata.mp4.Mp4MediaHandler: public boolean shouldAcceptBox(com.drew.metadata.mp4.boxes.Box);",
+        "com.drew.metadata.mp4.media.Mp4VideoHandler: public void processMediaInformation(com.drew.lang.SequentialReader, com.drew.metadata.mp4.",
+        "com.drew.metadata.heif.HeifDescriptor: public java.lang.String getRotationDescription(int);",
+        "com.drew.metadata.mp4.media.Mp4UuidBoxHandler: public com.drew.imaging.mp4.Mp4Handler<?> processBox(com.drew.metadata.mp4.boxes.Box, byte"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "com.rabbitmq:amqp-client",
+      "boundary": "5.18.0",
+      "predecessor": "5.17.1",
+      "released": "2023-06",
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-mm8h-8587-p46h",
+      "summary": "RabbitMQ Java client's Lack of Message Size Limitation leads to Remote DoS Attack",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "com.rabbitmq.client.RpcClient: public void checkConsumer();"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "io.github.bonigarcia:webdrivermanager",
+      "boundary": "6.1.0",
+      "predecessor": "6.0.1",
+      "released": "2025-04",
+      "score": 9,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-pwm3-776c-8q7q",
+      "summary": "BoniGarcia WebDriverManager Affected By Improper Restriction of XML External Entity Reference",
+      "removed_signatures": 2,
+      "removed_classes": 0,
+      "samples": [
+        "io.github.bonigarcia.wdm.webdriver.WebDriverBrowser: public io.github.bonigarcia.wdm.webdriver.WebDriverBrowser();"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "io.github.skylot:jadx-core",
+      "boundary": "1.3.2",
+      "predecessor": "1.3.1",
+      "released": "2022-01",
+      "score": 9,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-r8j4-96mx-rjcc",
+      "summary": "Improper Restriction of XML External Entity Reference in skylot/jadx",
+      "removed_signatures": 7,
+      "removed_classes": 0,
+      "samples": [
+        "jadx.core.dex.nodes.utils.MethodUtils: public boolean processMethodArgsOverloaded(jadx.core.dex.instructions.args.ArgType, jadx.c",
+        "jadx.core.dex.attributes.nodes.MethodOverrideAttr: public boolean isAtBaseMth();",
+        "jadx.core.dex.visitors.MarkMethodsForInline: public static boolean canInline(jadx.core.dex.nodes.MethodNode);",
+        "jadx.core.utils.files.FileUtils: public static boolean isApkFile(java.io.File);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "io.gitlab.arturbosch.detekt:detekt-core",
+      "boundary": "1.20.0",
+      "predecessor": "1.19.0",
+      "released": "2022-04",
+      "score": 9,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-2cfc-865j-gm4w",
+      "summary": "XML External Entity Reference in detekt",
+      "removed_signatures": 11,
+      "removed_classes": 2,
+      "samples": [
+        "io.gitlab.arturbosch.detekt.core.settings.ExtensionFacade: public io.gitlab.arturbosch.detekt.core.settings.ExtensionFacade(io.github.detekt.tooling.",
+        "io.gitlab.arturbosch.detekt.core.tooling.DefaultLifecycle: public io.gitlab.arturbosch.detekt.core.tooling.DefaultLifecycle(io.gitlab.arturbosch.dete",
+        "io.gitlab.arturbosch.detekt.core.config.ConfigValidatorsKt: public static void checkConfiguration(io.gitlab.arturbosch.detekt.core.ProcessingSettings)",
+        "io.gitlab.arturbosch.detekt.core.config.DefaultPropertiesConfigValidator: public io.gitlab.arturbosch.detekt.core.config.DefaultPropertiesConfigValidator(io.gitlab.",
+        "io.gitlab.arturbosch.detekt.core.baseline.BaselineFacade: public boolean baselineExists$detekt_core(java.nio.file.Path);",
+        "io.gitlab.arturbosch.detekt.core.BindingContextKt: public static org.jetbrains.kotlin.resolve.BindingContext generateBindingContext(org.jetbr"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "io.lettuce:lettuce-core",
+      "boundary": "6.5.1.RELEASE",
+      "predecessor": "6.5.0.RELEASE",
+      "released": "2024-12",
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-q4h9-7rxj-7gx2",
+      "summary": "Withdrawn Advisory: Netty vulnerability included in redis lettuce",
+      "removed_signatures": 12,
+      "removed_classes": 0,
+      "samples": [
+        "io.lettuce.core.cluster.RedisAdvancedClusterReactiveCommandsImpl: public reactor.core.publisher.Flux<V> georadius(K, double, double, double, io.lettuce.core",
+        "io.lettuce.core.cluster.RedisAdvancedClusterAsyncCommandsImpl: public io.lettuce.core.RedisFuture<java.util.List<io.lettuce.core.GeoWithin<V>>> georadius",
+        "io.lettuce.core.cluster.RedisClusterPubSubAsyncCommandsImpl: public io.lettuce.core.RedisFuture<java.util.List<io.lettuce.core.GeoWithin<V>>> georadius"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "io.vertx:vertx-grpc-server",
+      "boundary": "4.5.10",
+      "predecessor": "4.5.9",
+      "released": "2024-09",
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-g76f-gjfx-4rpr",
+      "summary": "Vertx gRPC server does not limit the maximum message size",
+      "removed_signatures": 7,
+      "removed_classes": 0,
+      "samples": [
+        "io.vertx.grpc.server.impl.GrpcServerImpl: public <Req, Resp> io.vertx.grpc.server.GrpcServer callHandler(io.grpc.MethodDescriptor<Re",
+        "io.vertx.grpc.server.impl.GrpcServerRequestImpl: public io.vertx.core.streams.ReadStream handler(io.vertx.core.Handler);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.calcite:calcite-core",
+      "boundary": "1.32.0",
+      "predecessor": "1.31.0",
+      "released": "2022-09",
+      "score": 9,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-fj2m-w3wv-x9pr",
+      "summary": "Apache Calcite before 1.32.0 vulnerable to potential XML External Entity (XXE) attack",
+      "removed_signatures": 1,
+      "removed_classes": 3,
+      "samples": [
+        "org.apache.calcite.runtime.SqlFunctions: public static java.lang.String chr(long);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.commons:commons-compress",
+      "boundary": "1.26.0",
+      "predecessor": "1.25.0",
+      "released": "2024-02",
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-4265-ccf5-phj5",
+      "summary": "Apache Commons Compress: OutOfMemoryError unpacking broken Pack200 file",
+      "removed_signatures": 51,
+      "removed_classes": 1,
+      "samples": [
+        "org.apache.commons.compress.archivers.Lister: public static void main(java.lang.String[]);",
+        "org.apache.commons.compress.archivers.dump.TapeInputStream: public org.apache.commons.compress.archivers.dump.TapeInputStream(java.io.InputStream);",
+        "org.apache.commons.compress.archivers.sevenz.AES256Options: public org.apache.commons.compress.archivers.sevenz.AES256Options(char[]);",
+        "org.apache.commons.compress.archivers.sevenz.BoundedSeekableByteChannelInputStream: public org.apache.commons.compress.archivers.sevenz.BoundedSeekableByteChannelInputStream(",
+        "org.apache.commons.compress.archivers.sevenz.NID: public static int kATime;",
+        "org.apache.commons.compress.archivers.zip.BinaryTree: public org.apache.commons.compress.archivers.zip.BinaryTree(int);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.sis.core:sis-metadata",
+      "boundary": "1.6",
+      "predecessor": "1.5",
+      "released": "2026-01",
+      "score": 9,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-jqmr-2pg9-vfx7",
+      "summary": "Apache SIS has Improper Restriction of XML External Entity Reference vulnerability",
+      "removed_signatures": 28,
+      "removed_classes": 3,
+      "samples": [
+        "org.apache.sis.metadata.iso.DefaultMetadata: public org.apache.sis.metadata.iso.DefaultMetadata(org.opengis.metadata.citation.Responsib",
+        "org.apache.sis.metadata.iso.citation.DefaultCitationDate: public org.apache.sis.metadata.iso.citation.DefaultCitationDate(java.util.Date, org.opengi",
+        "org.apache.sis.metadata.iso.extent.DefaultGeographicDescription: public org.apache.sis.metadata.iso.extent.DefaultGeographicDescription(java.lang.CharSeque",
+        "org.apache.sis.metadata.iso.extent.DefaultTemporalExtent: public java.util.Date getEndTime();",
+        "org.apache.sis.metadata.iso.extent.Extents: public static java.util.Date getDate(org.opengis.metadata.extent.Extent, double);",
+        "org.apache.sis.metadata.sql.internal.shared.SQLUtilities: public static boolean filterFalsePositive(java.lang.String, java.lang.String);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.tomcat:tomcat-catalina",
+      "boundary": "11.0.8",
+      "predecessor": "11.0.7",
+      "released": "2025-06",
+      "score": 9,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-h3gc-qfqq-6h8f",
+      "summary": "Apache Tomcat - DoS in multipart upload",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.catalina.authenticator.SavedRequest: public java.util.OptionalInt getOriginalMaxInactiveIntervalOptional();"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.xmlgraphics:fop-core",
+      "boundary": "2.10",
+      "predecessor": "2.9",
+      "released": "2024-10",
+      "score": 9,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-jqfv-jrvq-95jm",
+      "summary": "Apache XML Graphics FOP XML External Entity Reference ('XXE') vulnerability",
+      "removed_signatures": 97,
+      "removed_classes": 5,
+      "samples": [
+        "org.apache.fop.layoutmgr.LayoutManager: public abstract java.util.List getChangedKnuthElements(java.util.List, int);",
+        "org.apache.fop.layoutmgr.BreakElement: public java.util.List getPendingAfterMarks();",
+        "org.apache.fop.layoutmgr.inline.LeafNodeLayoutManager: public boolean applyChanges(java.util.List);",
+        "org.apache.fop.layoutmgr.inline.FootnoteLayoutManager: public java.util.List getChangedKnuthElements(java.util.List, int, int);",
+        "org.apache.fop.layoutmgr.inline.LineLayoutManager: public java.util.List getChangedKnuthElements(java.util.List, int);",
+        "org.apache.fop.layoutmgr.BlockContainerLayoutManager: public java.util.List getNextKnuthElements(org.apache.fop.layoutmgr.LayoutContext, int);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.liquibase:liquibase-core",
+      "boundary": "4.8.0",
+      "predecessor": "4.7.1",
+      "released": "2022-02",
+      "score": 9,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-jvfv-hrrc-6q72",
+      "summary": "Improper Restriction of XML External Entity Reference in Liquibase",
+      "removed_signatures": 31,
+      "removed_classes": 3,
+      "samples": [
+        "liquibase.integration.ant.AbstractChangeLogBasedTask: public liquibase.repackaged.org.apache.tools.ant.types.resources.FileResource getOutputFil",
+        "liquibase.integration.ant.DBDocTask: public liquibase.repackaged.org.apache.tools.ant.types.resources.FileResource getOutputDir",
+        "liquibase.hub.core.MockHubService: public java.util.SortedMap<java.lang.String, java.util.List> sentObjects;",
+        "liquibase.integration.ant.DiffDatabaseTask: public void setOutputFile(liquibase.repackaged.org.apache.tools.ant.types.resources.FileRe",
+        "liquibase.integration.ant.AntTaskLogger: public liquibase.integration.ant.AntTaskLogger(liquibase.repackaged.org.apache.tools.ant.T",
+        "liquibase.integration.ant.AntResourceAccessor: public liquibase.integration.ant.AntResourceAccessor(liquibase.repackaged.org.apache.tools"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-autoconfigure",
+      "boundary": "3.0.7",
+      "predecessor": "3.0.6",
+      "released": "2023-05",
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-xf96-w227-r7c4",
+      "summary": "Spring Boot Welcome Page Denial of Service",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration: public org.springframework.boot.availability.ApplicationAvailability applicationAvailabili"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.typelevel:grackle-core_2.13",
+      "boundary": "0.18.0",
+      "predecessor": "0.17.2",
+      "released": "2023-12",
+      "score": 9,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-g56x-7j6w-g8r8",
+      "summary": "Grackle has StackOverflowError in GraphQL query processing",
+      "removed_signatures": 86,
+      "removed_classes": 2,
+      "samples": [
+        "grackle.GraphQLParser: public static <T> grackle.Result<T> toResult(java.lang.String, scala.util.Either<cats.pars",
+        "grackle.Mapping: public F compileAndRun(java.lang.String, scala.Option<java.lang.String>, scala.Option<io.c",
+        "grackle.QueryCompiler: public grackle.Env compile$default$5();",
+        "grackle.QueryMinimizer: public static java.lang.String minimizeDocument(scala.collection.immutable.List<grackle.As",
+        "grackle.QueryParser: public static grackle.Result<grackle.Query$Binding> parseArg(grackle.Ast$Name, grackle.Ast",
+        "grackle.SchemaParser: public static grackle.Result<grackle.Directive> mkDirective(grackle.Ast$Directive);"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "co.fs2:fs2-io_2.12",
+      "boundary": "3.12.2",
+      "predecessor": "3.12.1",
+      "released": null,
+      "score": 8,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-rrw2-px9j-qffj",
+      "summary": "FS2 half-shutdown of socket during TLS handshake may result in spin loop on opposite side",
+      "removed_signatures": 19,
+      "removed_classes": 0,
+      "samples": [
+        "fs2.io.net.SelectingSocketGroup: public static com.comcast.ip4s.SocketAddress $anonfun$serverResource$20(java.nio.channels."
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "com.fastasyncworldedit:FastAsyncWorldEdit-Core",
+      "boundary": "2.6.3",
+      "predecessor": "2.6.2",
+      "released": "2023-06",
+      "score": 8,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-whj9-m24x-qhhp",
+      "summary": "FastAsyncWorldEdit vulnerable to Uncontrolled Resource Consumption",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "com.sk89q.worldedit.world.block.BlockCategories: public static com.sk89q.worldedit.world.block.BlockCategory NON_FLAMMABLE_WOOD;"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "com.fasterxml.jackson.core:jackson-databind",
+      "boundary": "2.14.0",
+      "predecessor": "2.13.5",
+      "released": "2022-11",
+      "score": 8,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-3wrr-7qpf-2prh",
+      "summary": "jackson-databind: Deeply nested JsonNode throws StackOverflowError for toString()",
+      "removed_signatures": 10,
+      "removed_classes": 0,
+      "samples": [
+        "com.fasterxml.jackson.databind.DeserializationConfig: public com.fasterxml.jackson.databind.DeserializationConfig(com.fasterxml.jackson.databind",
+        "com.fasterxml.jackson.databind.deser.SettableAnyProperty: public com.fasterxml.jackson.databind.deser.SettableAnyProperty withValueDeserializer(com.",
+        "com.fasterxml.jackson.databind.deser.UnresolvedForwardReference: public com.fasterxml.jackson.databind.deser.UnresolvedForwardReference(java.lang.String);",
+        "com.fasterxml.jackson.databind.node.InternalNodeMapper: public static java.lang.String nodeToPrettyString(com.fasterxml.jackson.databind.JsonNode)",
+        "com.fasterxml.jackson.databind.ser.impl.ReadOnlyClassToSerializerMap: public com.fasterxml.jackson.databind.ser.impl.ReadOnlyClassToSerializerMap(java.util.Map<"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "com.graphql-java:graphql-java",
+      "boundary": "19.11",
+      "predecessor": "19.10",
+      "released": "2024-03",
+      "score": 8,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-h9mq-f6q5-6c8m",
+      "summary": "GraphQL Java does not properly consider ExecutableNormalizedFields (ENFs) as part of preventing denial of serv",
+      "removed_signatures": 5,
+      "removed_classes": 1,
+      "samples": [
+        "graphql.analysis.QueryTraversalContext: public graphql.language.SelectionSetContainer getSelectionSetContainer();",
+        "graphql.normalized.ExecutableNormalizedOperationFactory: public graphql.normalized.ExecutableNormalizedOperationFactory$CollectNFResult collectFrom",
+        "graphql.normalized.ExecutableNormalizedOperation: public graphql.normalized.ExecutableNormalizedOperation(graphql.language.OperationDefiniti"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "com.hazelcast:hazelcast",
+      "boundary": "5.1",
+      "predecessor": "5.0.5",
+      "released": "2022-02",
+      "score": 8,
+      "cwes": [
+        "CWE-611"
+      ],
+      "ghsa": "GHSA-99wh-973f-779p",
+      "summary": "XML External Entity Reference in Hazelcast",
+      "removed_signatures": 819,
+      "removed_classes": 71,
+      "samples": [
+        "com.hazelcast.cache.impl.CacheDataSerializerHook: public static int CACHE_DESTROY_EVENT_CONTEXT;",
+        "com.hazelcast.cache.impl.DeferredValue: public static com.hazelcast.cache.impl.DeferredValue NULL_VALUE;",
+        "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl: public void onClusterConnect();",
+        "com.hazelcast.client.impl.connection.AddressProvider: public abstract com.hazelcast.cluster.Address translate(com.hazelcast.cluster.Member);",
+        "com.hazelcast.client.impl.connection.ClientConnection: public abstract java.util.UUID getClusterUuid();",
+        "com.hazelcast.client.impl.connection.ClientConnectionManager: public abstract java.util.Collection<com.hazelcast.client.impl.connection.ClientConnection"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "dnsjava:dnsjava",
+      "boundary": "3.6.0",
+      "predecessor": "3.5.3",
+      "released": "2024-07",
+      "score": 8,
+      "cwes": [
+        "CWE-770"
+      ],
+      "ghsa": "GHSA-crjg-w57m-rqqf",
+      "summary": "DNSJava vulnerable to KeyTrap - Denial-of-Service Algorithmic Complexity Attacks",
+      "removed_signatures": 15,
+      "removed_classes": 0,
+      "samples": [
+        "org.xbill.DNS.Zone: public org.xbill.DNS.Zone(org.xbill.DNS.Name, org.xbill.DNS.Record[]);",
+        "org.xbill.DNS.dnssec.DnsSecVerifier: public org.xbill.DNS.dnssec.JustifiedSecStatus verify(org.xbill.DNS.dnssec.SRRset, org.xbi",
+        "org.xbill.DNS.dnssec.NSEC3ValUtils: public boolean allNSEC3sIgnoreable(java.util.List<org.xbill.DNS.dnssec.SRRset>, org.xbill.",
+        "org.xbill.DNS.dnssec.TrustAnchorStore: public java.util.Collection<org.xbill.DNS.dnssec.SRRset> items();",
+        "org.xbill.DNS.dnssec.ValUtils: public org.xbill.DNS.dnssec.JustifiedSecStatus nsecProvesNodataDsReply(org.xbill.DNS.Messa",
+        "org.xbill.DNS.dnssec.ValidatingResolver: public java.util.concurrent.CompletionStage<org.xbill.DNS.Message> sendAsync(org.xbill.DNS"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.activemq:artemis-core-client",
+      "boundary": "2.19.1",
+      "predecessor": "2.19.0",
+      "released": "2022-01",
+      "score": 8,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-gf8c-j759-86mg",
+      "summary": "org.apache.activemq:artemis-core-client Vulnerable to Out-of-Bounds Write",
+      "removed_signatures": 1,
+      "removed_classes": 0,
+      "samples": [
+        "org.apache.activemq.artemis.api.core.Message: public default void referenceOriginalMessage(org.apache.activemq.artemis.api.core.Message,"
+      ],
+      "verdict": "REJECT"
+    },
+    {
+      "package": "org.apache.cassandra:cassandra-all",
+      "boundary": "4.0.20",
+      "predecessor": "4.0.19",
+      "released": "2026-03",
+      "score": 8,
+      "cwes": [
+        "CWE-400"
+      ],
+      "ghsa": "GHSA-qffm-gf3j-6mvg",
+      "summary": "Apache Cassandra has an authenticated DoS over CQL",
+      "removed_signatures": 0,
+      "removed_classes": 1,
+      "samples": [],
+      "verdict": "REJECT"
+    }
+  ]
+}
