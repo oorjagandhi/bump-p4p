@@ -1,6 +1,6 @@
 {
  "case_id": "snakeyaml-fawe-folia",
- "status": "excluded__born_past_boundary",
+ "status": "excluded__not_declared_directly__born_past_claim_withdrawn",
  "case_type": "external_mined_candidate__adaptation_axis_raise_verdict",
  "assessed_date": "2026-08-16",
  "assessed_by": "bbc_e2e traversal; no differential run",
@@ -21,5 +21,12 @@
   "finding": "Born at or above the boundary. Traversal: 'no boundary-crossing bump in the adaptation's ancestry, declared or resolved'.",
   "detail": "64 MB, the same value WorldEdit chose -- and FAWE is a WorldEdit fork, so the raise is very likely inherited from upstream rather than authored in response to a crossing. 100 pom.xml commits. Also appears in the snakeyaml-engine corpus.",
   "pattern": "A `raise` verdict proves the client HIT the limit. It does not prove the client CROSSED the boundary. Five open raise candidates were assessed on 2026-08-16 across two breaks -- mmaudet/eu-dss-module, mkarjun/LCS, havochvatten/MSP-Symphony (jackson 2.15) and OussamaLakhdar90/veritas, AxDevv/FAWE-Folia (snakeyaml 1.32) -- and ALL FIVE were born at or above the boundary. They raised a limit that had been there since the day their project started, because their data outgrew the default. Real adaptations to a constraint; not adaptations to a transition."
- }
+ },
+ "traversal_verdict_withdrawn": {
+  "withdrawn": "WITHDRAWN 2026-08-16. This case originally read 'born past the boundary' on the strength of a traversal verdict now known to be unsound: find_boundary_bump returned None both when it had measured no crossing AND when it had measured nothing at all, and verify_traversal rendered None as a confident negative. Re-run against the fixed traversal, this candidate returns UNDECIDED. The born-past claim is withdrawn. See excluded/ineffective_adaptation/jackson-fortnox-reactive-wizard.json for the defect and its regression test.",
+  "born_past_still_holds": false,
+  "basis": "No independent evidence. The re-run timed out at 200s; currently UNMEASURED. One separate observation stands on its own: 64 MB is exactly WorldEdit's value and FAWE is a WorldEdit fork, so the raise is very likely inherited rather than authored in response to a crossing."
+ },
+ "revised_basis": "The exclusion still stands on a DIFFERENT and now-measured ground: the fixed traversal reports the library was never declared under the break's coordinate in any build file examined -- BOM-managed, or declared under a sibling artifact. Under the direct-only scoping decision that is out of scope. This is a weaker and more contingent basis than born-past; see scoping_caveat.",
+ "scoping_caveat": "A BOM-managed dependency may not belong with framework-transitive ones. A client that declares com.fasterxml.jackson:jackson-bom and bumps it 2.14.2 -> 2.15.0 is making a deliberate, explicit version choice, and the version IS pinnable via the BOM property -- which is the reason the direct-only rule gave for excluding transitive candidates. That reason does not apply here. If the scoping decision is revisited, this candidate should be reconsidered rather than left excluded by default."
 }
