@@ -1,0 +1,52 @@
+{
+ "case_id": "jackson-fortnox-reactive-wizard",
+ "status": "excluded__adaptation_tightens_below_the_library_default",
+ "case_type": "external_mined_candidate__adaptation_axis_needs_reading",
+ "assessed_date": "2026-08-16",
+ "assessed_by": "commit + config read; no differential run (correctly, see why_excluded)",
+ "discovery": {
+  "break_id": "jackson-core-2.15-streamreadconstraints",
+  "found_by": "one of only 4 library_confirmed rows among 66 unread needs_reading rows in the adaptation corpus"
+ },
+ "links": {
+  "repo": "https://github.com/FortnoxAB/reactive-wizard",
+  "adaptation_commit": "https://github.com/FortnoxAB/reactive-wizard/commit/6f06ced3",
+  "bump_commit": "https://github.com/FortnoxAB/reactive-wizard/commit/b1ea07d9"
+ },
+ "the_candidate": {
+  "repo": "FortnoxAB/reactive-wizard",
+  "commit": "6f06ced3d239bd2979ab2f9236a9608562076851",
+  "commit_date": "2023-04-26",
+  "message": "Set maxStringLength in Jackson JsonFactory to maxResponseSize in HttpClient.",
+  "production_files": [
+   "client/src/main/java/se/fortnox/reactivewizard/client/HttpClient.java"
+  ],
+  "shape": "A — the HttpClient(config, provider, objectMapper, ...) constructor existed at the parent; the diff only added lines inside it"
+ },
+ "traversal": {
+  "traversal_confirmed": true,
+  "traversal_kind": "direct",
+  "bump_commit": "b1ea07d95d — 'Bump jackson-bom from 2.14.2 to 2.15.0', 2023-04-26",
+  "ancestry": "GitHub compare b1ea07d9...6f06ced3 returns status=ahead, behind_by=0, so the bump is an ancestor of the adaptation, two commits earlier on the same day",
+  "note": "THE PIPELINE GOT THIS WRONG. bbc_e2e traversal returned 'no boundary-crossing bump in the adaptation's ancestry (client was born at/above the boundary)'. See traversal_bug below."
+ },
+ "why_excluded": {
+  "finding": "The adaptation sets jackson's string limit BELOW jackson's own 2.15 default, so it tightens rather than restores. No input can produce pass/fail/pass.",
+  "the_code": "HttpClient's constructor gains: StreamReadConstraints.builder().maxStringLength(config.getMaxResponseSize()).build(), installed on this.objectMapper.getFactory().",
+  "the_decisive_number": "HttpClientConfig.maxResponseSize defaults to 10 * 1024 * 1024 = 10,485,760. StreamReadConstraints.DEFAULT_MAX_STRING_LEN at 2.15 is 20,000,000. The configured limit is therefore roughly HALF the library default.",
+  "size_analysis": {
+   "<= 10,485,760": "state 1 pass / state 2 pass / state 3 pass",
+   "10,485,760 - 20,000,000": "state 1 pass / state 2 pass / state 3 FAIL",
+   "> 20,000,000": "state 1 pass / state 2 FAIL / state 3 FAIL"
+  },
+  "conclusion": "There is no string length for which the baseline passes, the unadapted new version fails, and the adapted version passes. The oracle has nothing to detect.",
+  "why_the_classifier_could_not_score_it": "find_adaptations scored this needs_reading because the value is a variable, config.getMaxResponseSize(), not a literal. resolve_variable only follows assignments within the same diff, and this one resolves in a different file. A raise/lower verdict here required reading HttpClientConfig."
+ },
+ "traversal_bug": {
+  "symptom": "traversal reported 'born at/above the boundary' -- a confident MEASURED negative -- for a client that demonstrably crossed 2.14.2 -> 2.15.0 two commits earlier.",
+  "cause": "The break is keyed on com.fasterxml.jackson.core:jackson-core. This client declares com.fasterxml.jackson:jackson-bom and sets <jackson-bom.version>. dep_version never matches the coordinate, so no build file yields a version at any commit, and the walk concludes the client was always at/above the boundary instead of reporting that it could not resolve anything.",
+  "severity": "A failure to measure rendered as a measurement -- the same class of defect as the pre-2026-08-03 traversal bug recorded in the corpus. Any client declaring a BOM (jackson-bom, spring-boot-dependencies) or a sibling artifact (jackson-databind, jackson-dataformat-yaml) is affected.",
+  "known_affected": "Of nine born-past dispositions made on 2026-08-16, only vdaburon/har-to-jmeter-convertor declares jackson-core directly. mkarjun/LCS declares jackson-bom and jackson-databind; OussamaLakhdar90/veritas declares jackson-dataformat-yaml; mmaudet/eu-dss-module uses a property plus the spring-boot BOM. All must be re-checked."
+ },
+ "value": "Two independent findings from one candidate. The client is not a case, and the reason was one integer in a config class -- an hour of reading instead of a day of driver work. And the pipeline's traversal is provably capable of a confident false negative, which is worth more than the candidate would have been."
+}

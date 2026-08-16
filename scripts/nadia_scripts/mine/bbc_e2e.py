@@ -1129,6 +1129,8 @@ def find_boundary_bump(repo, brk, token, adapt_sha, max_scan=TRAVERSAL_SCAN):
     boundary = brk["verify"]["break_boundary"]
     budget = TRANSITIVE_SCAN if RESOLVE_TRANSITIVE else 0
     unresolved = 0
+    skipped_budget = 0      # commits we never looked at; UNMEASURED, not negative
+    ever_declared = False   # did ANY commit declare the coordinate directly?
 
     def _resolved(bf_path, sha):
         """(version, kind, via) the build actually gets at this commit."""
@@ -1162,6 +1164,7 @@ def find_boundary_bump(repo, brk, token, adapt_sha, max_scan=TRAVERSAL_SCAN):
                 continue
             vnew = dep_version(_gh_file(repo, bf, c["sha"], token), gid, aid)
             if vnew:
+                ever_declared = True
                 vold = dep_version(_gh_file(repo, bf, parents[0]["sha"], token), gid, aid)
                 if _crosses_boundary(vold, vnew, boundary):
                     return {"bump_sha": c["sha"], "buildfile": bf,
@@ -1171,7 +1174,18 @@ def find_boundary_bump(repo, brk, token, adapt_sha, max_scan=TRAVERSAL_SCAN):
 
             # Not declared here -> the library is transitive. Resolve what the build
             # really gets on each side. Budgeted: each resolution is a POM walk.
+            #
+            # A commit skipped for budget is UNMEASURED, not measured-negative. Letting it
+            # fall through silently was a real defect: with the budget spent, `unresolved`
+            # stayed 0, this function returned None, and verify_traversal rendered that as
+            # "client was born at/above the boundary" -- a confident negative about a
+            # commit nobody looked at. FortnoxAB/reactive-wizard was discarded that way on
+            # 2026-08-16; it had in fact crossed 2.14.2 -> 2.15.0 two commits before its
+            # adaptation, but declares com.fasterxml.jackson:jackson-bom rather than the
+            # break's com.fasterxml.jackson.core:jackson-core, so dep_version never matched
+            # and every commit went down this path.
             if budget <= 0:
+                skipped_budget += 1
                 continue
             budget -= 1
             rnew, knew, via = _resolved(bf, c["sha"])
@@ -1196,8 +1210,16 @@ def find_boundary_bump(repo, brk, token, adapt_sha, max_scan=TRAVERSAL_SCAN):
                         "from": rold, "to": rnew, "kind": knew or "transitive",
                         "via": via or via_old, "via_parent": via_old,
                         "date": c["commit"]["committer"]["date"]}
-    if unresolved:
-        return {"unresolved": unresolved}
+    if unresolved or skipped_budget:
+        return {"unresolved": unresolved, "skipped_budget": skipped_budget,
+                "ever_declared": ever_declared}
+    # Nothing crossed AND nothing was left unmeasured. Only trustworthy as a
+    # negative if the coordinate was actually declared somewhere in the history --
+    # otherwise we were reading build files that never mentioned this artifact
+    # (BOM-managed, or declared under a sibling coordinate) and have measured
+    # nothing at all.
+    if not ever_declared:
+        return {"unresolved": 0, "skipped_budget": 0, "ever_declared": False}
     return None
 
 
@@ -1205,12 +1227,25 @@ def verify_traversal(repo, adapt_sha, brk, token, max_commits=MAX_TRAVERSAL_COMM
     """Confirm the client crossed the break boundary within max_commits of the adaptation."""
     bump = find_boundary_bump(repo, brk, token, adapt_sha)
     if bump and "bump_sha" not in bump:
-        # resolution failed on every transitive candidate — unknown, NOT a negative
+        # resolution failed, was skipped for budget, or the coordinate was never declared
+        # anywhere — unknown in every case, NOT a negative.
+        n_unres = bump.get("unresolved", 0)
+        n_skip = bump.get("skipped_budget", 0)
+        if not bump.get("ever_declared", True):
+            why = (f"the library was NEVER declared under {brk['library']['group_id']}:"
+                   f"{brk['library']['artifact_id']} in any build file examined. It is "
+                   f"probably managed by a BOM or declared under a sibling coordinate "
+                   f"(e.g. jackson-bom or jackson-databind rather than jackson-core), so "
+                   f"reading the POM text cannot see it")
+        else:
+            why = (f"no declared-version crossing; {n_unres} commit(s) could not be "
+                   f"resolved and {n_skip} were skipped once the transitive budget ran out")
         return {"traversal_confirmed": False, "resolution": "unresolved",
-                "reason": f"no declared-version crossing, and the transitive version "
-                          f"could not be resolved for {bump['unresolved']} commit(s) "
-                          f"(BOM/parent-managed or unavailable POM) — undecided, "
-                          f"confirm with `mvn dependency:tree`"}
+                "unresolved": n_unres, "skipped_budget": n_skip,
+                "ever_declared": bump.get("ever_declared", True),
+                "reason": f"UNDECIDED, not a negative: {why} — confirm with "
+                          f"`mvn dependency:tree`, and check whether the client declares a "
+                          f"BOM or sibling artifact before treating this as 'born past'"}
     if not bump:
         return {"traversal_confirmed": False,
                 "reason": "no boundary-crossing bump in the adaptation's ancestry, "
