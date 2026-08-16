@@ -111,7 +111,7 @@
   "repo": "The-Ant-Forge/TVRenamer",
   "adapt_sha": "b236f68e",
   "parent_sha": "16803ddb",
-  "build_system": "maven",
+  "build_system": "gradle",
   "module": "",
   "production_files": [
    "src/main/java/org/tvrenamer/controller/UserPreferencesPersistence.java"

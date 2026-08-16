@@ -631,6 +631,25 @@ def classify_commit(repo, sha, brk, token, source=None):
                 ver_parent = dep_version(_gh_file(repo, bf, parent, token), gid, aid)
             break
 
+    # DEPENDENCY REMOVED, not adapted. If no build file declares the library AT the commit,
+    # look at the parent: a version there and none here means the commit DELETED the
+    # dependency. That can never be a case -- state 3 has no library code to drive, so the
+    # same driver cannot run at both commits.
+    #
+    # This also explains a silent gap. The loop above only records ver_parent inside its
+    # success branch, so a removal left BOTH versions None and looked like a resolution
+    # failure. iitsoftware/swiftmq-client reached traversal that way, and its commit
+    # ("Remove XStream dependency and related functionality") deletes the dependency plus
+    # four source files. Costs one extra lookup, and only when nothing was found at all.
+    library_removed = False
+    if ver_at is None and parent:
+        for bf in _module_poms(prod) + BUILD_FILES:
+            vp = dep_version(_gh_file(repo, bf, parent, token), gid, aid)
+            if vp:
+                ver_parent = vp
+                library_removed = True
+                break
+
     lib_source = _is_library_source(repo, prod, gid, aid)
     build_system = _detect_build_system(repo, sha, token)
 
@@ -668,8 +687,10 @@ def classify_commit(repo, sha, brk, token, source=None):
         "build_system": build_system,          # maven | gradle | sbt | unknown
         "is_maven": build_system == "maven",   # verification scope: Maven only
         "is_production_adaptation": bool(prod) and not lib_source,
+        "library_removed": library_removed,    # commit DELETED the dependency; never a case
         "verifiable": (bool(prod) and not lib_source and build_system == "maven"
-                       and evidence != "none" and reach is not False),
+                       and evidence != "none" and reach is not False
+                       and not library_removed),
         "test_only": bool(test) and not prod,
         "version_at_commit": ver_at,
         "version_at_parent": ver_parent,

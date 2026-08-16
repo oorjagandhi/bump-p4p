@@ -118,6 +118,23 @@ def candidates_for(break_id, dropped=None):
             if not (d.get("verifiable") and d.get("is_production_adaptation")): continue
             if d.get("library_source") or d.get("test_only"): continue
             if not d.get("is_maven"): continue
+            # An adaptation to a library's behavioural break has to live in code that USES
+            # the library. If NOT ONE changed production file even mentions it, the version
+            # move is incidental to whatever the commit is really doing. Measured 2026-08-16
+            # on four candidates that had passed every other filter and reached traversal:
+            # onap/so (218 files, Spring Boot 3 migration), kafka-ops/julie, and two
+            # apache/linkis feature merges (53 and 141 files). All four: empty list.
+            # The field is already computed by classify, so this costs nothing.
+            #
+            # Validated against the known answers before being switched on: every mined row
+            # for a repo that produced a verified_bbc case has library_referenced_files >= 1
+            # (8 rows across xstream, snakeyaml and the Axon pair). This filter drops none of
+            # them. Re-run that check if the field's definition in classify ever changes.
+            if not d.get("library_referenced_files"):
+                if dropped is not None:
+                    dropped.append({"repo": d.get("repo"), "sha": d.get("sha", "")[:12],
+                                    "reason": "no changed production file references the library"})
+                continue
             sha = d.get("sha", "")[:12]
             if sha in seen: continue
             seen.add(sha)

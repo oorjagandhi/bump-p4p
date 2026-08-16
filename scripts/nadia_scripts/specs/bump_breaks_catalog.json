@@ -854,10 +854,13 @@
      "--add-opens java.base/java.lang.reflect=ALL-UNNAMED",
      "--add-opens java.base/java.text=ALL-UNNAMED",
      "--add-opens java.base/java.io=ALL-UNNAMED",
-     "--add-opens java.desktop/java.beans=ALL-UNNAMED"
+     "--add-opens java.desktop/java.beans=ALL-UNNAMED",
+     "--add-opens java.desktop/java.awt.font=ALL-UNNAMED",
+     "--add-opens java.desktop/java.awt=ALL-UNNAMED"
     ],
     "signal_grep": "ForbiddenClassException|NoTypePermission|security framework of XStream not initialized|no security framework configured",
-    "note": "PROVEN end-to-end on The-Ant-Forge/TVRenamer (verified_cases/xstream-tvrenamer.json)."
+    "note": "PROVEN end-to-end on The-Ant-Forge/TVRenamer (verified_cases/xstream-tvrenamer.json).",
+    "jvm_add_opens_note": "java.desktop/java.awt.font is REQUIRED on JDK 17, not optional. Without it XStream 1.4.9's FontConverter/TextAttributeConverter throw InaccessibleObjectException during `new XStream(...)` construction, so STATE 1 fails for a reason unrelated to the break. That is a false baseline: the differential looks broken when the client is fine. Found 2026-08-15 while driving The-Ant-Forge/TVRenamer on JDK 17. The older 1.4.x the baseline runs is what needs it -- the boundary version alone will not reveal the requirement."
    },
    "brief": {
     "what_changed": "XStream changed its security model from a blacklist (deny a few known-dangerous types, allow everything else) to a whitelist (allow only a small set of built-in types, deny everything else). Client code that unmarshals its own domain types without first calling allowTypes / allowTypesByWildcard / addPermission still compiles and still marshals correctly, but now throws at unmarshal time. Marshalling (object -> XML) is unaffected; the break is on the read path.",

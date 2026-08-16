@@ -46,7 +46,7 @@
   "repo": "PetteriM1/NukkitPetteriM1Edition",
   "adapt_sha": "9cc88d0e522c",
   "parent_sha": "3da731dad3b21d6439a03df5defcc297de20794f",
-  "build_system": "maven",
+  "build_system": "gradle",
   "production_files": [
    "src/main/java/cn/nukkit/utils/Config.java",
    "src/main/java/cn/nukkit/plugin/PluginBase.java"
