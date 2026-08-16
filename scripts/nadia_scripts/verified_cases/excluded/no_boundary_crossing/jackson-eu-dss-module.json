@@ -1,0 +1,34 @@
+{
+ "case_id": "jackson-eu-dss-module",
+ "status": "excluded__born_past_boundary_and_transitive_delivery",
+ "case_type": "external_mined_candidate__adaptation_axis_raise_verdict",
+ "assessed_date": "2026-08-16",
+ "assessed_by": "classify + traversal + POM history read; no differential run",
+ "discovery": {
+  "break_id": "jackson-core-2.15-streamreadconstraints",
+  "found_by": "find_adaptations.py (--identifier maxStringLength). One of 3 open `raise` verdicts in the adaptation corpus that had never entered the mine/classify/traversal pipeline."
+ },
+ "links": {
+  "repo": "https://github.com/mmaudet/eu-dss-module",
+  "adaptation_commit": "https://github.com/mmaudet/eu-dss-module/commit/ff05ad9b"
+ },
+ "the_candidate": {
+  "repo": "mmaudet/eu-dss-module",
+  "commit": "ff05ad9be59d94fe7c3f160d327371b5c7cf7533",
+  "parent": "b14fa4c32775b00f9d5ad377be9671bc8e610722",
+  "commit_date": "2026-05-31",
+  "message": "fix(server): raise Jackson maxStringLength to 200M so large docs (base64-in-JSON) parse",
+  "production_files": [
+   "eu-dss-server/src/main/java/com/linagora/eudss/server/config/JacksonConfig.java"
+  ],
+  "value_set": 200000000,
+  "why_it_looked_strong": "Everything the pipeline can check said yes. classify: verifiable=true, is_production_adaptation=true, library_referenced_files=1, library_removed=false, build_system=maven, not a fork, reachable from the default branch. The adaptation is a genuine RAISE to 200M in a single production config class, and the commit message names the symptom outright -- large documents stopped parsing. On the adaptation axis this was the best-shaped open candidate in the project."
+ },
+ "why_excluded": {
+  "finding": "Disqualified twice, independently.",
+  "reason_1_born_past_boundary": "The repository has exactly ONE pom.xml commit in its entire history -- the initial commit, 2026-05-29 -- and it sets <jackson.version>2.18.2</jackson.version>. The adaptation is two days later. The project was created well past the 2.15.0 boundary and never crossed it. What it hit was the 2.15 default (20,000,000 characters) meeting its own base64-in-JSON payloads: a latent constraint met by the data, not a break the project lived through.",
+  "reason_2_transitive": "jackson-core is never declared directly. The parent POM sets a jackson.version property and imports the spring-boot-dependencies BOM; the server module declares spring-boot-starter-web and dss-* artifacts. Traversal returns `resolution: unresolved`. Under the direct-only scoping rule this is out of scope regardless of the crossing question.",
+  "note": "version_at_commit and version_at_parent were both null in classify, which is the same signature a REMOVED dependency produces. The library_removed check added on 2026-08-16 correctly distinguished them: it looked at the parent, found no declaration there either, and returned false."
+ },
+ "what_this_says_about_the_break": "A raise verdict proves a client hit the limit. It does NOT prove the client crossed the boundary. As jackson 2.15 recedes, an increasing share of maxStringLength raises will be projects born on 2.15+ whose data outgrew the default -- real adaptations to a constraint, but not to a transition. The adaptation axis cannot tell these apart on its own; only the POM history can."
+}

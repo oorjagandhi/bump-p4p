@@ -1,0 +1,25 @@
+{
+ "case_id": "jackson-mkarjun-lcs",
+ "status": "excluded__born_past_boundary",
+ "case_type": "external_mined_candidate__adaptation_axis_raise_verdict",
+ "assessed_date": "2026-08-16",
+ "assessed_by": "bbc_e2e traversal; no differential run",
+ "discovery": {
+  "break_id": "jackson-core-2.15-streamreadconstraints",
+  "found_by": "find_adaptations.py raise verdict that had never entered the mine/classify/traversal pipeline"
+ },
+ "links": {
+  "repo": "https://github.com/mkarjun/LCS",
+  "adaptation_commit": "https://github.com/mkarjun/LCS/commit/d16945f3"
+ },
+ "the_candidate": {
+  "repo": "mkarjun/LCS",
+  "commit": "d16945f30d490ee23bc06dad224c42e19ffbe856",
+  "value_set": 100000000
+ },
+ "why_excluded": {
+  "finding": "Born at or above the boundary. Traversal: 'no boundary-crossing bump in the adaptation's ancestry, declared or resolved'.",
+  "detail": "84 pom.xml commits and jackson-databind declared directly, so this had the deepest history of the five and was the most likely to show a crossing. Traversal: no boundary-crossing bump anywhere in the adaptation's ancestry. jackson.version stands at 2.21.4.",
+  "pattern": "A `raise` verdict proves the client HIT the limit. It does not prove the client CROSSED the boundary. Five open raise candidates were assessed on 2026-08-16 across two breaks -- mmaudet/eu-dss-module, mkarjun/LCS, havochvatten/MSP-Symphony (jackson 2.15) and OussamaLakhdar90/veritas, AxDevv/FAWE-Folia (snakeyaml 1.32) -- and ALL FIVE were born at or above the boundary. They raised a limit that had been there since the day their project started, because their data outgrew the default. Real adaptations to a constraint; not adaptations to a transition."
+ }
+}

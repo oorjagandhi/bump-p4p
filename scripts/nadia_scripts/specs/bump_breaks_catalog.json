@@ -1373,7 +1373,7 @@
     "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
     "assessed_on": null,
     "reason": "SEARCHED, NOT MINED. The richest population any break has shown -- 99 commits on maxStringLength alone, with maxNestingDepth, maxNumberLength and maxNameLength still untouched -- and no usable candidate, for a reason that is a finding about the METHOD rather than about jackson.\n\nTHE SEARCH HAS A RECENCY BIAS THAT WORKS AGAINST US. Adaptation commits by year: 2021:1, 2023:2, 2025:13, 2026:83. Eighty-three of ninety-nine from the current year, three years after the boundary. That is not how adaptation behaves; it is GitHub's commit index favouring recent activity. Cases live NEAR the boundary by definition, so the primary discovery tool systematically under-samples exactly where they are. This is a better explanation for the snakeyaml 1.26 zero than build-file restructuring alone, and it applies to every boundary older than a year or two.\n\nThe three unambiguous raises are all born past: mmaudet/eu-dss-module (200M, on jackson 2.18.2, one pom commit ever), mkarjun/LCS (100M, on 2.21.4), havochvatten/MSP-Symphony (MAX_VALUE, jackson transitive, untraceable). All fixed in 2025-2026.\n\nOnly two commits fall in the 2023 crossing window. FortnoxAB/reactive-wizard pins maxStringLength to exa",
-    "unexploited_leads": null,
+    "unexploited_leads": "none — all 3 open `raise` candidates in the adaptation corpus were assessed 2026-08-16 (mmaudet/eu-dss-module, mkarjun/LCS, havochvatten/MSP-Symphony) and ALL are born past the 2.15.0 boundary. 66 needs_reading rows remain unread; the raise rows were the high-value subset and are now exhausted.",
     "consolidated_from": [
      "_outcome_2026_08_12",
      "verify_status"
@@ -1382,7 +1382,8 @@
      "_outcome_2026_08_12": "SEARCHED, NOT MINED. The richest population any break has shown -- 99 commits on maxStringLength alone, with maxNestingDepth, maxNumberLength and maxNameLength still untouched -- and no usable candidate, for a reason that is a finding about the METHOD rather than about jackson.\n\nTHE SEARCH HAS A RECENCY BIAS THAT WORKS AGAINST US. Adaptation commits by year: 2021:1, 2023:2, 2025:13, 2026:83. Eighty-three of ninety-nine from the current year, three years after the boundary. That is not how adaptation behaves; it is GitHub's commit index favouring recent activity. Cases live NEAR the boundary by definition, so the primary discovery tool systematically under-samples exactly where they are. This is a better explanation for the snakeyaml 1.26 zero than build-file restructuring alone, and it applies to every boundary older than a year or two.\n\nThe three unambiguous raises are all born past: mmaudet/eu-dss-module (200M, on jackson 2.18.2, one pom commit ever), mkarjun/LCS (100M, on 2.21.4), havochvatten/MSP-Symphony (MAX_VALUE, jackson transitive, untraceable). All fixed in 2025-2026.\n\nOnly two commits fall in the 2023 crossing window. FortnoxAB/reactive-wizard pins maxStringLength to exactly the 20M default rather than raising above it -- not a recovery. TwoHeadsDragon/metersphere raises to 200,000,000 in three production files in June 2023, two months after 2.15.0, which is the right shape -- but it is a zero-star COPY of metersphere/metersphere (13k stars), the upstream never carries the change at any of those three paths, and jackson is transitive there with no declared version to walk. Weak citation plus untraceable crossing: not worth a build.\n\nWORTH RETURNING TO if the recency bias is worked around -- e.g. code search plus file-history walking, which reaches repos commit search cannot index at all. The population is genuinely large and the boundary (2023-04) is newer than the one that produced three cases.",
      "verify_status": "VERIFIED_BBC 2026-07-20 — 3-state differential green (2.14.2 PASS / 2.15.0 FAIL 'StreamConstraintsException: Depth (1001) exceeds the maximum allowed nesting depth (1000)' / adapted PASS) on scratchpad/jackson-streamconstraints-harness. Real signature_confirmed clients: dotCMS/core@b30dfa31, cibseven/cibseven@81a8d2b2, centiservice/mats3@79e05ec1, ESSI-Lab/DAB@9385e949. Mining yield: 184 commits / 159 repos."
     },
-    "unexploited_leads_method": null
+    "unexploited_leads_method": null,
+    "adaptation_axis_time_decay": "A `raise` verdict proves the client HIT the limit. It does not prove the client CROSSED the boundary. Five open raise candidates were assessed on 2026-08-16 across two breaks -- mmaudet/eu-dss-module, mkarjun/LCS, havochvatten/MSP-Symphony (jackson 2.15) and OussamaLakhdar90/veritas, AxDevv/FAWE-Folia (snakeyaml 1.32) -- and ALL FIVE were born at or above the boundary. They raised a limit that had been there since the day their project started, because their data outgrew the default. Real adaptations to a constraint; not adaptations to a transition."
    }
   },
   {
@@ -1733,9 +1734,10 @@
     "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
     "assessed_on": null,
     "reason": null,
-    "unexploited_leads": "none — all 7 traversal-confirmed candidates now have case files (4 verified_bbc, 3 excluded... see census breakdown). The last two, bspfsystems/YamlConfiguration and swagger-api/swagger-parser, were read on 2026-08-15 and are both knob-at-default: each sets 3*1024*1024, snakeyaml's own default, so behaviour is identical across the boundary for every input size.",
+    "unexploited_leads": "none among raise verdicts — OussamaLakhdar90/veritas and AxDevv/FAWE-Folia assessed 2026-08-16, both born past the boundary. 5 needs_reading rows remain unread.",
     "consolidated_from": null,
-    "unexploited_leads_method": "Traversal-confirmed rows in output/02_mine/<break>_candidates.jsonl cross-referenced against every repo named in verified_cases/ (including excluded/). A candidate with a case file of ANY status is dispositioned, not open. Recompute rather than trusting this string — the first version of this field omitted the cross-reference and reported an already-excluded candidate (apache/rocketmq-connect) as an open fastjson lead."
+    "unexploited_leads_method": "Traversal-confirmed rows in output/02_mine/<break>_candidates.jsonl cross-referenced against every repo named in verified_cases/ (including excluded/). A candidate with a case file of ANY status is dispositioned, not open. Recompute rather than trusting this string — the first version of this field omitted the cross-reference and reported an already-excluded candidate (apache/rocketmq-connect) as an open fastjson lead.",
+    "adaptation_axis_time_decay": "A `raise` verdict proves the client HIT the limit. It does not prove the client CROSSED the boundary. Five open raise candidates were assessed on 2026-08-16 across two breaks -- mmaudet/eu-dss-module, mkarjun/LCS, havochvatten/MSP-Symphony (jackson 2.15) and OussamaLakhdar90/veritas, AxDevv/FAWE-Folia (snakeyaml 1.32) -- and ALL FIVE were born at or above the boundary. They raised a limit that had been there since the day their project started, because their data outgrew the default. Real adaptations to a constraint; not adaptations to a transition."
    }
   },
   {
@@ -1798,9 +1800,10 @@
     "measured_source": "output/reports/CENSUS.md (regenerate with ledger/census.py)",
     "assessed_on": null,
     "reason": null,
-    "unexploited_leads": null,
+    "unexploited_leads": "none among raise verdicts — the same two repos as the snakeyaml-1.32 corpus (veritas, FAWE-Folia), both born past the boundary. One project, two break entries, one negative.",
     "consolidated_from": null,
-    "unexploited_leads_method": null
+    "unexploited_leads_method": null,
+    "adaptation_axis_time_decay": "A `raise` verdict proves the client HIT the limit. It does not prove the client CROSSED the boundary. Five open raise candidates were assessed on 2026-08-16 across two breaks -- mmaudet/eu-dss-module, mkarjun/LCS, havochvatten/MSP-Symphony (jackson 2.15) and OussamaLakhdar90/veritas, AxDevv/FAWE-Folia (snakeyaml 1.32) -- and ALL FIVE were born at or above the boundary. They raised a limit that had been there since the day their project started, because their data outgrew the default. Real adaptations to a constraint; not adaptations to a transition."
    }
   },
   {
