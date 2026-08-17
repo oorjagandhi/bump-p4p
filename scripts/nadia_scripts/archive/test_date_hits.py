@@ -5,8 +5,12 @@ on apache/tika: an OLD adaptation in a long-named file, and a LATER one in a sho
 file that the old pick_file would have chosen.
 """
 import sys, pathlib
-sys.path.insert(0, r"C:\bump-p4p\scripts\nadia_scripts\discover")
-sys.path.insert(0, r"C:\bump-p4p\scripts\nadia_scripts")
+# Relative to this file so the toolkit can be copied anywhere. This file lives in
+# <nadia_scripts>/archive/, so the toolkit root is one directory up.
+_NS = pathlib.Path(__file__).resolve().parent.parent
+for _d in (_NS, _NS / "discover", _NS / "archive", _NS / "mine"):
+    if str(_d) not in sys.path:
+        sys.path.insert(0, str(_d))
 
 import date_hits as D
 import bbc_e2e as B

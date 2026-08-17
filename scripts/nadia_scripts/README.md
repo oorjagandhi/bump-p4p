@@ -20,6 +20,11 @@ A **case** is a real client repository where all of this is true:
 Everything in this directory exists to find those, or to prove cheaply that a given
 library cannot produce one.
 
+> **Using this in another repository?** Copy this folder anywhere and run
+> `python install.py`. The pipeline is self-locating; the installer only wires up the two
+> things that must sit at a repo root (`.gitignore` rules and `.claude/`). See
+> [`PORTABILITY.md`](PORTABILITY.md).
+
 ## The finding so far
 
 **They are rare.** Of the libraries mined to completion, one has produced verified cases

@@ -21,8 +21,11 @@ set -eu
 REPO=https://github.com/AthenZ/athenz.git
 PARENT=ffa5cd11659d3eef5d2e2563fd8f2e13046b5872
 ADAPT=82a1f1a2df6f7f7e24f7f79b8b2fc1107607c63b
-JH="${JAVA_HOME:-C:/Program Files/Java/jdk-21}"
-M2="${BBC_M2_REPO:-C:/bump-p4p/.bbc_m2}"
+# Both fall back to whatever the toolkit resolves rather than to the absolute paths of the
+# box this was first run on, so the harness still works from a copied folder. `paths.m2_repo()`
+# keeps using an existing .bbc_m2 in an ancestor directory when there is one.
+JH="${JAVA_HOME:-$(python -c 'import sys;sys.path.insert(0,sys.argv[1]);from orchestrator import JDKS;print(JDKS["21"])' "$(cd "$(dirname "$0")/../../agent" && pwd)")}"
+M2="${BBC_M2_REPO:-$(python -c 'import sys;sys.path.insert(0,sys.argv[1]);from paths import str_m2;print(str_m2())' "$(cd "$(dirname "$0")/../.." && pwd)")}"
 W="${1:-./work}"
 
 mkdir -p "$W/libs"

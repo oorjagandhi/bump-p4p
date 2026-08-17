@@ -64,12 +64,18 @@ import tempfile
 from pathlib import Path
 
 import bbc_e2e as B
+from paths import str_m2
 
 sys.stdout.reconfigure(encoding="utf-8")
 HERE = Path(__file__).resolve().parent.parent
 
 MVN_TIMEOUT = int(os.environ.get("BBC_MVN_TIMEOUT", "420"))
-M2 = os.environ.get("BBC_M2_REPO", "C:/bump-p4p/.bbc_m2")
+# Resolved by paths.m2_repo() rather than derived here. This line used to build
+# `<toolkit>/../.bbc_m2` itself, which is a THIRD location -- not ~/.m2, and not the
+# repo-root .bbc_m2 the verified runs actually used. Nothing errors when that is wrong;
+# Maven just re-downloads the world into an empty directory beside the populated one.
+# Override with BBC_M2_REPO.
+M2 = str_m2()
 SETTINGS = os.environ.get("BBC_MVN_SETTINGS")  # optional -s file
 
 

@@ -22,6 +22,7 @@ contract both sides already agree on. Keeping the rule in one table means produc
 consumer cannot drift apart.
 """
 
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -102,3 +103,37 @@ def out(name: str) -> Path:
 def str_out(name: str) -> str:
     """`out()` as a plain string, for the callers still using os.path.join."""
     return str(out(name))
+
+
+def m2_repo() -> Path:
+    """The local Maven repository the differential runs against (-Dmaven.repo.local).
+
+    Isolated from ~/.m2 on purpose: a differential has to prove which jar it resolved,
+    and a shared repo full of other projects' artifacts (and their `*.lastUpdated`
+    failure markers) is exactly what makes that unprovable.
+
+    Resolution order, and why it is not simply "<toolkit>/.bbc_m2":
+
+    1. BBC_M2_REPO, for anyone who wants it on a different disk -- this cache reaches
+       hundreds of MB, which is a real constraint on a small system drive.
+    2. An EXISTING .bbc_m2 in an ancestor directory. Callers used to derive this
+       independently and disagreed: one built `<toolkit>/../.bbc_m2`, and the populated
+       cache on the original machine sits at the repo root, two levels above. Silently
+       defaulting past a populated cache does not error -- it just re-downloads
+       everything into a second copy. So an existing one wins.
+    3. `<toolkit>/.bbc_m2`, which is inside the copied folder and therefore correct on a
+       machine that has never run this before.
+    """
+    env = os.environ.get("BBC_M2_REPO")
+    if env:
+        return Path(env)
+    for d in ROOT.parents:
+        cached = d / ".bbc_m2"
+        if cached.is_dir():
+            return cached
+    return ROOT / ".bbc_m2"
+
+
+def str_m2() -> str:
+    """`m2_repo()` as a plain string, for callers building Maven command lines."""
+    return str(m2_repo())

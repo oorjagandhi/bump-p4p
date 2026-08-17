@@ -29,22 +29,87 @@ def mvn_base() -> list:
     return [MVN] + (["-s", MVN_SETTINGS] if MVN_SETTINGS and os.path.exists(MVN_SETTINGS) else [])
 from dataclasses import dataclass, field, asdict
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-NADIA = os.path.join(ROOT, "scripts", "nadia_scripts")
+# PORTABILITY. This used to walk four directories up to the repo root and then re-append
+# "scripts/nadia_scripts", which hardcoded one checkout layout: move the folder anywhere else
+# and NADIA pointed at a path that does not exist, breaking run_worklist, fanout and every
+# other module that imports this one. Locate ourselves relatively instead -- this file lives
+# in <nadia_scripts>/agent/, so the toolkit root is one directory up. Everything else in the
+# toolkit already does this; orchestrator was the sole exception.
+NADIA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(NADIA)          # containing directory; kept for callers that use it
 CATALOG = os.path.join(NADIA, "specs", "bump_breaks_catalog.json")
 
 # JDK table (see AGENT_DESIGN §4). Extend as needed.
-JDKS = {
-    # Java 8 is not optional. Projects old enough to be crossing these boundaries routinely
-    # predate the JDK's JAXB removal (javax.xml.bind, gone in 11), so on 11+ they fail to
-    # compile AT BASELINE — which the oracle would otherwise read as "baseline did not pass
-    # cleanly", i.e. as a fact about the client. marklogic/marklogic-contentpump was verified
-    # by hand on 8. Extracted from the Adoptium zip; the MSI install fails 1603 on this box.
-    "8": r"C:/Users/nadia/jdk8/jdk8u492-b09",
-    "11": r"C:/Program Files/Eclipse Adoptium/jdk-11.0.31.11-hotspot",
-    "17": r"C:/Program Files/Java/jdk-17",
-    "21": r"C:/Program Files/Java/jdk-21",
-}
+#
+# Java 8 is not optional. Projects old enough to be crossing these boundaries routinely
+# predate the JDK's JAXB removal (javax.xml.bind, gone in 11), so on 11+ they fail to compile
+# AT BASELINE — which the oracle would otherwise read as "baseline did not pass cleanly",
+# i.e. as a fact about the client. marklogic/marklogic-contentpump was verified by hand on 8.
+#
+# Resolution per version: BBC_JDK_<n> if set, else the first hit from a scan of the usual
+# install roots on this platform. The scan is what makes the folder copyable — this table
+# used to be four literal paths from one Windows box, so a copy on any other machine failed
+# every case with "JDK N not installed" until someone edited the source. `install.py --doctor`
+# prints what resolved, and the env var is still the override when the scan guesses wrong.
+
+_JDK_ROOTS = (
+    # Windows
+    r"C:/Program Files/Java", r"C:/Program Files/Eclipse Adoptium",
+    r"C:/Program Files/Microsoft", r"C:/Program Files/Amazon Corretto",
+    r"C:/Program Files/Zulu", os.path.expanduser("~/.jdks"),
+    # The home directory itself. Not decoration: the Java 8 this project depends on could
+    # not be installed by MSI on the original box (installer fails 1603), so it was
+    # extracted from the Adoptium zip to ~/jdk8/jdk8u492-b09 — under no standard root at
+    # all. Hand-extracted JDKs land in home far more often than the tidy roots suggest.
+    # A stray same-named directory here is harmless: nothing is accepted without bin/java.
+    os.path.expanduser("~"), os.path.expanduser("~/jdk8"), os.path.expanduser("~/jdks"),
+    # Linux
+    "/usr/lib/jvm", "/opt/java", "/opt/jdk",
+    # macOS
+    "/Library/Java/JavaVirtualMachines",
+    # SDKMAN, any platform
+    os.path.expanduser("~/.sdkman/candidates/java"),
+)
+
+
+def _looks_like(entry: str, major: str) -> bool:
+    """Does this directory name denote the wanted major version?
+
+    Named forms vary far more than they look: `jdk-17`, `jdk-11.0.31.11-hotspot`,
+    `jdk8u492-b09`, `temurin-21.jdk`, `java-11-openjdk-amd64`, `1.8.0_392`. The rule that
+    covers them is "the first run of digits that is not part of a longer number", plus the
+    legacy `1.8` spelling where the major is the SECOND component.
+    """
+    import re
+    name = os.path.basename(entry.rstrip("/\\")).lower()
+    if major == "8" and re.search(r"(^|\D)1\.8(\D|$)", name):
+        return True
+    m = re.search(r"(?:^|\D)(\d+)", name)
+    return bool(m) and m.group(1) == major
+
+
+def _discover_jdk(major: str) -> str:
+    """First installed JDK of this major version, or "" if the scan finds none.
+
+    Checks for bin/java (with .exe on Windows) rather than trusting the directory name: a
+    JRE, a half-deleted install, and a macOS bundle whose real home is Contents/Home all
+    present as plausibly-named directories that cannot compile anything.
+    """
+    exe = "java.exe" if os.name == "nt" else "java"
+    for root in _JDK_ROOTS:
+        if not os.path.isdir(root):
+            continue
+        for entry in sorted(os.listdir(root), reverse=True):   # newest patch first
+            if not _looks_like(entry, major):
+                continue
+            base = os.path.join(root, entry)
+            for home in (base, os.path.join(base, "Contents", "Home")):
+                if os.path.exists(os.path.join(home, "bin", exe)):
+                    return home.replace("\\", "/")
+    return ""
+
+
+JDKS = {v: os.environ.get(f"BBC_JDK_{v}") or _discover_jdk(v) for v in ("8", "11", "17", "21")}
 
 OUTCOME_VERIFIED = "verified_bbc"
 OUTCOME_SIGNATURE = "signature_confirmed"
@@ -83,8 +148,12 @@ def load_break(break_id: str) -> dict:
 def jdk_for(brk: dict, repo_dir: str) -> str:
     want = str(brk.get("verify", {}).get("java", "")) or "17"
     path = JDKS.get(want)
-    if not path or not os.path.exists(os.path.join(path, "bin", "java.exe")):
-        raise EnvironmentError(f"JDK {want} not installed (needed for {brk['break_id']})")
+    exe = "java.exe" if os.name == "nt" else "java"      # was hardcoded to java.exe
+    if not path or not os.path.exists(os.path.join(path, "bin", exe)):
+        raise EnvironmentError(
+            f"JDK {want} not installed (needed for {brk['break_id']}). "
+            f"Set BBC_JDK_{want} to its home directory; `python install.py --doctor` "
+            f"lists what was found.")
     return path
 
 
